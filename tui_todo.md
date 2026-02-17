@@ -56,23 +56,23 @@ Status key: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` skipped
 
 ## Phase 4: Policy management
 
-- [ ] Create `src/tui/policies.rs` — policy list view
-  - [ ] Table: name, allow count, deny count, description
-  - [ ] j/k navigation
-- [ ] Create policy form
-  - [ ] Name input
-  - [ ] Description input
-  - [ ] Allow patterns (multi-line, one per line)
-  - [ ] Deny patterns (multi-line, one per line)
-  - [ ] Save → `vault.policies.insert()` + `save_vault()` + audit log
-- [ ] Edit policy form
-  - [ ] Pre-populated from existing policy
-  - [ ] Save → update + `save_vault()` + audit log
-- [ ] Remove policy
-  - [ ] Confirmation dialog
-  - [ ] Save → `vault.policies.remove()` + `save_vault()` + audit log
-- [ ] Test policy inline
-  - [ ] Secret name input → show ALLOWED/DENIED result
+- [x] Create `src/tui/policies.rs` — policy list view (integrated in `src/tui/mod.rs`)
+  - [x] Table: name, allow count, deny count, description
+  - [x] j/k navigation
+- [x] Create policy form
+  - [x] Name input
+  - [x] Description input
+  - [x] Allow patterns (comma-separated)
+  - [x] Deny patterns (comma-separated)
+  - [x] Save → `vault.policies.insert()` + `save_vault()` + audit log
+- [x] Edit policy form
+  - [x] Pre-populated from existing policy
+  - [x] Save → update + `save_vault()` + audit log
+- [x] Remove policy
+  - [x] Confirmation dialog
+  - [x] Save → `vault.policies.remove()` + `save_vault()` + audit log
+- [x] Test policy inline
+  - [x] Secret name input → show ALLOWED/DENIED result
 
 ## Phase 5: Sessions + audit
 

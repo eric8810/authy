@@ -13,6 +13,7 @@ use ratatui::widgets::{Block, Borders, Paragraph};
 use crate::audit;
 use crate::auth::context::{AuthContext, AuthMethod};
 use crate::error::{AuthyError, Result};
+use crate::policy::Policy;
 use crate::vault::{self, secret::SecretEntry, Vault, VaultKey};
 
 /// Which sidebar section is active.
@@ -95,6 +96,26 @@ pub enum PopupKind {
         message: String,
         is_error: bool,
         auto_close_at: Instant,
+    },
+    /// Create or edit a policy form.
+    PolicyForm {
+        name_input: widgets::TextInput,
+        desc_input: widgets::TextInput,
+        allow_input: widgets::TextInput,
+        deny_input: widgets::TextInput,
+        focused_field: usize, // 0=name, 1=desc, 2=allow, 3=deny
+        error: Option<String>,
+        editing: bool, // true if editing existing policy
+    },
+    /// Confirm policy deletion.
+    ConfirmDeletePolicy {
+        name: String,
+    },
+    /// Test a policy against a secret name.
+    PolicyTest {
+        scope: String,
+        name_input: widgets::TextInput,
+        result: Option<String>,
     },
 }
 
@@ -407,6 +428,68 @@ fn handle_main_input(app: &mut TuiApp, key: event::KeyEvent) {
                 }
             }
         }
+        // Create policy
+        KeyCode::Char('c') if app.section == Section::Policies => {
+            app.popup = Some(PopupKind::PolicyForm {
+                name_input: widgets::TextInput::new(false),
+                desc_input: widgets::TextInput::new(false),
+                allow_input: widgets::TextInput::new(false),
+                deny_input: widgets::TextInput::new(false),
+                focused_field: 0,
+                error: None,
+                editing: false,
+            });
+        }
+        // Edit policy
+        KeyCode::Char('e') if app.section == Section::Policies => {
+            if let Some(vault) = &app.vault {
+                if let Some((name, policy)) = vault.policies.iter().nth(app.cursor_pos()) {
+                    let mut name_input = widgets::TextInput::new(false);
+                    name_input.value = name.clone();
+                    name_input.cursor_pos = name.len();
+                    let mut desc_input = widgets::TextInput::new(false);
+                    desc_input.value = policy.description.clone().unwrap_or_default();
+                    desc_input.cursor_pos = desc_input.value.len();
+                    let mut allow_input = widgets::TextInput::new(false);
+                    allow_input.value = policy.allow.join(", ");
+                    allow_input.cursor_pos = allow_input.value.len();
+                    let mut deny_input = widgets::TextInput::new(false);
+                    deny_input.value = policy.deny.join(", ");
+                    deny_input.cursor_pos = deny_input.value.len();
+                    app.popup = Some(PopupKind::PolicyForm {
+                        name_input,
+                        desc_input,
+                        allow_input,
+                        deny_input,
+                        focused_field: 2, // Focus allow patterns
+                        error: None,
+                        editing: true,
+                    });
+                }
+            }
+        }
+        // Delete policy
+        KeyCode::Char('d') if app.section == Section::Policies => {
+            if let Some(vault) = &app.vault {
+                if let Some((name, _)) = vault.policies.iter().nth(app.cursor_pos()) {
+                    app.popup = Some(PopupKind::ConfirmDeletePolicy {
+                        name: name.clone(),
+                    });
+                }
+            }
+        }
+        // Test policy
+        KeyCode::Char('t') if app.section == Section::Policies => {
+            if let Some(vault) = &app.vault {
+                if let Some((name, _)) = vault.policies.iter().nth(app.cursor_pos()) {
+                    app.popup = Some(PopupKind::PolicyTest {
+                        scope: name.clone(),
+                        name_input: widgets::TextInput::new(false),
+                        result: None,
+                    });
+                }
+            }
+        }
         _ => {}
     }
 }
@@ -613,6 +696,172 @@ fn handle_popup_input(app: &mut TuiApp, key: event::KeyEvent) {
                 }
             }
         }
+        PopupKind::PolicyForm { mut name_input, mut desc_input, mut allow_input, mut deny_input, mut focused_field, editing, .. } => {
+            match key.code {
+                KeyCode::Esc => {
+                    // Cancel
+                }
+                KeyCode::Tab => {
+                    focused_field = (focused_field + 1) % 4;
+                    app.popup = Some(PopupKind::PolicyForm { name_input, desc_input, allow_input, deny_input, focused_field, error: None, editing });
+                }
+                KeyCode::BackTab => {
+                    focused_field = if focused_field == 0 { 3 } else { focused_field - 1 };
+                    app.popup = Some(PopupKind::PolicyForm { name_input, desc_input, allow_input, deny_input, focused_field, error: None, editing });
+                }
+                KeyCode::Enter => {
+                    let name = name_input.value.trim().to_string();
+                    let desc = desc_input.value.trim().to_string();
+                    let allow_str = allow_input.value.trim().to_string();
+                    let deny_str = deny_input.value.trim().to_string();
+
+                    if name.is_empty() {
+                        app.popup = Some(PopupKind::PolicyForm {
+                            name_input, desc_input, allow_input, deny_input, focused_field,
+                            error: Some("Name cannot be empty".into()), editing,
+                        });
+                        return;
+                    }
+                    if allow_str.is_empty() {
+                        app.popup = Some(PopupKind::PolicyForm {
+                            name_input, desc_input, allow_input, deny_input, focused_field,
+                            error: Some("At least one allow pattern required".into()), editing,
+                        });
+                        return;
+                    }
+
+                    let allow: Vec<String> = allow_str.split(',').map(|s| s.trim().to_string()).filter(|s| !s.is_empty()).collect();
+                    let deny: Vec<String> = deny_str.split(',').map(|s| s.trim().to_string()).filter(|s| !s.is_empty()).collect();
+
+                    if let Some(ref mut vault) = app.vault {
+                        if editing {
+                            if let Some(policy) = vault.policies.get_mut(&name) {
+                                policy.allow = allow;
+                                policy.deny = deny;
+                                policy.description = if desc.is_empty() { None } else { Some(desc) };
+                                policy.modified_at = chrono::Utc::now();
+                            }
+                        } else {
+                            if vault.policies.contains_key(&name) {
+                                app.popup = Some(PopupKind::PolicyForm {
+                                    name_input, desc_input, allow_input, deny_input, focused_field,
+                                    error: Some(format!("Policy '{}' already exists", name)), editing,
+                                });
+                                return;
+                            }
+                            let mut policy = Policy::new(name.clone(), allow, deny);
+                            policy.description = if desc.is_empty() { None } else { Some(desc) };
+                            vault.policies.insert(name.clone(), policy);
+                        }
+                        vault.touch();
+                    }
+
+                    if let Err(e) = app.save_vault() {
+                        app.popup = Some(PopupKind::StatusMessage {
+                            message: format!("Save failed: {}", e),
+                            is_error: true,
+                            auto_close_at: Instant::now() + Duration::from_secs(3),
+                        });
+                        return;
+                    }
+
+                    let op = if editing { "policy.update" } else { "policy.create" };
+                    let _ = app.log_audit(op, None, "success", Some(&format!("policy={}", name)));
+
+                    let verb = if editing { "updated" } else { "created" };
+                    app.popup = Some(PopupKind::StatusMessage {
+                        message: format!("Policy '{}' {}.", name, verb),
+                        is_error: false,
+                        auto_close_at: Instant::now() + Duration::from_secs(2),
+                    });
+                }
+                _ => {
+                    match focused_field {
+                        0 => { name_input.handle_input(key); }
+                        1 => { desc_input.handle_input(key); }
+                        2 => { allow_input.handle_input(key); }
+                        3 => { deny_input.handle_input(key); }
+                        _ => {}
+                    }
+                    app.popup = Some(PopupKind::PolicyForm { name_input, desc_input, allow_input, deny_input, focused_field, error: None, editing });
+                }
+            }
+        }
+        PopupKind::ConfirmDeletePolicy { name } => {
+            match key.code {
+                KeyCode::Char('y') | KeyCode::Char('Y') => {
+                    if let Some(ref mut vault) = app.vault {
+                        vault.policies.remove(&name);
+                        vault.touch();
+                    }
+
+                    if let Err(e) = app.save_vault() {
+                        app.popup = Some(PopupKind::StatusMessage {
+                            message: format!("Save failed: {}", e),
+                            is_error: true,
+                            auto_close_at: Instant::now() + Duration::from_secs(3),
+                        });
+                        return;
+                    }
+
+                    let _ = app.log_audit("policy.remove", None, "success", Some(&format!("policy={}", name)));
+
+                    let len = app.vault.as_ref().map(|v| v.policies.len()).unwrap_or(0);
+                    if app.cursor_pos() >= len && len > 0 {
+                        app.set_cursor_pos(len - 1);
+                    }
+
+                    app.popup = Some(PopupKind::StatusMessage {
+                        message: format!("Policy '{}' deleted.", name),
+                        is_error: false,
+                        auto_close_at: Instant::now() + Duration::from_secs(2),
+                    });
+                }
+                _ => {
+                    // Cancel
+                }
+            }
+        }
+        PopupKind::PolicyTest { scope, mut name_input, .. } => {
+            match key.code {
+                KeyCode::Esc => {
+                    // Close
+                }
+                KeyCode::Enter => {
+                    let secret_name = name_input.value.trim().to_string();
+                    if secret_name.is_empty() {
+                        app.popup = Some(PopupKind::PolicyTest {
+                            scope, name_input,
+                            result: Some("Enter a secret name to test".into()),
+                        });
+                        return;
+                    }
+
+                    let result = if let Some(vault) = &app.vault {
+                        if let Some(policy) = vault.policies.get(&scope) {
+                            match policy.can_read(&secret_name) {
+                                Ok(true) => format!("ALLOWED: '{}' can read '{}'", scope, secret_name),
+                                Ok(false) => format!("DENIED: '{}' cannot read '{}'", scope, secret_name),
+                                Err(e) => format!("Error: {}", e),
+                            }
+                        } else {
+                            "Policy not found".into()
+                        }
+                    } else {
+                        "No vault".into()
+                    };
+
+                    app.popup = Some(PopupKind::PolicyTest {
+                        scope, name_input,
+                        result: Some(result),
+                    });
+                }
+                _ => {
+                    name_input.handle_input(key);
+                    app.popup = Some(PopupKind::PolicyTest { scope, name_input, result: None });
+                }
+            }
+        }
         PopupKind::StatusMessage { .. } => {
             // Any key closes the status message
         }
@@ -758,6 +1007,99 @@ fn draw_popup(frame: &mut Frame, popup: &PopupKind) {
                 message: &format!("Delete '{}'?", name),
             };
             dialog.render(frame);
+        }
+        PopupKind::PolicyForm {
+            name_input,
+            desc_input,
+            allow_input,
+            deny_input,
+            focused_field,
+            error,
+            editing,
+        } => {
+            let title = if *editing { " Edit policy " } else { " Create policy " };
+            let area = widgets::centered_rect(60, 14, frame.area());
+            frame.render_widget(ratatui::widgets::Clear, area);
+            let block = Block::default()
+                .borders(Borders::ALL)
+                .title(title)
+                .border_style(Style::default().fg(Color::Yellow));
+            let inner = block.inner(area);
+            frame.render_widget(block, area);
+
+            let mut y = inner.y;
+            let w = inner.width.saturating_sub(2);
+            let x = inner.x + 1;
+
+            widgets::render_input(frame, Rect { x, y, width: w, height: 1 }, name_input, "Name ", *focused_field == 0);
+            y += 1;
+            widgets::render_input(frame, Rect { x, y, width: w, height: 1 }, desc_input, "Desc ", *focused_field == 1);
+            y += 1;
+            widgets::render_input(frame, Rect { x, y, width: w, height: 1 }, allow_input, "Allow", *focused_field == 2);
+            y += 1;
+            widgets::render_input(frame, Rect { x, y, width: w, height: 1 }, deny_input, "Deny ", *focused_field == 3);
+            y += 2;
+
+            if let Some(err) = error {
+                let p = Paragraph::new(Span::styled(err.as_str(), Style::default().fg(Color::Red)));
+                frame.render_widget(p, Rect { x, y, width: w, height: 1 });
+                y += 1;
+            }
+
+            let hint_text = if *editing {
+                "[Tab] next field  [Enter] save  [Esc] cancel  (comma-separated patterns)"
+            } else {
+                "[Tab] next field  [Enter] create  [Esc] cancel  (comma-separated patterns)"
+            };
+            let hint = Paragraph::new(Span::styled(hint_text, Style::default().fg(Color::DarkGray)));
+            frame.render_widget(hint, Rect { x, y, width: w, height: 1 });
+        }
+        PopupKind::ConfirmDeletePolicy { name } => {
+            let dialog = widgets::ConfirmDialog {
+                title: "Delete policy",
+                message: &format!("Delete policy '{}'?", name),
+            };
+            dialog.render(frame);
+        }
+        PopupKind::PolicyTest {
+            scope,
+            name_input,
+            result,
+        } => {
+            let area = widgets::centered_rect(60, 9, frame.area());
+            frame.render_widget(ratatui::widgets::Clear, area);
+            let block = Block::default()
+                .borders(Borders::ALL)
+                .title(format!(" Test policy: {} ", scope))
+                .border_style(Style::default().fg(Color::Cyan));
+            let inner = block.inner(area);
+            frame.render_widget(block, area);
+
+            let mut y = inner.y;
+            let w = inner.width.saturating_sub(2);
+            let x = inner.x + 1;
+
+            widgets::render_input(frame, Rect { x, y, width: w, height: 1 }, name_input, "Secret name", true);
+            y += 2;
+
+            if let Some(res) = result {
+                let color = if res.starts_with("ALLOWED") {
+                    Color::Green
+                } else if res.starts_with("DENIED") {
+                    Color::Yellow
+                } else {
+                    Color::Red
+                };
+                let p = Paragraph::new(Span::styled(res.as_str(), Style::default().fg(color)));
+                frame.render_widget(p, Rect { x, y, width: w, height: 1 });
+                y += 1;
+            }
+
+            let hint = Paragraph::new(Span::styled(
+                "[Enter] test  [Esc] close",
+                Style::default().fg(Color::DarkGray),
+            ));
+            frame.render_widget(hint, Rect { x, y, width: w, height: 1 });
         }
         PopupKind::StatusMessage {
             message,
