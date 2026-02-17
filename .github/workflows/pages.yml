@@ -51,8 +51,9 @@ jobs:
         env:
           BASE_URL: '/authy/'
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
+      # Skip configure-pages for now - enable Pages in repo settings first
+      # - name: Setup Pages
+      #   uses: actions/configure-pages@v4
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
