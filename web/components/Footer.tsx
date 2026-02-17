@@ -32,9 +32,8 @@ export const Footer: React.FC = () => {
           <div>
             <h4 className="text-white font-semibold mb-4">{t('footer.community')}</h4>
             <ul className="space-y-2 text-secondary text-sm">
-              <li><a href="#" className="hover:text-white transition-colors">{t('footer.discord')}</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">{t('footer.issues')}</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">{t('footer.discussions')}</a></li>
+              <li><a href="https://github.com/eric8810/authy/issues" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">{t('footer.issues')}</a></li>
+              <li><a href="https://github.com/eric8810/authy/discussions" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">{t('footer.discussions')}</a></li>
             </ul>
           </div>
         </div>

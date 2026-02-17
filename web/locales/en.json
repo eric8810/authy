@@ -87,7 +87,6 @@
     "releases": "Release Notes",
     "license": "MIT License",
     "community": "Community",
-    "discord": "Discord Server",
     "issues": "GitHub Issues",
     "discussions": "GitHub Discussions",
     "copyright": "© {{year}} Authy Project. MIT License.",

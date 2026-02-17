@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Terminal, Menu, X, Github } from 'lucide-react';
+import { Terminal, Menu, X, Github, Star } from 'lucide-react';
 import { LanguageSwitcher } from './LanguageSwitcher';
 
 export const Navbar: React.FC = () => {
   const { t } = useTranslation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [stars, setStars] = useState<number | null>(null);
   
   const navItems = [
     { label: t('nav.features'), href: '#features' },
@@ -21,6 +22,17 @@ export const Navbar: React.FC = () => {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    fetch('https://api.github.com/repos/eric8810/authy')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.stargazers_count !== undefined) {
+          setStars(data.stargazers_count);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   return (
@@ -59,6 +71,15 @@ export const Navbar: React.FC = () => {
           >
             <Github size={16} />
             <span>{t('nav.starOnGitHub')}</span>
+            {stars !== null && (
+              <>
+                <span className="w-px h-4 bg-zinc-400"></span>
+                <span className="flex items-center gap-1">
+                  <Star size={14} className="fill-current" />
+                  {stars.toLocaleString()}
+                </span>
+              </>
+            )}
           </a>
         </div>
 
@@ -94,6 +115,15 @@ export const Navbar: React.FC = () => {
           >
             <Github size={16} />
             <span>{t('nav.viewOnGitHub')}</span>
+            {stars !== null && (
+              <>
+                <span className="w-px h-4 bg-zinc-400"></span>
+                <span className="flex items-center gap-1">
+                  <Star size={14} className="fill-current" />
+                  {stars.toLocaleString()}
+                </span>
+              </>
+            )}
           </a>
         </div>
       </div>
