@@ -13,7 +13,7 @@ use ratatui::widgets::{Block, Borders, Paragraph};
 use crate::audit;
 use crate::auth::context::{AuthContext, AuthMethod};
 use crate::error::{AuthyError, Result};
-use crate::vault::{self, Vault, VaultKey};
+use crate::vault::{self, secret::SecretEntry, Vault, VaultKey};
 
 /// Which sidebar section is active.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -65,11 +65,35 @@ impl Section {
 /// The kind of popup overlay currently shown.
 #[derive(Debug, Clone)]
 pub enum PopupKind {
-    /// Reveal a secret value (name, value, masked flag, auto-close instant).
+    /// Reveal a secret value.
     RevealSecret {
         name: String,
         value: String,
         masked: bool,
+        auto_close_at: Instant,
+    },
+    /// Store a new secret form.
+    StoreForm {
+        name_input: widgets::TextInput,
+        value_input: widgets::TextInput,
+        tags_input: widgets::TextInput,
+        focused_field: usize, // 0=name, 1=value, 2=tags
+        error: Option<String>,
+    },
+    /// Rotate an existing secret (new value form).
+    RotateForm {
+        name: String,
+        value_input: widgets::TextInput,
+        error: Option<String>,
+    },
+    /// Confirm deletion dialog.
+    ConfirmDelete {
+        name: String,
+    },
+    /// Status message popup (auto-close).
+    StatusMessage {
+        message: String,
+        is_error: bool,
         auto_close_at: Instant,
     },
 }
@@ -151,8 +175,7 @@ impl TuiApp {
         self.cursor[self.section_idx()] = pos;
     }
 
-    /// Save the vault to disk. Used by write operations in Phase 3+.
-    #[allow(dead_code)]
+    /// Save the vault to disk.
     pub fn save_vault(&self) -> Result<()> {
         if let (Some(v), Some(k)) = (&self.vault, &self.key) {
             vault::save_vault(v, k)?;
@@ -160,8 +183,7 @@ impl TuiApp {
         Ok(())
     }
 
-    /// Get the auth actor name for audit logging. Used by audit in Phase 3+.
-    #[allow(dead_code)]
+    /// Get the auth actor name for audit logging.
     pub fn actor_name(&self) -> String {
         self.auth_ctx
             .as_ref()
@@ -169,8 +191,7 @@ impl TuiApp {
             .unwrap_or_else(|| "unknown".to_string())
     }
 
-    /// Derive the audit key from the current vault key. Used in Phase 3+.
-    #[allow(dead_code)]
+    /// Derive the audit key from the current vault key.
     pub fn audit_key(&self) -> Option<Vec<u8>> {
         self.key.as_ref().map(|k| {
             let material = audit::key_material(k);
@@ -178,8 +199,7 @@ impl TuiApp {
         })
     }
 
-    /// Log an audit event. Used in Phase 3+.
-    #[allow(dead_code)]
+    /// Log an audit event.
     pub fn log_audit(
         &self,
         operation: &str,
@@ -293,10 +313,13 @@ fn event_loop(
         }
 
         // Auto-close popup if timer expired
-        if let Some(PopupKind::RevealSecret { auto_close_at, .. }) = &app.popup {
-            if Instant::now() >= *auto_close_at {
-                app.popup = None;
-            }
+        let should_close = match &app.popup {
+            Some(PopupKind::RevealSecret { auto_close_at, .. }) => Instant::now() >= *auto_close_at,
+            Some(PopupKind::StatusMessage { auto_close_at, .. }) => Instant::now() >= *auto_close_at,
+            _ => false,
+        };
+        if should_close {
+            app.popup = None;
         }
 
         if app.should_quit {
@@ -352,6 +375,38 @@ fn handle_main_input(app: &mut TuiApp, key: event::KeyEvent) {
                 open_reveal_popup(app);
             }
         }
+        // Store new secret
+        KeyCode::Char('s') if app.section == Section::Secrets => {
+            app.popup = Some(PopupKind::StoreForm {
+                name_input: widgets::TextInput::new(false),
+                value_input: widgets::TextInput::new(true),
+                tags_input: widgets::TextInput::new(false),
+                focused_field: 0,
+                error: None,
+            });
+        }
+        // Rotate secret
+        KeyCode::Char('r') if app.section == Section::Secrets => {
+            if let Some(vault) = &app.vault {
+                if let Some((name, _)) = vault.secrets.iter().nth(app.cursor_pos()) {
+                    app.popup = Some(PopupKind::RotateForm {
+                        name: name.clone(),
+                        value_input: widgets::TextInput::new(true),
+                        error: None,
+                    });
+                }
+            }
+        }
+        // Delete secret
+        KeyCode::Char('d') if app.section == Section::Secrets => {
+            if let Some(vault) = &app.vault {
+                if let Some((name, _)) = vault.secrets.iter().nth(app.cursor_pos()) {
+                    app.popup = Some(PopupKind::ConfirmDelete {
+                        name: name.clone(),
+                    });
+                }
+            }
+        }
         _ => {}
     }
 }
@@ -376,17 +431,190 @@ fn open_reveal_popup(app: &mut TuiApp) {
 
 /// Handle key input when a popup is active.
 fn handle_popup_input(app: &mut TuiApp, key: event::KeyEvent) {
-    match key.code {
-        KeyCode::Esc | KeyCode::Enter | KeyCode::Char('q') => {
-            app.popup = None;
-        }
-        _ => {
-            // Ctrl+R toggles mask in reveal popup
-            if key.modifiers.contains(KeyModifiers::CONTROL) && key.code == KeyCode::Char('r') {
-                if let Some(PopupKind::RevealSecret { ref mut masked, .. }) = app.popup {
-                    *masked = !*masked;
+    // Take ownership of the popup temporarily
+    let popup = match app.popup.take() {
+        Some(p) => p,
+        None => return,
+    };
+
+    match popup {
+        PopupKind::RevealSecret { mut masked, name, value, auto_close_at } => {
+            match key.code {
+                KeyCode::Esc | KeyCode::Char('q') => {
+                    // Close popup (already taken)
+                }
+                _ => {
+                    if key.modifiers.contains(KeyModifiers::CONTROL) && key.code == KeyCode::Char('r') {
+                        masked = !masked;
+                    }
+                    app.popup = Some(PopupKind::RevealSecret { name, value, masked, auto_close_at });
                 }
             }
+        }
+        PopupKind::StoreForm { mut name_input, mut value_input, mut tags_input, mut focused_field, .. } => {
+            match key.code {
+                KeyCode::Esc => {
+                    // Cancel
+                }
+                KeyCode::Tab => {
+                    focused_field = (focused_field + 1) % 3;
+                    app.popup = Some(PopupKind::StoreForm { name_input, value_input, tags_input, focused_field, error: None });
+                }
+                KeyCode::BackTab => {
+                    focused_field = if focused_field == 0 { 2 } else { focused_field - 1 };
+                    app.popup = Some(PopupKind::StoreForm { name_input, value_input, tags_input, focused_field, error: None });
+                }
+                KeyCode::Enter => {
+                    // Submit the form
+                    let name = name_input.value.trim().to_string();
+                    let value = value_input.value.clone();
+                    let tags_str = tags_input.value.trim().to_string();
+
+                    if name.is_empty() {
+                        app.popup = Some(PopupKind::StoreForm {
+                            name_input, value_input, tags_input, focused_field,
+                            error: Some("Name cannot be empty".into()),
+                        });
+                        return;
+                    }
+                    if value.is_empty() {
+                        app.popup = Some(PopupKind::StoreForm {
+                            name_input, value_input, tags_input, focused_field,
+                            error: Some("Value cannot be empty".into()),
+                        });
+                        return;
+                    }
+
+                    if let Some(ref mut vault) = app.vault {
+                        if vault.secrets.contains_key(&name) {
+                            app.popup = Some(PopupKind::StoreForm {
+                                name_input, value_input, tags_input, focused_field,
+                                error: Some(format!("Secret '{}' already exists", name)),
+                            });
+                            return;
+                        }
+
+                        let mut entry = SecretEntry::new(value);
+                        if !tags_str.is_empty() {
+                            entry.metadata.tags = tags_str.split(',').map(|t| t.trim().to_string()).filter(|t| !t.is_empty()).collect();
+                        }
+                        vault.secrets.insert(name.clone(), entry);
+                        vault.touch();
+                    }
+
+                    if let Err(e) = app.save_vault() {
+                        app.popup = Some(PopupKind::StatusMessage {
+                            message: format!("Save failed: {}", e),
+                            is_error: true,
+                            auto_close_at: Instant::now() + Duration::from_secs(3),
+                        });
+                        return;
+                    }
+
+                    let _ = app.log_audit("store", Some(&name), "success", None);
+
+                    app.popup = Some(PopupKind::StatusMessage {
+                        message: format!("Secret '{}' stored.", name),
+                        is_error: false,
+                        auto_close_at: Instant::now() + Duration::from_secs(2),
+                    });
+                }
+                _ => {
+                    // Forward key to the focused input
+                    match focused_field {
+                        0 => { name_input.handle_input(key); }
+                        1 => { value_input.handle_input(key); }
+                        2 => { tags_input.handle_input(key); }
+                        _ => {}
+                    }
+                    app.popup = Some(PopupKind::StoreForm { name_input, value_input, tags_input, focused_field, error: None });
+                }
+            }
+        }
+        PopupKind::RotateForm { name, mut value_input, .. } => {
+            match key.code {
+                KeyCode::Esc => {
+                    // Cancel
+                }
+                KeyCode::Enter => {
+                    let new_value = value_input.value.clone();
+                    if new_value.is_empty() {
+                        app.popup = Some(PopupKind::RotateForm {
+                            name, value_input,
+                            error: Some("Value cannot be empty".into()),
+                        });
+                        return;
+                    }
+
+                    if let Some(ref mut vault) = app.vault {
+                        if let Some(entry) = vault.secrets.get_mut(&name) {
+                            entry.value = new_value;
+                            entry.metadata.bump_version();
+                            vault.touch();
+                        }
+                    }
+
+                    if let Err(e) = app.save_vault() {
+                        app.popup = Some(PopupKind::StatusMessage {
+                            message: format!("Save failed: {}", e),
+                            is_error: true,
+                            auto_close_at: Instant::now() + Duration::from_secs(3),
+                        });
+                        return;
+                    }
+
+                    let _ = app.log_audit("rotate", Some(&name), "success", None);
+
+                    app.popup = Some(PopupKind::StatusMessage {
+                        message: format!("Secret '{}' rotated.", name),
+                        is_error: false,
+                        auto_close_at: Instant::now() + Duration::from_secs(2),
+                    });
+                }
+                _ => {
+                    value_input.handle_input(key);
+                    app.popup = Some(PopupKind::RotateForm { name, value_input, error: None });
+                }
+            }
+        }
+        PopupKind::ConfirmDelete { name } => {
+            match key.code {
+                KeyCode::Char('y') | KeyCode::Char('Y') => {
+                    if let Some(ref mut vault) = app.vault {
+                        vault.secrets.remove(&name);
+                        vault.touch();
+                    }
+
+                    if let Err(e) = app.save_vault() {
+                        app.popup = Some(PopupKind::StatusMessage {
+                            message: format!("Save failed: {}", e),
+                            is_error: true,
+                            auto_close_at: Instant::now() + Duration::from_secs(3),
+                        });
+                        return;
+                    }
+
+                    let _ = app.log_audit("remove", Some(&name), "success", None);
+
+                    // Adjust cursor if it was at the end
+                    let len = app.vault.as_ref().map(|v| v.secrets.len()).unwrap_or(0);
+                    if app.cursor_pos() >= len && len > 0 {
+                        app.set_cursor_pos(len - 1);
+                    }
+
+                    app.popup = Some(PopupKind::StatusMessage {
+                        message: format!("Secret '{}' deleted.", name),
+                        is_error: false,
+                        auto_close_at: Instant::now() + Duration::from_secs(2),
+                    });
+                }
+                _ => {
+                    // Any other key cancels
+                }
+            }
+        }
+        PopupKind::StatusMessage { .. } => {
+            // Any key closes the status message
         }
     }
 }
@@ -445,12 +673,107 @@ fn draw_popup(frame: &mut Frame, popup: &PopupKind) {
                 remaining.as_secs()
             );
 
-            let popup = widgets::Popup {
+            let p = widgets::Popup {
                 title: &title,
                 content: &display_value,
                 footer: &footer,
             };
-            popup.render(frame);
+            p.render(frame);
+        }
+        PopupKind::StoreForm {
+            name_input,
+            value_input,
+            tags_input,
+            focused_field,
+            error,
+        } => {
+            let area = widgets::centered_rect(60, 12, frame.area());
+            frame.render_widget(ratatui::widgets::Clear, area);
+            let block = Block::default()
+                .borders(Borders::ALL)
+                .title(" Store new secret ")
+                .border_style(Style::default().fg(Color::Yellow));
+            let inner = block.inner(area);
+            frame.render_widget(block, area);
+
+            let mut y = inner.y;
+            let w = inner.width.saturating_sub(2);
+            let x = inner.x + 1;
+
+            widgets::render_input(frame, Rect { x, y, width: w, height: 1 }, name_input, "Name ", *focused_field == 0);
+            y += 1;
+            widgets::render_input(frame, Rect { x, y, width: w, height: 1 }, value_input, "Value", *focused_field == 1);
+            y += 1;
+            widgets::render_input(frame, Rect { x, y, width: w, height: 1 }, tags_input, "Tags ", *focused_field == 2);
+            y += 2;
+
+            if let Some(err) = error {
+                let p = Paragraph::new(Span::styled(err.as_str(), Style::default().fg(Color::Red)));
+                frame.render_widget(p, Rect { x, y, width: w, height: 1 });
+                y += 1;
+            }
+
+            let hint = Paragraph::new(Span::styled(
+                "[Tab] next field  [Enter] save  [Ctrl+R] toggle mask  [Esc] cancel",
+                Style::default().fg(Color::DarkGray),
+            ));
+            frame.render_widget(hint, Rect { x, y, width: w, height: 1 });
+        }
+        PopupKind::RotateForm {
+            name,
+            value_input,
+            error,
+        } => {
+            let area = widgets::centered_rect(60, 9, frame.area());
+            frame.render_widget(ratatui::widgets::Clear, area);
+            let block = Block::default()
+                .borders(Borders::ALL)
+                .title(format!(" Rotate: {} ", name))
+                .border_style(Style::default().fg(Color::Yellow));
+            let inner = block.inner(area);
+            frame.render_widget(block, area);
+
+            let mut y = inner.y;
+            let w = inner.width.saturating_sub(2);
+            let x = inner.x + 1;
+
+            widgets::render_input(frame, Rect { x, y, width: w, height: 1 }, value_input, "New value", true);
+            y += 2;
+
+            if let Some(err) = error {
+                let p = Paragraph::new(Span::styled(err.as_str(), Style::default().fg(Color::Red)));
+                frame.render_widget(p, Rect { x, y, width: w, height: 1 });
+                y += 1;
+            }
+
+            let hint = Paragraph::new(Span::styled(
+                "[Enter] save  [Ctrl+R] toggle mask  [Esc] cancel",
+                Style::default().fg(Color::DarkGray),
+            ));
+            frame.render_widget(hint, Rect { x, y, width: w, height: 1 });
+        }
+        PopupKind::ConfirmDelete { name } => {
+            let dialog = widgets::ConfirmDialog {
+                title: "Delete secret",
+                message: &format!("Delete '{}'?", name),
+            };
+            dialog.render(frame);
+        }
+        PopupKind::StatusMessage {
+            message,
+            is_error,
+            ..
+        } => {
+            let color = if *is_error { Color::Red } else { Color::Green };
+            let area = widgets::centered_rect(50, 5, frame.area());
+            frame.render_widget(ratatui::widgets::Clear, area);
+            let block = Block::default()
+                .borders(Borders::ALL)
+                .border_style(Style::default().fg(color));
+            let inner = block.inner(area);
+            frame.render_widget(block, area);
+            let p = Paragraph::new(message.as_str()).alignment(Alignment::Center);
+            frame.render_widget(p, inner);
         }
     }
 }

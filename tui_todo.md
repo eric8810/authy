@@ -42,17 +42,17 @@ Status key: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` skipped
 
 ## Phase 3: Secret write operations
 
-- [ ] Store new secret
-  - [ ] Name input field
-  - [ ] Masked value input field (Ctrl+R toggle)
-  - [ ] Tags input field (comma-separated)
-  - [ ] Save → `vault.secrets.insert()` + `save_vault()` + audit log
-- [ ] Rotate secret
-  - [ ] Masked value input for new value
-  - [ ] Save → update entry, bump version + `save_vault()` + audit log
-- [ ] Remove secret
-  - [ ] Confirmation dialog ("Delete 'db-url'? y/n")
-  - [ ] Save → `vault.secrets.remove()` + `save_vault()` + audit log
+- [x] Store new secret
+  - [x] Name input field
+  - [x] Masked value input field (Ctrl+R toggle)
+  - [x] Tags input field (comma-separated)
+  - [x] Save → `vault.secrets.insert()` + `save_vault()` + audit log
+- [x] Rotate secret
+  - [x] Masked value input for new value
+  - [x] Save → update entry, bump version + `save_vault()` + audit log
+- [x] Remove secret
+  - [x] Confirmation dialog ("Delete 'db-url'? y/n")
+  - [x] Save → `vault.secrets.remove()` + `save_vault()` + audit log
 
 ## Phase 4: Policy management
 

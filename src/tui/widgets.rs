@@ -141,15 +141,13 @@ pub fn render_input(
     }
 }
 
-/// A confirmation dialog overlay. Used in Phase 3+.
-#[allow(dead_code)]
+/// A confirmation dialog overlay.
 pub struct ConfirmDialog<'a> {
     pub title: &'a str,
     pub message: &'a str,
 }
 
 impl<'a> ConfirmDialog<'a> {
-    #[allow(dead_code)]
     pub fn render(&self, frame: &mut Frame) {
         let area = centered_rect(50, 7, frame.area());
         frame.render_widget(Clear, area);
@@ -166,8 +164,7 @@ impl<'a> ConfirmDialog<'a> {
     }
 }
 
-/// A popup overlay for showing content. Used in Phase 2+.
-#[allow(dead_code)]
+/// A popup overlay for showing content.
 pub struct Popup<'a> {
     pub title: &'a str,
     pub content: &'a str,
@@ -175,7 +172,6 @@ pub struct Popup<'a> {
 }
 
 impl<'a> Popup<'a> {
-    #[allow(dead_code)]
     pub fn render(&self, frame: &mut Frame) {
         let height = (self.content.lines().count() as u16 + 4).min(frame.area().height - 2);
         let area = centered_rect(60, height, frame.area());
