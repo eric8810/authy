@@ -163,11 +163,11 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          for pkg in npm/authy-cli-linux-x64 npm/authy-cli-linux-arm64 npm/authy-cli-darwin-x64 npm/authy-cli-darwin-arm64 npm/authy-cli-win32-x64; do
+          for pkg in ./npm/authy-cli-linux-x64 ./npm/authy-cli-linux-arm64 ./npm/authy-cli-darwin-x64 ./npm/authy-cli-darwin-arm64 ./npm/authy-cli-win32-x64; do
             npm publish "$pkg" --access public
           done
 
       - name: Publish main package
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish npm/authy-cli --access public
+        run: npm publish ./npm/authy-cli --access public
