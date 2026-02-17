@@ -14,6 +14,7 @@ use crate::audit;
 use crate::auth::context::{AuthContext, AuthMethod};
 use crate::error::{AuthyError, Result};
 use crate::policy::Policy;
+use crate::session;
 use crate::vault::{self, secret::SecretEntry, Vault, VaultKey};
 
 /// Which sidebar section is active.
@@ -117,6 +118,35 @@ pub enum PopupKind {
         name_input: widgets::TextInput,
         result: Option<String>,
     },
+    /// Create a session token form.
+    SessionForm {
+        scope_index: usize, // index into policies list
+        policy_names: Vec<String>,
+        ttl_input: widgets::TextInput,
+        focused_field: usize, // 0=scope, 1=ttl
+        error: Option<String>,
+    },
+    /// Show a newly created session token (one-time display).
+    ShowToken {
+        token: String,
+        session_id: String,
+        auto_close_at: Instant,
+    },
+    /// Confirm session revoke.
+    ConfirmRevokeSession {
+        session_id: String,
+    },
+    /// Confirm revoke all sessions.
+    ConfirmRevokeAllSessions,
+    /// Audit chain verification result.
+    AuditVerifyResult {
+        message: String,
+        is_ok: bool,
+    },
+    /// Audit filter input.
+    AuditFilter {
+        filter_input: widgets::TextInput,
+    },
 }
 
 /// Top-level screen state.
@@ -156,6 +186,11 @@ pub struct TuiApp {
 
     // Popup overlay (rendered on top of main screen)
     pub popup: Option<PopupKind>,
+
+    // Audit entries cache (loaded on demand)
+    pub audit_entries: Vec<audit::AuditEntry>,
+    pub audit_filter: String,
+    pub audit_scroll: usize,
 }
 
 impl TuiApp {
@@ -173,6 +208,9 @@ impl TuiApp {
             keyfile,
             cursor: [0; 4],
             popup: None,
+            audit_entries: Vec::new(),
+            audit_filter: String::new(),
+            audit_scroll: 0,
         }
     }
 
@@ -245,6 +283,40 @@ impl TuiApp {
     /// Try to authenticate with the current auth input or keyfile.
     pub fn try_auth(&mut self) -> Result<()> {
         auth::try_authenticate(self)
+    }
+
+    /// Load audit entries from disk.
+    pub fn load_audit_entries(&mut self) {
+        match audit::read_entries(&vault::audit_path()) {
+            Ok(entries) => self.audit_entries = entries,
+            Err(_) => self.audit_entries = Vec::new(),
+        }
+    }
+
+    /// Get the filtered audit entries.
+    pub fn filtered_audit_entries(&self) -> Vec<&audit::AuditEntry> {
+        if self.audit_filter.is_empty() {
+            self.audit_entries.iter().collect()
+        } else {
+            let filter = self.audit_filter.to_lowercase();
+            self.audit_entries
+                .iter()
+                .filter(|e| {
+                    e.operation.to_lowercase().contains(&filter)
+                        || e.actor.to_lowercase().contains(&filter)
+                        || e.outcome.to_lowercase().contains(&filter)
+                        || e.secret.as_deref().unwrap_or("").to_lowercase().contains(&filter)
+                })
+                .collect()
+        }
+    }
+
+    /// Derive session HMAC key from vault key.
+    pub fn session_hmac_key(&self) -> Option<Vec<u8>> {
+        self.key.as_ref().map(|k| {
+            let material = audit::key_material(k);
+            crate::vault::crypto::derive_key(&material, b"session-hmac", 32)
+        })
     }
 }
 
@@ -335,8 +407,9 @@ fn event_loop(
 
         // Auto-close popup if timer expired
         let should_close = match &app.popup {
-            Some(PopupKind::RevealSecret { auto_close_at, .. }) => Instant::now() >= *auto_close_at,
-            Some(PopupKind::StatusMessage { auto_close_at, .. }) => Instant::now() >= *auto_close_at,
+            Some(PopupKind::RevealSecret { auto_close_at, .. })
+            | Some(PopupKind::StatusMessage { auto_close_at, .. })
+            | Some(PopupKind::ShowToken { auto_close_at, .. }) => Instant::now() >= *auto_close_at,
             _ => false,
         };
         if should_close {
@@ -370,25 +443,48 @@ fn handle_main_input(app: &mut TuiApp, key: event::KeyEvent) {
         // Section navigation
         KeyCode::Tab => {
             app.section = app.section.next();
+            if app.section == Section::Audit { app.load_audit_entries(); }
         }
         KeyCode::BackTab => {
             app.section = app.section.prev();
+            if app.section == Section::Audit { app.load_audit_entries(); }
         }
         KeyCode::Char('1') => app.section = Section::Secrets,
         KeyCode::Char('2') => app.section = Section::Policies,
         KeyCode::Char('3') => app.section = Section::Sessions,
-        KeyCode::Char('4') => app.section = Section::Audit,
+        KeyCode::Char('4') => {
+            app.section = Section::Audit;
+            app.load_audit_entries();
+        }
         // List navigation
         KeyCode::Char('j') | KeyCode::Down => {
-            let max = list_len(app);
-            if max > 0 {
-                let pos = (app.cursor_pos() + 1).min(max - 1);
-                app.set_cursor_pos(pos);
+            if app.section == Section::Audit {
+                let max = app.filtered_audit_entries().len();
+                if app.audit_scroll + 1 < max {
+                    app.audit_scroll += 1;
+                }
+            } else {
+                let max = list_len(app);
+                if max > 0 {
+                    let pos = (app.cursor_pos() + 1).min(max - 1);
+                    app.set_cursor_pos(pos);
+                }
             }
         }
         KeyCode::Char('k') | KeyCode::Up => {
-            let pos = app.cursor_pos().saturating_sub(1);
-            app.set_cursor_pos(pos);
+            if app.section == Section::Audit {
+                app.audit_scroll = app.audit_scroll.saturating_sub(1);
+            } else {
+                let pos = app.cursor_pos().saturating_sub(1);
+                app.set_cursor_pos(pos);
+            }
+        }
+        KeyCode::PageDown if app.section == Section::Audit => {
+            let max = app.filtered_audit_entries().len();
+            app.audit_scroll = (app.audit_scroll + 20).min(max.saturating_sub(1));
+        }
+        KeyCode::PageUp if app.section == Section::Audit => {
+            app.audit_scroll = app.audit_scroll.saturating_sub(20);
         }
         // Reveal secret on Enter (Secrets section)
         KeyCode::Enter => {
@@ -489,6 +585,73 @@ fn handle_main_input(app: &mut TuiApp, key: event::KeyEvent) {
                     });
                 }
             }
+        }
+        // Create session
+        KeyCode::Char('c') if app.section == Section::Sessions => {
+            if let Some(vault) = &app.vault {
+                let policy_names: Vec<String> = vault.policies.keys().cloned().collect();
+                if policy_names.is_empty() {
+                    app.popup = Some(PopupKind::StatusMessage {
+                        message: "No policies defined. Create a policy first.".into(),
+                        is_error: true,
+                        auto_close_at: Instant::now() + Duration::from_secs(3),
+                    });
+                } else {
+                    let mut ttl_input = widgets::TextInput::new(false);
+                    ttl_input.value = "1h".to_string();
+                    ttl_input.cursor_pos = 2;
+                    app.popup = Some(PopupKind::SessionForm {
+                        scope_index: 0,
+                        policy_names,
+                        ttl_input,
+                        focused_field: 0,
+                        error: None,
+                    });
+                }
+            }
+        }
+        // Revoke session
+        KeyCode::Char('r') if app.section == Section::Sessions => {
+            if let Some(vault) = &app.vault {
+                if let Some(s) = vault.sessions.get(app.cursor_pos()) {
+                    if !s.revoked {
+                        app.popup = Some(PopupKind::ConfirmRevokeSession {
+                            session_id: s.id.clone(),
+                        });
+                    }
+                }
+            }
+        }
+        // Revoke all sessions
+        KeyCode::Char('R') if app.section == Section::Sessions => {
+            app.popup = Some(PopupKind::ConfirmRevokeAllSessions);
+        }
+        // Audit: verify chain
+        KeyCode::Char('v') if app.section == Section::Audit => {
+            app.load_audit_entries();
+            if let Some(audit_key) = app.audit_key() {
+                match audit::verify_chain(&vault::audit_path(), &audit_key) {
+                    Ok((count, _)) => {
+                        app.popup = Some(PopupKind::AuditVerifyResult {
+                            message: format!("Chain valid ({} entries)", count),
+                            is_ok: true,
+                        });
+                    }
+                    Err(e) => {
+                        app.popup = Some(PopupKind::AuditVerifyResult {
+                            message: format!("{}", e),
+                            is_ok: false,
+                        });
+                    }
+                }
+            }
+        }
+        // Audit: filter
+        KeyCode::Char('/') if app.section == Section::Audit => {
+            let mut filter_input = widgets::TextInput::new(false);
+            filter_input.value = app.audit_filter.clone();
+            filter_input.cursor_pos = filter_input.value.len();
+            app.popup = Some(PopupKind::AuditFilter { filter_input });
         }
         _ => {}
     }
@@ -862,6 +1025,200 @@ fn handle_popup_input(app: &mut TuiApp, key: event::KeyEvent) {
                 }
             }
         }
+        PopupKind::SessionForm { mut scope_index, policy_names, mut ttl_input, mut focused_field, .. } => {
+            match key.code {
+                KeyCode::Esc => {
+                    // Cancel
+                }
+                KeyCode::Tab => {
+                    focused_field = (focused_field + 1) % 2;
+                    app.popup = Some(PopupKind::SessionForm { scope_index, policy_names, ttl_input, focused_field, error: None });
+                }
+                KeyCode::BackTab => {
+                    focused_field = if focused_field == 0 { 1 } else { 0 };
+                    app.popup = Some(PopupKind::SessionForm { scope_index, policy_names, ttl_input, focused_field, error: None });
+                }
+                // Arrow keys to cycle scope when scope field is focused
+                KeyCode::Up | KeyCode::Left if focused_field == 0 => {
+                    scope_index = if scope_index == 0 { policy_names.len().saturating_sub(1) } else { scope_index - 1 };
+                    app.popup = Some(PopupKind::SessionForm { scope_index, policy_names, ttl_input, focused_field, error: None });
+                }
+                KeyCode::Down | KeyCode::Right if focused_field == 0 => {
+                    scope_index = (scope_index + 1) % policy_names.len().max(1);
+                    app.popup = Some(PopupKind::SessionForm { scope_index, policy_names, ttl_input, focused_field, error: None });
+                }
+                KeyCode::Enter => {
+                    let scope = policy_names.get(scope_index).cloned().unwrap_or_default();
+                    let ttl_str = ttl_input.value.trim().to_string();
+
+                    if scope.is_empty() {
+                        app.popup = Some(PopupKind::SessionForm {
+                            scope_index, policy_names, ttl_input, focused_field,
+                            error: Some("No scope selected".into()),
+                        });
+                        return;
+                    }
+
+                    let duration = match session::parse_ttl(&ttl_str) {
+                        Ok(d) => d,
+                        Err(e) => {
+                            app.popup = Some(PopupKind::SessionForm {
+                                scope_index, policy_names, ttl_input, focused_field,
+                                error: Some(format!("Invalid TTL: {}", e)),
+                            });
+                            return;
+                        }
+                    };
+
+                    let hmac_key = match app.session_hmac_key() {
+                        Some(k) => k,
+                        None => {
+                            app.popup = Some(PopupKind::StatusMessage {
+                                message: "No vault key available".into(),
+                                is_error: true,
+                                auto_close_at: Instant::now() + Duration::from_secs(3),
+                            });
+                            return;
+                        }
+                    };
+
+                    let now = chrono::Utc::now();
+                    let expires_at = now + duration;
+                    let (token, token_hmac) = session::generate_token(&hmac_key);
+                    let session_id = session::generate_session_id();
+
+                    let record = session::SessionRecord {
+                        id: session_id.clone(),
+                        scope: scope.clone(),
+                        token_hmac,
+                        created_at: now,
+                        expires_at,
+                        revoked: false,
+                        label: None,
+                    };
+
+                    if let Some(ref mut vault) = app.vault {
+                        vault.sessions.push(record);
+                        vault.touch();
+                    }
+
+                    if let Err(e) = app.save_vault() {
+                        app.popup = Some(PopupKind::StatusMessage {
+                            message: format!("Save failed: {}", e),
+                            is_error: true,
+                            auto_close_at: Instant::now() + Duration::from_secs(3),
+                        });
+                        return;
+                    }
+
+                    let _ = app.log_audit(
+                        "session.create", None, "success",
+                        Some(&format!("session={}, scope={}, ttl={}", session_id, scope, ttl_str)),
+                    );
+
+                    app.popup = Some(PopupKind::ShowToken {
+                        token,
+                        session_id,
+                        auto_close_at: Instant::now() + Duration::from_secs(60),
+                    });
+                }
+                _ => {
+                    if focused_field == 1 {
+                        ttl_input.handle_input(key);
+                    }
+                    app.popup = Some(PopupKind::SessionForm { scope_index, policy_names, ttl_input, focused_field, error: None });
+                }
+            }
+        }
+        PopupKind::ShowToken { .. } => {
+            // Any key closes
+        }
+        PopupKind::ConfirmRevokeSession { session_id } => {
+            match key.code {
+                KeyCode::Char('y') | KeyCode::Char('Y') => {
+                    if let Some(ref mut vault) = app.vault {
+                        if let Some(s) = vault.sessions.iter_mut().find(|s| s.id == session_id) {
+                            s.revoked = true;
+                        }
+                        vault.touch();
+                    }
+
+                    if let Err(e) = app.save_vault() {
+                        app.popup = Some(PopupKind::StatusMessage {
+                            message: format!("Save failed: {}", e),
+                            is_error: true,
+                            auto_close_at: Instant::now() + Duration::from_secs(3),
+                        });
+                        return;
+                    }
+
+                    let _ = app.log_audit("session.revoke", None, "success", Some(&format!("session={}", session_id)));
+
+                    app.popup = Some(PopupKind::StatusMessage {
+                        message: format!("Session '{}' revoked.", session_id),
+                        is_error: false,
+                        auto_close_at: Instant::now() + Duration::from_secs(2),
+                    });
+                }
+                _ => {
+                    // Cancel
+                }
+            }
+        }
+        PopupKind::ConfirmRevokeAllSessions => {
+            match key.code {
+                KeyCode::Char('y') | KeyCode::Char('Y') => {
+                    let mut count = 0;
+                    if let Some(ref mut vault) = app.vault {
+                        for s in vault.sessions.iter_mut() {
+                            if !s.revoked {
+                                s.revoked = true;
+                                count += 1;
+                            }
+                        }
+                        vault.touch();
+                    }
+
+                    if let Err(e) = app.save_vault() {
+                        app.popup = Some(PopupKind::StatusMessage {
+                            message: format!("Save failed: {}", e),
+                            is_error: true,
+                            auto_close_at: Instant::now() + Duration::from_secs(3),
+                        });
+                        return;
+                    }
+
+                    let _ = app.log_audit("session.revoke_all", None, "success", Some(&format!("count={}", count)));
+
+                    app.popup = Some(PopupKind::StatusMessage {
+                        message: format!("{} session(s) revoked.", count),
+                        is_error: false,
+                        auto_close_at: Instant::now() + Duration::from_secs(2),
+                    });
+                }
+                _ => {
+                    // Cancel
+                }
+            }
+        }
+        PopupKind::AuditVerifyResult { .. } => {
+            // Any key closes
+        }
+        PopupKind::AuditFilter { mut filter_input } => {
+            match key.code {
+                KeyCode::Esc => {
+                    // Cancel, keep old filter
+                }
+                KeyCode::Enter => {
+                    app.audit_filter = filter_input.value.trim().to_string();
+                    app.audit_scroll = 0;
+                }
+                _ => {
+                    filter_input.handle_input(key);
+                    app.popup = Some(PopupKind::AuditFilter { filter_input });
+                }
+            }
+        }
         PopupKind::StatusMessage { .. } => {
             // Any key closes the status message
         }
@@ -878,7 +1235,7 @@ fn list_len(app: &TuiApp) -> usize {
         Section::Secrets => vault.secrets.len(),
         Section::Policies => vault.policies.len(),
         Section::Sessions => vault.sessions.len(),
-        Section::Audit => 0, // Will be populated in Phase 5
+        Section::Audit => app.filtered_audit_entries().len(),
     }
 }
 
@@ -1101,6 +1458,117 @@ fn draw_popup(frame: &mut Frame, popup: &PopupKind) {
             ));
             frame.render_widget(hint, Rect { x, y, width: w, height: 1 });
         }
+        PopupKind::SessionForm {
+            scope_index,
+            policy_names,
+            ttl_input,
+            focused_field,
+            error,
+        } => {
+            let area = widgets::centered_rect(60, 10, frame.area());
+            frame.render_widget(ratatui::widgets::Clear, area);
+            let block = Block::default()
+                .borders(Borders::ALL)
+                .title(" Create session ")
+                .border_style(Style::default().fg(Color::Yellow));
+            let inner = block.inner(area);
+            frame.render_widget(block, area);
+
+            let mut y = inner.y;
+            let w = inner.width.saturating_sub(2);
+            let x = inner.x + 1;
+
+            // Scope selector
+            let scope_name = policy_names.get(*scope_index).cloned().unwrap_or_default();
+            let scope_style = if *focused_field == 0 {
+                Style::default().fg(Color::Yellow)
+            } else {
+                Style::default().fg(Color::Gray)
+            };
+            let scope_text = format!("Scope: < {} >  ({}/{})", scope_name, scope_index + 1, policy_names.len());
+            let p = Paragraph::new(Span::styled(scope_text, scope_style));
+            frame.render_widget(p, Rect { x, y, width: w, height: 1 });
+            y += 1;
+
+            widgets::render_input(frame, Rect { x, y, width: w, height: 1 }, ttl_input, "TTL  ", *focused_field == 1);
+            y += 2;
+
+            if let Some(err) = error {
+                let p = Paragraph::new(Span::styled(err.as_str(), Style::default().fg(Color::Red)));
+                frame.render_widget(p, Rect { x, y, width: w, height: 1 });
+                y += 1;
+            }
+
+            let hint = Paragraph::new(Span::styled(
+                "[Tab] next  [</>] change scope  [Enter] create  [Esc] cancel",
+                Style::default().fg(Color::DarkGray),
+            ));
+            frame.render_widget(hint, Rect { x, y, width: w, height: 1 });
+        }
+        PopupKind::ShowToken {
+            token,
+            session_id,
+            auto_close_at,
+        } => {
+            let remaining = auto_close_at
+                .checked_duration_since(Instant::now())
+                .unwrap_or_default();
+            let title = format!("Session: {}", session_id);
+            let footer = format!("[any key] close  auto-close: {}s  (copy this token now!)", remaining.as_secs());
+            let p = widgets::Popup {
+                title: &title,
+                content: token,
+                footer: &footer,
+            };
+            p.render(frame);
+        }
+        PopupKind::ConfirmRevokeSession { session_id } => {
+            let dialog = widgets::ConfirmDialog {
+                title: "Revoke session",
+                message: &format!("Revoke session '{}'?", session_id),
+            };
+            dialog.render(frame);
+        }
+        PopupKind::ConfirmRevokeAllSessions => {
+            let dialog = widgets::ConfirmDialog {
+                title: "Revoke all",
+                message: "Revoke ALL active sessions?",
+            };
+            dialog.render(frame);
+        }
+        PopupKind::AuditVerifyResult { message, is_ok } => {
+            let color = if *is_ok { Color::Green } else { Color::Red };
+            let area = widgets::centered_rect(50, 5, frame.area());
+            frame.render_widget(ratatui::widgets::Clear, area);
+            let block = Block::default()
+                .borders(Borders::ALL)
+                .title(" Chain Verification ")
+                .border_style(Style::default().fg(color));
+            let inner = block.inner(area);
+            frame.render_widget(block, area);
+            let p = Paragraph::new(message.as_str()).alignment(Alignment::Center);
+            frame.render_widget(p, inner);
+        }
+        PopupKind::AuditFilter { filter_input } => {
+            let area = widgets::centered_rect(50, 6, frame.area());
+            frame.render_widget(ratatui::widgets::Clear, area);
+            let block = Block::default()
+                .borders(Borders::ALL)
+                .title(" Filter audit log ")
+                .border_style(Style::default().fg(Color::Cyan));
+            let inner = block.inner(area);
+            frame.render_widget(block, area);
+
+            let x = inner.x + 1;
+            let w = inner.width.saturating_sub(2);
+            widgets::render_input(frame, Rect { x, y: inner.y, width: w, height: 1 }, filter_input, "Filter", true);
+
+            let hint = Paragraph::new(Span::styled(
+                "[Enter] apply  [Esc] cancel",
+                Style::default().fg(Color::DarkGray),
+            ));
+            frame.render_widget(hint, Rect { x, y: inner.y + 2, width: w, height: 1 });
+        }
         PopupKind::StatusMessage {
             message,
             is_error,
@@ -1280,8 +1748,51 @@ fn draw_section_content(frame: &mut Frame, area: Rect, app: &TuiApp) {
             draw_list(frame, inner, &items, app.cursor_pos());
         }
         Section::Audit => {
-            let p = Paragraph::new(" Audit log viewer (Phase 5)");
-            frame.render_widget(p, inner);
+            let filter_info = if app.audit_filter.is_empty() {
+                String::new()
+            } else {
+                format!("  filter: \"{}\"", app.audit_filter)
+            };
+
+            let header = format!(
+                " {:<20} {:<12} {:<16} {:<8} {}",
+                "TIMESTAMP", "OPERATION", "SECRET", "STATUS", filter_info
+            );
+            let header_area = Rect { x: inner.x, y: inner.y, width: inner.width, height: 1 };
+            let header_p = Paragraph::new(Span::styled(header, Style::default().add_modifier(Modifier::BOLD)));
+            frame.render_widget(header_p, header_area);
+
+            let list_area = Rect {
+                x: inner.x,
+                y: inner.y + 1,
+                width: inner.width,
+                height: inner.height.saturating_sub(1),
+            };
+
+            let filtered = app.filtered_audit_entries();
+            let items: Vec<String> = filtered
+                .iter()
+                .rev() // Most recent first
+                .map(|e| {
+                    let secret = e.secret.as_deref().unwrap_or("-");
+                    format!(
+                        " {:<20} {:<12} {:<16} {}",
+                        e.timestamp.format("%m-%d %H:%M:%S"),
+                        e.operation,
+                        secret,
+                        e.outcome,
+                    )
+                })
+                .collect();
+
+            // Apply scroll offset
+            let visible: Vec<String> = items
+                .iter()
+                .skip(app.audit_scroll)
+                .cloned()
+                .collect();
+
+            draw_list(frame, list_area, &visible, 0);
         }
     }
 }

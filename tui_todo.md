@@ -77,27 +77,27 @@ Status key: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` skipped
 ## Phase 5: Sessions + audit
 
 ### Sessions
-- [ ] Create `src/tui/sessions.rs` — session list view
-  - [ ] Table: id, scope, status (active/expired/revoked), expires (time remaining)
-  - [ ] j/k navigation
-- [ ] Create session
-  - [ ] Scope selector (list of existing policies)
-  - [ ] TTL input
-  - [ ] Show token once in popup (auto-close)
-  - [ ] Save → `vault.sessions.push()` + `save_vault()` + audit log
-- [ ] Revoke session
-  - [ ] Confirmation → set `revoked = true` + `save_vault()` + audit log
-- [ ] Revoke all sessions
-  - [ ] Confirmation → revoke all + `save_vault()` + audit log
+- [x] Create `src/tui/sessions.rs` — session list view (integrated in `src/tui/mod.rs`)
+  - [x] Table: id, scope, status (active/expired/revoked), expires (time remaining)
+  - [x] j/k navigation
+- [x] Create session
+  - [x] Scope selector (list of existing policies, arrow keys to cycle)
+  - [x] TTL input
+  - [x] Show token once in popup (60s auto-close)
+  - [x] Save → `vault.sessions.push()` + `save_vault()` + audit log
+- [x] Revoke session
+  - [x] Confirmation → set `revoked = true` + `save_vault()` + audit log
+- [x] Revoke all sessions
+  - [x] Confirmation → revoke all + `save_vault()` + audit log
 
 ### Audit
-- [ ] Create `src/tui/audit.rs` — audit log view
-  - [ ] Scrollable entry list (timestamp, operation, secret, actor, outcome)
-  - [ ] j/k + Page Up/Down navigation
-- [ ] Filter (`/` key)
-  - [ ] Filter by operation, actor, outcome
-- [ ] Verify chain (`v` key)
-  - [ ] Run `audit::verify_chain()`, show result inline (valid / broken at entry N)
+- [x] Create `src/tui/audit.rs` — audit log view (integrated in `src/tui/mod.rs`)
+  - [x] Scrollable entry list (timestamp, operation, secret, outcome) — most recent first
+  - [x] j/k + Page Up/Down navigation
+- [x] Filter (`/` key)
+  - [x] Filter by operation, actor, outcome, secret name
+- [x] Verify chain (`v` key)
+  - [x] Run `audit::verify_chain()`, show result inline (valid / broken at entry N)
 
 ## Phase 6: Polish + testing
 
