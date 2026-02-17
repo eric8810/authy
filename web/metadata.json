@@ -1,5 +1,54 @@
 {
   "name": "Authy - CLI Secrets Store for AI Agents",
-  "description": "Securely manage secrets and dispatch them to AI agents with scoped access, short-lived tokens, and complete audit trails.",
+  "short_name": "Authy",
+  "description": "Securely manage secrets and dispatch them to AI agents with scoped access, short-lived tokens, and complete audit trails. Single binary, no server, built with Rust.",
+  "version": "1.0.0",
+  "keywords": [
+    "secrets manager",
+    "AI agents",
+    "CLI tool",
+    "Claude Code",
+    "OpenClaw",
+    "MCP servers",
+    "secure vault",
+    "encryption",
+    "age encryption",
+    "Rust",
+    "environment variables",
+    "API keys",
+    "token management",
+    "audit log",
+    "secret injection",
+    "CI/CD security"
+  ],
+  "author": {
+    "name": "Authy"
+  },
+  "license": "MIT",
+  "homepage": "https://eric8810.github.io/authy",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eric8810/authy"
+  },
+  "bugs": {
+    "url": "https://github.com/eric8810/authy/issues"
+  },
+  "categories": [
+    "Developer Tools",
+    "Security",
+    "CLI"
+  ],
+  "languages": ["Rust"],
+  "platforms": ["Linux", "macOS", "Windows"],
+  "features": [
+    "Encrypted vault with age encryption",
+    "Scoped access policies with glob patterns",
+    "Short-lived session tokens",
+    "Tamper-evident audit log",
+    "Subprocess secret injection",
+    "Admin TUI interface",
+    "CI/CD integration",
+    "Docker support"
+  ],
   "requestFramePermissions": []
 }

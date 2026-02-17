@@ -7,10 +7,10 @@ import { FadeIn } from './FadeIn';
 const codeBlocks: Record<string, TerminalLine[]> = {
   install: [
     { type: 'comment', content: 'Install via Cargo' },
-    { type: 'command', content: 'cargo install --git https://github.com/yourusername/authy' },
+    { type: 'command', content: 'cargo install --git https://github.com/eric8810/authy' },
     { type: 'output', content: 'Installing authy v0.1.0...' },
     { type: 'comment', content: 'Or download binary' },
-    { type: 'command', content: 'curl -L https://github.com/yourusername/authy/releases/latest | tar xz' },
+    { type: 'command', content: 'curl -L https://github.com/eric8810/authy/releases/latest | tar xz' },
   ],
   init: [
     { type: 'comment', content: 'Initialize a new vault with a keyfile' },

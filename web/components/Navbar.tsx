@@ -52,7 +52,7 @@ export const Navbar: React.FC = () => {
           ))}
           <LanguageSwitcher />
           <a
-            href="https://github.com/yourusername/authy"
+            href="https://github.com/eric8810/authy"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 text-sm font-medium bg-white text-black px-4 py-2 rounded-full hover:bg-zinc-200 transition-all duration-300 hover:scale-105 active:scale-95"
@@ -86,7 +86,7 @@ export const Navbar: React.FC = () => {
             <LanguageSwitcher />
           </div>
           <a
-            href="https://github.com/yourusername/authy"
+            href="https://github.com/eric8810/authy"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 text-sm font-medium bg-white text-black px-4 py-3 rounded-lg hover:bg-zinc-200 transition-colors"

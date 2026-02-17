@@ -4,7 +4,11 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
+    // Support for GitHub Pages deployment - set BASE_URL=/authy/ when deploying
+    const base = process.env.BASE_URL || '/';
+
     return {
+      base,
       server: {
         port: 3000,
         host: '0.0.0.0',

@@ -8,47 +8,47 @@
     "viewOnGitHub": "View on GitHub"
   },
   "hero": {
-    "released": "v0.1.0 Released",
+    "released": "v1.0.0 Released",
     "title": "Secrets Management for",
     "titleHighlight": "AI Agents",
-    "description": "Securely manage secrets and dispatch them to AI agents with scoped access, short-lived tokens, and complete audit trails. Single binary, no server, no accounts.",
+    "description": "Your agents need API keys — they don't need the keys to the kingdom. Authy is a CLI secrets manager with encrypted vault, scoped policies, short-lived tokens, and full audit trail. Single binary, no server, no accounts. Perfect for Claude Code, OpenClaw, MCP servers, and CI/CD pipelines.",
     "getStarted": "Get Started",
-    "installCLI": "Install CLI",
-    "openSource": "Open Source (MIT)",
+    "aiAgentGuide": "AI Agent Integration Guide",
+    "openSource": "Open Source (MIT License)",
     "writtenInRust": "Written in Rust",
-    "zeroDependencies": "Zero Dependencies"
+    "zeroDependencies": "Zero Runtime Dependencies"
   },
   "features": {
     "title": "Built for the Agent Age",
-    "description": "Traditional password managers weren't built for autonomous agents. Authy bridges the gap between security and automation.",
+    "description": "Traditional secrets managers weren't designed for AI agents. Claude Code reads .env files silently. OpenClaw stores API keys in plaintext. HashiCorp Vault requires a server. Authy gives you secure, scoped secret access for your AI agents without the complexity.",
     "encryptedVault": {
       "title": "Encrypted Vault",
-      "description": "Single age-encrypted file. Secrets are stored in MessagePack format for speed and security. No metadata leakage."
+      "description": "Single age-encrypted file using X25519 keys or scrypt passphrases. Secrets stored in MessagePack format for speed. All data encrypted at rest with modern cryptography. No metadata leakage."
     },
     "scopedPolicies": {
-      "title": "Scoped Policies",
-      "description": "Glob-based allow/deny rules per agent scope. Policies are stored inside the encrypted vault and are tamper-proof."
+      "title": "Scoped Access Policies",
+      "description": "Glob-based allow/deny rules per agent scope. Define exactly what each agent can access. Policies stored inside the encrypted vault — tamper-proof by design. Deny overrides allow, default deny for security."
     },
     "sessionTokens": {
-      "title": "Session Tokens",
-      "description": "Short-lived, read-only HMAC tokens. Scannable prefixes for leak detection and instant revocation capability."
+      "title": "Short-Lived Session Tokens",
+      "description": "HMAC-SHA256 validated read-only tokens with time-based expiration. Scannable authy_v1. prefix for automated leak detection. Instant revocation capability when compromised."
     },
     "subprocessInjection": {
-      "title": "Subprocess Injection",
-      "description": "Inject secrets directly as environment variables. Secrets never appear in parent process environment or shell history."
+      "title": "Subprocess Secret Injection",
+      "description": "Inject secrets as environment variables only into the child process. Secrets never appear in parent shell history, process arguments, or environment. Zero trace after process exit."
     },
     "auditLogging": {
-      "title": "Audit Logging",
-      "description": "Tamper-evident JSONL append-only log with HMAC chaining. Track every secret access: who, what, when."
+      "title": "Tamper-Evident Audit Logging",
+      "description": "Append-only JSONL log with HMAC chain verification. Track every secret access with actor identity, timestamp, operation type, and access outcome. Detect any log tampering instantly."
     },
-    "headlessOperation": {
-      "title": "Headless Operation",
-      "description": "Works entirely without interactive prompts. Perfect for CI/CD pipelines, automation scripts, and agents."
+    "adminTUI": {
+      "title": "Admin Terminal UI",
+      "description": "Full-screen terminal interface for managing secrets, policies, sessions, and audit logs. Masked input fields ensure secrets never touch shell history. Intuitive keyboard-driven interface."
     }
   },
   "quickStart": {
     "title": "Quick Start",
-    "description": "Get up and running in seconds. Authy is a single binary with zero dependencies. Designed to be pipe-friendly and automation-ready.",
+    "description": "Get up and running in under a minute. Authy is a single static binary with zero runtime dependencies — just download and run. Designed for CI/CD integration, Docker containers, and local development workflows.",
     "tabs": {
       "install": "Install",
       "initialize": "Initialize",
@@ -57,39 +57,42 @@
     }
   },
   "comparison": {
-    "title": "Why Authy?",
-    "description": "Designed specifically for the unique constraints of local-first AI agents.",
+    "title": "Why Choose Authy?",
+    "description": "Authy is the only secrets manager designed specifically for the unique needs of local-first AI agent workflows. Compare our features against traditional solutions.",
     "feature": "Feature",
     "features": {
-      "singleBinary": "Single Binary",
+      "singleBinary": "Single Binary Distribution",
       "noServerRequired": "No Server Required",
-      "scopedAccess": "Scoped Access",
+      "scopedAccess": "Scoped Access Control",
       "sessionTokens": "Session Tokens",
       "interactiveTUI": "Interactive TUI",
       "openSource": "Open Source",
       "noAccountNeeded": "No Account Needed",
-      "auditLogging": "Audit Logging"
+      "auditLogging": "Audit Logging",
+      "subprocessInjection": "Subprocess Injection",
+      "builtForAgents": "Built for AI Agents"
     }
   },
   "securityBanner": {
-    "title": "Stop leaking secrets in your shell history.",
-    "description": "Even {{code}} can leak data. Authy's TUI ensures secrets entered in the admin interface never touch your shell history or process arguments.",
-    "masked": "(masked)",
-    "successMessage": "Secret 'openai-key' stored successfully."
+    "title": "Stop leaking secrets in your shell history forever.",
+    "description": "Even {{code}} can expose sensitive data in shell history. Authy's TUI uses masked input fields that never touch your shell history, process arguments, or parent environment. Secrets remain truly secret.",
+    "masked": "(masked input)",
+    "successMessage": "Secret 'openai-key' stored successfully and securely."
   },
   "footer": {
-    "description": "Give your agents the secrets they need, not the keys to the kingdom. Secure, scoped, and local-first.",
-    "project": "Project",
-    "documentation": "Documentation",
-    "releases": "Releases",
-    "license": "License",
+    "description": "Give your AI agents the secrets they need without giving them the keys to the kingdom. Secure, scoped, local-first secrets management for the agent age.",
+    "guides": "Integration Guides",
+    "aiAgentGuide": "AI Agent Integration Guide",
+    "documentation": "API Documentation",
+    "releases": "Release Notes",
+    "license": "MIT License",
     "community": "Community",
-    "discord": "Discord",
-    "issues": "Issues",
-    "discussions": "Discussions",
+    "discord": "Discord Server",
+    "issues": "GitHub Issues",
+    "discussions": "GitHub Discussions",
     "copyright": "© {{year}} Authy Project. MIT License.",
     "builtWithRust": "Built with Rust",
-    "securedWithAge": "Secured with age"
+    "securedWithAge": "Secured with age encryption"
   },
   "languageSwitcher": {
     "en": "English",

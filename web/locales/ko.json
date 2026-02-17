@@ -12,16 +12,16 @@
     "title": "",
     "titleHighlight": "AI Agents",
     "titleSuffix": "를 위한 시크릿 관리",
-    "description": "AI Agents에 시크릿을 안전하게 관리하고 전달하세요. 범위 기반 접근 제어, 단기 토큰, 완전한 감사 로그를 제공합니다. 단일 바이너리, 서버 불필요, 계정 등록 불필요.",
+    "description": "Agent에게는 API 키가 필요하지만, 시스템의 모든 권한은 필요하지 않습니다. 암호화 볼트, 범위 정책, 단기 토큰, 완전한 감사 로그. 단일 바이너리, 서버 불필요, 계정 등록 불필요.",
     "getStarted": "시작하기",
-    "installCLI": "CLI 설치",
+    "aiAgentGuide": "AI 에이전트 통합 가이드",
     "openSource": "MIT 라이선스",
     "writtenInRust": "Rust 제작",
     "zeroDependencies": "의존성 없음"
   },
   "features": {
     "title": "Agent 시대를 위한 설계",
-    "description": "기존 비밀번호 관리자는 자율적인 Agent를 고려하지 않았습니다. Authy는 보안과 자동화 사이의 간극을 메웁니다.",
+    "description": "Claude Code는 .env 파일을 조용히 읽고, OpenClaw는 API 키를 평문으로 저장합니다. Authy는 Agent가 볼 수 있는 범위를 제어합니다.",
     "encryptedVault": {
       "title": "암호화 볼트",
       "description": "age 암호화 기반 단일 파일 저장. MessagePack 포맷으로 빠르고 안전하며, 메타데이터 유출 위험 없음."
@@ -42,9 +42,9 @@
       "title": "감사 로그",
       "description": "HMAC 체인 기반 변조 감지 JSONL 로그. 누가, 언제, 어떤 시크릿에 접근했는지 완전 추적."
     },
-    "headlessOperation": {
-      "title": "Headless 지원",
-      "description": "대화형 입력 없이 완전히 동작. CI/CD 파이프라인, 자동화 스크립트, Agent 운영에 최적."
+    "adminTUI": {
+      "title": "관리 TUI",
+      "description": "시크릿, 정책, 세션 및 감사 로그를 관리하는 전체 화면 터미널 인터페이스. 마스크 입력 필드를 통해 입력된 시크릿은 셸 기록에 남지 않습니다."
     }
   },
   "quickStart": {
@@ -69,7 +69,9 @@
       "interactiveTUI": "대화형 TUI",
       "openSource": "오픈소스",
       "noAccountNeeded": "계정 불필요",
-      "auditLogging": "감사 로그"
+      "auditLogging": "감사 로그",
+      "subprocessInjection": "서브프로세스 주입",
+      "builtForAgents": "Agent 전용 설계"
     }
   },
   "securityBanner": {
@@ -79,8 +81,9 @@
     "successMessage": "시크릿 'openai-key' 저장 완료"
   },
   "footer": {
-    "description": "Agent에는 필요한 시크릿만 제공하세요. 시스템 전체의 열쇠를 넘길 필요는 없습니다. 안전하고, 범위 제어 가능하며, 로컬 우선.",
-    "project": "프로젝트",
+    "description": "Agent에게 시스템의 모든 권한이 아닌 필요한 시크릿만 제공하세요. 안전하고 범위 제어되며 로컬 우선입니다.",
+    "guides": "가이드",
+    "aiAgentGuide": "AI 에이전트 통합 가이드",
     "documentation": "문서",
     "releases": "릴리스",
     "license": "라이선스",

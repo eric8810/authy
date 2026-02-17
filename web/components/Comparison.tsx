@@ -12,10 +12,12 @@ export const Comparison: React.FC = () => {
     { feature: t('comparison.features.noServerRequired'), authy: true, pass: true, vault: false, onepassword: true },
     { feature: t('comparison.features.scopedAccess'), authy: true, pass: false, vault: true, onepassword: true },
     { feature: t('comparison.features.sessionTokens'), authy: true, pass: false, vault: true, onepassword: true },
+    { feature: t('comparison.features.subprocessInjection'), authy: true, pass: false, vault: false, onepassword: true },
     { feature: t('comparison.features.interactiveTUI'), authy: true, pass: false, vault: false, onepassword: true },
     { feature: t('comparison.features.openSource'), authy: true, pass: true, vault: true, onepassword: false },
     { feature: t('comparison.features.noAccountNeeded'), authy: true, pass: true, vault: true, onepassword: false },
     { feature: t('comparison.features.auditLogging'), authy: true, pass: false, vault: true, onepassword: true },
+    { feature: t('comparison.features.builtForAgents'), authy: true, pass: false, vault: false, onepassword: false },
   ];
 
   return (

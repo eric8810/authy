@@ -11,16 +11,16 @@
     "released": "v0.1.0 Veröffentlicht",
     "title": "Secrets-Verwaltung für",
     "titleHighlight": "AI Agents",
-    "description": "Verwalten und verteilen Sie Secrets sicher an Ihre AI Agents. Bereichsbasierte Zugriffskontrolle, kurzlebige Tokens und vollständiges Audit. Eine einzelne Binary, kein Server, kein Konto nötig.",
+    "description": "Ihre Agents brauchen API-Schlüssel, nicht die Schlüssel zum Königreich. Verschlüsselter Tresor, bereichsbasierte Richtlinien, kurzlebige Tokens und vollständiges Audit. Eine einzelne Binary, kein Server, kein Konto nötig.",
     "getStarted": "Loslegen",
-    "installCLI": "CLI installieren",
+    "aiAgentGuide": "KI-Agent-Integration",
     "openSource": "MIT-Lizenz",
     "writtenInRust": "Entwickelt in Rust",
     "zeroDependencies": "Ohne Abhängigkeiten"
   },
   "features": {
     "title": "Gebaut für das Agent-Zeitalter",
-    "description": "Herkömmliche Passwortmanager wurden nicht für autonome Agents entwickelt. Authy verbindet Sicherheit mit Automatisierung.",
+    "description": "Claude Code liest .env-Dateien unbemerkt. OpenClaw speichert API-Schlüssel im Klartext. Authy gibt Ihnen die Kontrolle darüber, was Ihre Agents sehen können.",
     "encryptedVault": {
       "title": "Verschlüsselter Tresor",
       "description": "Speicherung in einer einzelnen mit age verschlüsselten Datei. MessagePack-Format für Geschwindigkeit und Sicherheit, keine Metadaten-Lecks."
@@ -41,9 +41,9 @@
       "title": "Audit-Protokoll",
       "description": "Unveränderbares JSONL-Log mit HMAC-Verkettung. Vollständige Nachverfolgung, wer wann auf welches Secret zugegriffen hat."
     },
-    "headlessOperation": {
-      "title": "Headless-Modus",
-      "description": "Funktioniert vollständig ohne Interaktion. Ideal für CI/CD-Pipelines, Automatisierungsskripte und Agents."
+    "adminTUI": {
+      "title": "Admin-TUI",
+      "description": "Vollbild-Terminal-Oberfläche zur Verwaltung von Secrets, Richtlinien, Sitzungen und Audit-Logs. Über maskierte Eingabefelder eingegebene Secrets gelangen nie in die Shell-Historie."
     }
   },
   "quickStart": {
@@ -68,7 +68,9 @@
       "interactiveTUI": "Interaktive TUI",
       "openSource": "Open Source",
       "noAccountNeeded": "Ohne Konto",
-      "auditLogging": "Audit"
+      "auditLogging": "Audit",
+      "subprocessInjection": "Subprozess-Injektion",
+      "builtForAgents": "Für Agents entwickelt"
     }
   },
   "securityBanner": {
@@ -79,7 +81,8 @@
   },
   "footer": {
     "description": "Geben Sie Ihren Agents nur die Secrets, die sie brauchen – nicht die Schlüssel zum Königreich. Sicher, bereichsbasiert und local-first.",
-    "project": "Projekt",
+    "guides": "Leitfäden",
+    "aiAgentGuide": "KI-Agent-Integration",
     "documentation": "Dokumentation",
     "releases": "Releases",
     "license": "Lizenz",

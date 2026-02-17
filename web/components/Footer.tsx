@@ -20,10 +20,10 @@ export const Footer: React.FC = () => {
           </div>
           
           <div>
-            <h4 className="text-white font-semibold mb-4">{t('footer.project')}</h4>
+            <h4 className="text-white font-semibold mb-4">{t('footer.guides')}</h4>
             <ul className="space-y-2 text-secondary text-sm">
+              <li><a href="https://github.com/eric8810/authy/blob/main/AI_AGENT_GUIDE.md" className="hover:text-white transition-colors">{t('footer.aiAgentGuide')}</a></li>
               <li><a href="#" className="hover:text-white transition-colors">{t('footer.documentation')}</a></li>
-              <li><a href="https://github.com/yourusername/authy" className="hover:text-white transition-colors">GitHub</a></li>
               <li><a href="#" className="hover:text-white transition-colors">{t('footer.releases')}</a></li>
               <li><a href="#" className="hover:text-white transition-colors">{t('footer.license')}</a></li>
             </ul>

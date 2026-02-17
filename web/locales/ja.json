@@ -12,16 +12,16 @@
     "title": "",
     "titleHighlight": "AI Agents",
     "titleSuffix": "向けシークレット管理",
-    "description": "AI Agents にシークレットを安全に管理・配布。スコープベースのアクセス制御、短期トークン、完全な監査ログを提供。単一バイナリ、サーバー不要、アカウント登録不要。",
+    "description": "Agent には API キーが必要ですが、王国の鍵は不要です。暗号化ボールト、スコープポリシー、短期トークン、完全な監査ログ。単一バイナリ、サーバー不要、アカウント登録不要。",
     "getStarted": "始める",
-    "installCLI": "CLI をインストール",
+    "aiAgentGuide": "AIエージェント統合ガイド",
     "openSource": "MIT ライセンス",
     "writtenInRust": "Rust 製",
     "zeroDependencies": "依存関係なし"
   },
   "features": {
     "title": "Agent 時代のために",
-    "description": "従来のパスワードマネージャーは自律的な Agent を想定していません。Authy はセキュリティと自動化の架け橋となります。",
+    "description": "Claude Code は .env ファイルを無断で読み取り、OpenClaw は API キーを平文で保存します。Authy は Agent が見える範囲を制御します。",
     "encryptedVault": {
       "title": "暗号化ボールト",
       "description": "age 暗号化による単一ファイル保存。MessagePack フォーマットで高速かつ安全。メタデータ漏洩の心配なし。"
@@ -42,9 +42,9 @@
       "title": "監査ログ",
       "description": "HMAC チェーンによる改ざん検知機能付き JSONL ログ。誰が、いつ、どのシークレットにアクセスしたかを完全追跡。"
     },
-    "headlessOperation": {
-      "title": "Headless 対応",
-      "description": "対話的な操作なしで完全に動作。CI/CD パイプライン、自動化スクリプト、Agent での運用に最適。"
+    "adminTUI": {
+      "title": "管理 TUI",
+      "description": "シークレット、ポリシー、セッション、監査ログを管理するフルスクリーン端末インターフェース。マスク入力フィールドで入力されたシークレットはシェル履歴に一切残りません。"
     }
   },
   "quickStart": {
@@ -69,7 +69,9 @@
       "interactiveTUI": "対話型 TUI",
       "openSource": "オープンソース",
       "noAccountNeeded": "アカウント不要",
-      "auditLogging": "監査ログ"
+      "auditLogging": "監査ログ",
+      "subprocessInjection": "サブプロセス注入",
+      "builtForAgents": "Agent 向けに設計"
     }
   },
   "securityBanner": {
@@ -79,8 +81,9 @@
     "successMessage": "シークレット「openai-key」を保存しました"
   },
   "footer": {
-    "description": "Agent には必要なシークレットだけを。システム全体の鍵を渡す必要はありません。安全で、スコープ制御可能、ローカルファースト。",
-    "project": "プロジェクト",
+    "description": "Agent に必要なシークレットのみを提供し、王国の鍵は渡さない。安全でスコープ制御され、ローカルファースト。",
+    "guides": "ガイド",
+    "aiAgentGuide": "AIエージェント統合ガイド",
     "documentation": "ドキュメント",
     "releases": "リリース",
     "license": "ライセンス",

@@ -6,13 +6,13 @@ import { TerminalLine } from '../types';
 import { FadeIn } from './FadeIn';
 
 const heroDemoLines: TerminalLine[] = [
-  { type: 'comment', content: 'Create a scoped session for your deployment agent' },
-  { type: 'command', content: 'authy session create --scope deploy-agent --ttl 1h' },
-  { type: 'output', content: 'authy_v1.dGhpcyBpcyBhIDMyIGJ5dGUgcmFuZG9t...' },
-  { type: 'comment', content: 'Run script with injected secrets (only db-url is allowed)' },
-  { type: 'command', content: 'authy run --scope deploy-agent --uppercase -- ./deploy.sh' },
-  { type: 'output', content: '[deploy] Connecting to database...' },
-  { type: 'output', content: '[deploy] Success! Deployed version v1.2.0' },
+  { type: 'comment', content: 'Define what your agent can see' },
+  { type: 'command', content: 'authy policy create claude-code --allow "anthropic-*" --deny "prod-*"' },
+  { type: 'output', content: "Policy 'claude-code' created." },
+  { type: 'comment', content: 'Launch Claude Code with scoped secrets injected' },
+  { type: 'command', content: 'authy run --scope claude-code --uppercase --replace-dash _ -- claude' },
+  { type: 'output', content: '[injected] ANTHROPIC_API_KEY, GITHUB_TOKEN (2 secrets)' },
+  { type: 'output', content: '[claude] Session started.' },
 ];
 
 export const Hero: React.FC = () => {
@@ -56,11 +56,13 @@ export const Hero: React.FC = () => {
                 <ArrowRight size={18} />
               </a>
               <a 
-                href="https://github.com/yourusername/authy"
+                href="https://github.com/eric8810/authy/blob/main/AI_AGENT_GUIDE.md"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-surface border border-surfaceHighlight text-white font-medium hover:bg-surfaceHighlight hover:border-zinc-500 transition-all duration-300"
               >
                 <TerminalIcon size={18} />
-                {t('hero.installCLI')}
+                {t('hero.aiAgentGuide')}
               </a>
             </div>
           </FadeIn>

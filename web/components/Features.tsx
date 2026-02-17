@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Shield, Key, FileJson, TerminalSquare, Lock, Cpu } from 'lucide-react';
+import { Shield, Key, FileJson, TerminalSquare, Lock, Monitor } from 'lucide-react';
 import { Feature } from '../types';
 import { FadeIn } from './FadeIn';
 
@@ -34,9 +34,9 @@ export const Features: React.FC = () => {
       icon: FileJson
     },
     {
-      title: t('features.headlessOperation.title'),
-      description: t('features.headlessOperation.description'),
-      icon: Cpu
+      title: t('features.adminTUI.title'),
+      description: t('features.adminTUI.description'),
+      icon: Monitor
     },
   ];
 

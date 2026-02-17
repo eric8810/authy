@@ -11,16 +11,16 @@
     "released": "v0.1.0 Disponível",
     "title": "Gerenciamento de segredos para",
     "titleHighlight": "AI Agents",
-    "description": "Gerencie e distribua segredos de forma segura para seus AI Agents. Controle de acesso por escopo, tokens de curta duração e auditoria completa. Um único executável, sem servidor, sem cadastro.",
+    "description": "Seus agents precisam de chaves API, não das chaves do reino. Cofre criptografado, políticas de escopo, tokens de curta duração e auditoria completa. Um único executável, sem servidor, sem cadastro.",
     "getStarted": "Começar",
-    "installCLI": "Instalar CLI",
+    "aiAgentGuide": "Guia de Integração de Agentes IA",
     "openSource": "Licença MIT",
     "writtenInRust": "Desenvolvido em Rust",
     "zeroDependencies": "Sem dependências"
   },
   "features": {
     "title": "Projetado para a era dos Agents",
-    "description": "Os gerenciadores de senhas tradicionais não foram pensados para agents autônomos. O Authy conecta segurança com automação.",
+    "description": "O Claude Code lê arquivos .env silenciosamente. O OpenClaw armazena chaves API em texto puro. O Authy dá a você controle sobre o que seus agents podem ver.",
     "encryptedVault": {
       "title": "Cofre criptografado",
       "description": "Armazenamento em um único arquivo criptografado com age. Formato MessagePack para velocidade e segurança, sem vazamento de metadados."
@@ -41,9 +41,9 @@
       "title": "Log de auditoria",
       "description": "Log JSONL imutável com encadeamento HMAC. Registro completo de quem acessou qual segredo e quando."
     },
-    "headlessOperation": {
-      "title": "Modo Headless",
-      "description": "Funciona completamente sem interação. Ideal para pipelines CI/CD, scripts de automação e agents."
+    "adminTUI": {
+      "title": "TUI de Administração",
+      "description": "Interface de terminal em tela cheia para gerenciar segredos, políticas, sessões e logs de auditoria. Os segredos inseridos em campos mascarados nunca tocam o histórico de shell."
     }
   },
   "quickStart": {
@@ -68,7 +68,9 @@
       "interactiveTUI": "TUI interativa",
       "openSource": "Código aberto",
       "noAccountNeeded": "Sem cadastro",
-      "auditLogging": "Auditoria"
+      "auditLogging": "Auditoria",
+      "subprocessInjection": "Injeção em subprocessos",
+      "builtForAgents": "Projetado para Agents"
     }
   },
   "securityBanner": {
@@ -78,8 +80,9 @@
     "successMessage": "Segredo 'openai-key' salvo com sucesso"
   },
   "footer": {
-    "description": "Forneça aos seus agents apenas os segredos de que precisam, não as chaves-mestras do sistema. Seguro, com controle de escopo e local-first.",
-    "project": "Projeto",
+    "description": "Forneça aos seus agents apenas os segredos de que precisam, não as chaves mestras do sistema. Seguro, com controle de escopo e local-first.",
+    "guides": "Guias",
+    "aiAgentGuide": "Guia de Integração de Agentes IA",
     "documentation": "Documentação",
     "releases": "Versões",
     "license": "Licença",

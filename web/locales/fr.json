@@ -11,16 +11,16 @@
     "released": "v0.1.0 Disponible",
     "title": "Gestion des secrets pour",
     "titleHighlight": "AI Agents",
-    "description": "Gérez et distribuez vos secrets en toute sécurité aux AI Agents. Contrôle d'accès par périmètre, tokens à durée limitée et audit complet. Un seul exécutable, pas de serveur, pas de compte.",
+    "description": "Vos agents ont besoin de clés API, pas des clés du royaume. Coffre chiffré, politiques de périmètre, tokens à durée limitée et audit complet. Un seul exécutable, pas de serveur, pas de compte.",
     "getStarted": "Commencer",
-    "installCLI": "Installer le CLI",
+    "aiAgentGuide": "Guide d'Intégration Agent IA",
     "openSource": "Licence MIT",
     "writtenInRust": "Développé en Rust",
     "zeroDependencies": "Sans dépendances"
   },
   "features": {
     "title": "Conçu pour l'ère des Agents",
-    "description": "Les gestionnaires de mots de passe traditionnels n'ont pas été pensés pour les agents autonomes. Authy fait le pont entre sécurité et automatisation.",
+    "description": "Claude Code lit les fichiers .env silencieusement. OpenClaw stocke les clés API en clair. Authy vous donne le contrôle sur ce que vos agents peuvent voir.",
     "encryptedVault": {
       "title": "Coffre chiffré",
       "description": "Stockage dans un fichier unique chiffré avec age. Format MessagePack pour rapidité et sécurité, aucune fuite de métadonnées."
@@ -41,9 +41,9 @@
       "title": "Journal d'audit",
       "description": "Log JSONL immuable avec chaînage HMAC. Traçabilité complète de qui a accédé à quel secret et quand."
     },
-    "headlessOperation": {
-      "title": "Mode Headless",
-      "description": "Fonctionne entièrement sans interaction. Idéal pour les pipelines CI/CD, scripts d'automatisation et agents."
+    "adminTUI": {
+      "title": "TUI d'Administration",
+      "description": "Interface terminal plein écran pour gérer les secrets, politiques, sessions et journaux d'audit. Les secrets saisis via les champs masqués ne touchent jamais l'historique shell."
     }
   },
   "quickStart": {
@@ -68,7 +68,9 @@
       "interactiveTUI": "TUI interactive",
       "openSource": "Open Source",
       "noAccountNeeded": "Sans compte",
-      "auditLogging": "Audit"
+      "auditLogging": "Audit",
+      "subprocessInjection": "Injection en sous-processus",
+      "builtForAgents": "Conçu pour les Agents"
     }
   },
   "securityBanner": {
@@ -79,7 +81,8 @@
   },
   "footer": {
     "description": "Fournissez à vos agents uniquement les secrets dont ils ont besoin, pas les clés du royaume. Sécurisé, contrôle par périmètre et local-first.",
-    "project": "Projet",
+    "guides": "Guides",
+    "aiAgentGuide": "Guide d'Intégration Agent IA",
     "documentation": "Documentation",
     "releases": "Versions",
     "license": "Licence",

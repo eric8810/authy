@@ -12,16 +12,16 @@
     "title": "",
     "titleHighlight": "AI Agents",
     "titleSuffix": "密鑰管理方案",
-    "description": "為 AI Agents 提供安全的密鑰管理與分發能力，支援權限隔離、短期令牌和完整稽核追蹤。單一檔案部署，無需伺服器，無需註冊。",
+    "description": "您的 Agent 需要 API 密鑰，但不需要系統的全部權限。加密儲存、權限策略、短期令牌和完整稽核追蹤。單一檔案部署，無需伺服器，無需註冊。",
     "getStarted": "立即開始",
-    "installCLI": "安裝命令列",
+    "aiAgentGuide": "AI Agent 整合指南",
     "openSource": "開源授權 MIT",
     "writtenInRust": "Rust 開發",
     "zeroDependencies": "零依賴"
   },
   "features": {
     "title": "面向 Agent 時代的設計",
-    "description": "傳統密碼管理工具並非為自主運行的 Agent 設計。Authy 在安全與自動化之間架起橋樑。",
+    "description": "Claude Code 會靜默讀取 .env 檔案，OpenClaw 以明文儲存 API 密鑰。Authy 讓您掌控 Agent 能看到的內容。",
     "encryptedVault": {
       "title": "加密儲存",
       "description": "採用 age 加密的單一檔案儲存，MessagePack 格式兼顧效能與安全，杜絕元資料外洩風險。"
@@ -42,9 +42,9 @@
       "title": "稽核追蹤",
       "description": "基於 HMAC 鏈式校驗的 JSONL 追蹤日誌，完整記錄每次密鑰存取的來源、時間與操作。"
     },
-    "headlessOperation": {
-      "title": "Headless 模式",
-      "description": "完全無需互動式輸入即可執行，完美適配 CI/CD 管線、自動化腳本及 Agent 場景。"
+    "adminTUI": {
+      "title": "管理介面 TUI",
+      "description": "全螢幕終端管理介面，支援密鑰、策略、工作階段和稽核日誌管理。透過遮罩輸入欄位錄入的密鑰不會出現在 Shell 歷史記錄中。"
     }
   },
   "quickStart": {
@@ -69,7 +69,9 @@
       "interactiveTUI": "互動式介面",
       "openSource": "開源",
       "noAccountNeeded": "無需註冊",
-      "auditLogging": "稽核日誌"
+      "auditLogging": "稽核日誌",
+      "subprocessInjection": "程序注入",
+      "builtForAgents": "面向 Agent 設計"
     }
   },
   "securityBanner": {
@@ -80,7 +82,8 @@
   },
   "footer": {
     "description": "讓 Agent 獲得所需的密鑰，而非系統的全部權限。安全可控，本地優先。",
-    "project": "專案",
+    "guides": "指南",
+    "aiAgentGuide": "AI Agent 整合指南",
     "documentation": "文件",
     "releases": "版本發布",
     "license": "授權條款",
