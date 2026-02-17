@@ -1,0 +1,99 @@
+{
+  "nav": {
+    "features": "Recursos",
+    "howItWorks": "Como funciona",
+    "comparison": "Comparativo",
+    "documentation": "Documentação",
+    "starOnGitHub": "Estrela no GitHub",
+    "viewOnGitHub": "Ver código-fonte"
+  },
+  "hero": {
+    "released": "v0.1.0 Disponível",
+    "title": "Gerenciamento de segredos para",
+    "titleHighlight": "AI Agents",
+    "description": "Gerencie e distribua segredos de forma segura para seus AI Agents. Controle de acesso por escopo, tokens de curta duração e auditoria completa. Um único executável, sem servidor, sem cadastro.",
+    "getStarted": "Começar",
+    "installCLI": "Instalar CLI",
+    "openSource": "Licença MIT",
+    "writtenInRust": "Desenvolvido em Rust",
+    "zeroDependencies": "Sem dependências"
+  },
+  "features": {
+    "title": "Projetado para a era dos Agents",
+    "description": "Os gerenciadores de senhas tradicionais não foram pensados para agents autônomos. O Authy conecta segurança com automação.",
+    "encryptedVault": {
+      "title": "Cofre criptografado",
+      "description": "Armazenamento em um único arquivo criptografado com age. Formato MessagePack para velocidade e segurança, sem vazamento de metadados."
+    },
+    "scopedPolicies": {
+      "title": "Políticas de escopo",
+      "description": "Regras de permissão/negação baseadas em glob para cada escopo de agent. As políticas são salvas criptografadas e são imunes a alterações."
+    },
+    "sessionTokens": {
+      "title": "Tokens de sessão",
+      "description": "Tokens HMAC de apenas leitura com validade limitada. Prefixos escaneáveis para detectar vazamentos e capacidade de revogação imediata."
+    },
+    "subprocessInjection": {
+      "title": "Injeção em subprocessos",
+      "description": "Injeta segredos diretamente como variáveis de ambiente no processo filho. Sem rastros no processo pai nem no histórico de shell."
+    },
+    "auditLogging": {
+      "title": "Log de auditoria",
+      "description": "Log JSONL imutável com encadeamento HMAC. Registro completo de quem acessou qual segredo e quando."
+    },
+    "headlessOperation": {
+      "title": "Modo Headless",
+      "description": "Funciona completamente sem interação. Ideal para pipelines CI/CD, scripts de automação e agents."
+    }
+  },
+  "quickStart": {
+    "title": "Início rápido",
+    "description": "Pronto para usar em segundos. O Authy é um executável único sem dependências. Projetado para integrar em pipelines e fluxos automatizados.",
+    "tabs": {
+      "install": "Instalar",
+      "initialize": "Inicializar",
+      "storeSecrets": "Guardar segredos",
+      "agentAccess": "Conectar Agent"
+    }
+  },
+  "comparison": {
+    "title": "Por que Authy",
+    "description": "Projetado especificamente para as necessidades dos AI Agents locais.",
+    "feature": "Recurso",
+    "features": {
+      "singleBinary": "Executável único",
+      "noServerRequired": "Sem servidor",
+      "scopedAccess": "Acesso por escopo",
+      "sessionTokens": "Tokens de sessão",
+      "interactiveTUI": "TUI interativa",
+      "openSource": "Código aberto",
+      "noAccountNeeded": "Sem cadastro",
+      "auditLogging": "Auditoria"
+    }
+  },
+  "securityBanner": {
+    "title": "Evite que seus segredos acabem no histórico de shell",
+    "description": "Até {{code}} pode causar vazamento de dados. A TUI do Authy garante que os segredos que você digita nunca apareçam no histórico de shell ou nos argumentos do processo.",
+    "masked": "oculto",
+    "successMessage": "Segredo 'openai-key' salvo com sucesso"
+  },
+  "footer": {
+    "description": "Forneça aos seus agents apenas os segredos de que precisam, não as chaves-mestras do sistema. Seguro, com controle de escopo e local-first.",
+    "project": "Projeto",
+    "documentation": "Documentação",
+    "releases": "Versões",
+    "license": "Licença",
+    "community": "Comunidade",
+    "discord": "Discord",
+    "issues": "Issues",
+    "discussions": "Discussões",
+    "copyright": "© {{year}} Projeto Authy | Licença MIT",
+    "builtWithRust": "Desenvolvido em Rust",
+    "securedWithAge": "Criptografado com age"
+  },
+  "languageSwitcher": {
+    "en": "English",
+    "zh": "中文",
+    "pt": "Português"
+  }
+}

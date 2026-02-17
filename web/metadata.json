@@ -1,0 +1,5 @@
+{
+  "name": "Authy - CLI Secrets Store for AI Agents",
+  "description": "Securely manage secrets and dispatch them to AI agents with scoped access, short-lived tokens, and complete audit trails.",
+  "requestFramePermissions": []
+}

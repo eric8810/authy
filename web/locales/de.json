@@ -1,0 +1,99 @@
+{
+  "nav": {
+    "features": "Funktionen",
+    "howItWorks": "Anleitung",
+    "comparison": "Vergleich",
+    "documentation": "Dokumentation",
+    "starOnGitHub": "GitHub Star",
+    "viewOnGitHub": "Quellcode ansehen"
+  },
+  "hero": {
+    "released": "v0.1.0 Veröffentlicht",
+    "title": "Secrets-Verwaltung für",
+    "titleHighlight": "AI Agents",
+    "description": "Verwalten und verteilen Sie Secrets sicher an Ihre AI Agents. Bereichsbasierte Zugriffskontrolle, kurzlebige Tokens und vollständiges Audit. Eine einzelne Binary, kein Server, kein Konto nötig.",
+    "getStarted": "Loslegen",
+    "installCLI": "CLI installieren",
+    "openSource": "MIT-Lizenz",
+    "writtenInRust": "Entwickelt in Rust",
+    "zeroDependencies": "Ohne Abhängigkeiten"
+  },
+  "features": {
+    "title": "Gebaut für das Agent-Zeitalter",
+    "description": "Herkömmliche Passwortmanager wurden nicht für autonome Agents entwickelt. Authy verbindet Sicherheit mit Automatisierung.",
+    "encryptedVault": {
+      "title": "Verschlüsselter Tresor",
+      "description": "Speicherung in einer einzelnen mit age verschlüsselten Datei. MessagePack-Format für Geschwindigkeit und Sicherheit, keine Metadaten-Lecks."
+    },
+    "scopedPolicies": {
+      "title": "Bereichsrichtlinien",
+      "description": "Glob-basierte Erlaubnis-/Verbotsregeln pro Agent-Bereich. Richtlinien werden verschlüsselt gespeichert und sind manipulationssicher."
+    },
+    "sessionTokens": {
+      "title": "Sitzungs-Tokens",
+      "description": "Kurzlebige, schreibgeschützte HMAC-Tokens. Scannbare Präfixe zur Leckerkennung und Sofort-Widerruf möglich."
+    },
+    "subprocessInjection": {
+      "title": "Subprozess-Injektion",
+      "description": "Injiziert Secrets direkt als Umgebungsvariablen in den Kindprozess. Keine Spuren im Elternprozess oder in der Shell-Historie."
+    },
+    "auditLogging": {
+      "title": "Audit-Protokoll",
+      "description": "Unveränderbares JSONL-Log mit HMAC-Verkettung. Vollständige Nachverfolgung, wer wann auf welches Secret zugegriffen hat."
+    },
+    "headlessOperation": {
+      "title": "Headless-Modus",
+      "description": "Funktioniert vollständig ohne Interaktion. Ideal für CI/CD-Pipelines, Automatisierungsskripte und Agents."
+    }
+  },
+  "quickStart": {
+    "title": "Schnellstart",
+    "description": "In Sekunden einsatzbereit. Authy ist eine einzelne Binary ohne Abhängigkeiten. Entwickelt für die Integration in Pipelines und automatisierte Workflows.",
+    "tabs": {
+      "install": "Installieren",
+      "initialize": "Initialisieren",
+      "storeSecrets": "Secrets speichern",
+      "agentAccess": "Agent verbinden"
+    }
+  },
+  "comparison": {
+    "title": "Warum Authy",
+    "description": "Speziell für die Anforderungen lokaler AI Agents entwickelt.",
+    "feature": "Funktion",
+    "features": {
+      "singleBinary": "Einzelne Binary",
+      "noServerRequired": "Ohne Server",
+      "scopedAccess": "Bereichsbasierter Zugriff",
+      "sessionTokens": "Sitzungs-Tokens",
+      "interactiveTUI": "Interaktive TUI",
+      "openSource": "Open Source",
+      "noAccountNeeded": "Ohne Konto",
+      "auditLogging": "Audit"
+    }
+  },
+  "securityBanner": {
+    "title": "Verhindern Sie, dass Secrets in der Shell-Historie landen",
+    "description": "Selbst {{code}} kann zu Datenlecks führen. Die TUI von Authy garantiert, dass eingegebene Secrets nie in der Shell-Historie oder Prozessargumenten erscheinen.",
+    "masked": "versteckt",
+    "successMessage": "Secret 'openai-key' erfolgreich gespeichert"
+  },
+  "footer": {
+    "description": "Geben Sie Ihren Agents nur die Secrets, die sie brauchen – nicht die Schlüssel zum Königreich. Sicher, bereichsbasiert und local-first.",
+    "project": "Projekt",
+    "documentation": "Dokumentation",
+    "releases": "Releases",
+    "license": "Lizenz",
+    "community": "Community",
+    "discord": "Discord",
+    "issues": "Issues",
+    "discussions": "Diskussionen",
+    "copyright": "© {{year}} Authy Projekt | MIT-Lizenz",
+    "builtWithRust": "Entwickelt in Rust",
+    "securedWithAge": "Verschlüsselt mit age"
+  },
+  "languageSwitcher": {
+    "en": "English",
+    "zh": "中文",
+    "de": "Deutsch"
+  }
+}

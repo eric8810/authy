@@ -1,0 +1,99 @@
+{
+  "nav": {
+    "features": "Fonctionnalités",
+    "howItWorks": "Guide d'utilisation",
+    "comparison": "Comparatif",
+    "documentation": "Documentation",
+    "starOnGitHub": "Étoile sur GitHub",
+    "viewOnGitHub": "Voir le code source"
+  },
+  "hero": {
+    "released": "v0.1.0 Disponible",
+    "title": "Gestion des secrets pour",
+    "titleHighlight": "AI Agents",
+    "description": "Gérez et distribuez vos secrets en toute sécurité aux AI Agents. Contrôle d'accès par périmètre, tokens à durée limitée et audit complet. Un seul exécutable, pas de serveur, pas de compte.",
+    "getStarted": "Commencer",
+    "installCLI": "Installer le CLI",
+    "openSource": "Licence MIT",
+    "writtenInRust": "Développé en Rust",
+    "zeroDependencies": "Sans dépendances"
+  },
+  "features": {
+    "title": "Conçu pour l'ère des Agents",
+    "description": "Les gestionnaires de mots de passe traditionnels n'ont pas été pensés pour les agents autonomes. Authy fait le pont entre sécurité et automatisation.",
+    "encryptedVault": {
+      "title": "Coffre chiffré",
+      "description": "Stockage dans un fichier unique chiffré avec age. Format MessagePack pour rapidité et sécurité, aucune fuite de métadonnées."
+    },
+    "scopedPolicies": {
+      "title": "Politiques de périmètre",
+      "description": "Règles d'autorisation/refus basées sur glob par périmètre d'agent. Les politiques sont stockées chiffrées et protégées contre toute modification."
+    },
+    "sessionTokens": {
+      "title": "Tokens de session",
+      "description": "Tokens HMAC en lecture seule à durée limitée. Préfixes scannables pour détecter les fuites et capacité de révocation immédiate."
+    },
+    "subprocessInjection": {
+      "title": "Injection en sous-processus",
+      "description": "Injecte les secrets directement comme variables d'environnement dans le processus fils. Aucune trace dans le processus parent ni dans l'historique shell."
+    },
+    "auditLogging": {
+      "title": "Journal d'audit",
+      "description": "Log JSONL immuable avec chaînage HMAC. Traçabilité complète de qui a accédé à quel secret et quand."
+    },
+    "headlessOperation": {
+      "title": "Mode Headless",
+      "description": "Fonctionne entièrement sans interaction. Idéal pour les pipelines CI/CD, scripts d'automatisation et agents."
+    }
+  },
+  "quickStart": {
+    "title": "Démarrage rapide",
+    "description": "Opérationnel en quelques secondes. Authy est un exécutable unique sans dépendances. Conçu pour s'intégrer aux pipelines et flux automatisés.",
+    "tabs": {
+      "install": "Installer",
+      "initialize": "Initialiser",
+      "storeSecrets": "Stocker les secrets",
+      "agentAccess": "Connecter l'Agent"
+    }
+  },
+  "comparison": {
+    "title": "Pourquoi Authy",
+    "description": "Conçu spécifiquement pour les besoins des AI Agents locaux.",
+    "feature": "Fonctionnalité",
+    "features": {
+      "singleBinary": "Exécutable unique",
+      "noServerRequired": "Sans serveur",
+      "scopedAccess": "Accès par périmètre",
+      "sessionTokens": "Tokens de session",
+      "interactiveTUI": "TUI interactive",
+      "openSource": "Open Source",
+      "noAccountNeeded": "Sans compte",
+      "auditLogging": "Audit"
+    }
+  },
+  "securityBanner": {
+    "title": "Évitez que vos secrets se retrouvent dans l'historique shell",
+    "description": "Même {{code}} peut provoquer des fuites de données. La TUI d'Authy garantit que les secrets que vous saisissez n'apparaissent jamais dans l'historique shell ni dans les arguments du processus.",
+    "masked": "masqué",
+    "successMessage": "Secret 'openai-key' enregistré avec succès"
+  },
+  "footer": {
+    "description": "Fournissez à vos agents uniquement les secrets dont ils ont besoin, pas les clés du royaume. Sécurisé, contrôle par périmètre et local-first.",
+    "project": "Projet",
+    "documentation": "Documentation",
+    "releases": "Versions",
+    "license": "Licence",
+    "community": "Communauté",
+    "discord": "Discord",
+    "issues": "Issues",
+    "discussions": "Discussions",
+    "copyright": "© {{year}} Projet Authy | Licence MIT",
+    "builtWithRust": "Développé en Rust",
+    "securedWithAge": "Chiffré avec age"
+  },
+  "languageSwitcher": {
+    "en": "English",
+    "zh": "中文",
+    "fr": "Français"
+  }
+}

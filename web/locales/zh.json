@@ -1,0 +1,99 @@
+{
+  "nav": {
+    "features": "功能",
+    "howItWorks": "使用指南",
+    "comparison": "方案对比",
+    "documentation": "开发文档",
+    "starOnGitHub": "GitHub 加星",
+    "viewOnGitHub": "查看源码"
+  },
+  "hero": {
+    "released": "v0.1.0 现已发布",
+    "title": "",
+    "titleHighlight": "AI Agents",
+    "titleSuffix": "密钥管理方案",
+    "description": "为 AI Agents 提供安全的密钥管理与分发能力，支持权限隔离、短期令牌和完整审计追踪。单文件部署，无需服务器，无需注册。",
+    "getStarted": "立即开始",
+    "installCLI": "安装命令行",
+    "openSource": "开源协议 MIT",
+    "writtenInRust": "Rust 开发",
+    "zeroDependencies": "零依赖"
+  },
+  "features": {
+    "title": "面向 Agent 时代的设计",
+    "description": "传统密码管理工具并非为自主运行的 Agent 设计。Authy 在安全与自动化之间架起桥梁。",
+    "encryptedVault": {
+      "title": "加密存储",
+      "description": "采用 age 加密的单一文件存储，MessagePack 格式兼顾性能与安全，杜绝元数据泄露风险。"
+    },
+    "scopedPolicies": {
+      "title": "权限策略",
+      "description": "基于 glob 模式的精细化权限控制，策略本身加密存储于保险库中，确保不可篡改。"
+    },
+    "sessionTokens": {
+      "title": "会话令牌",
+      "description": "短期有效的只读 HMAC 令牌，支持令牌前缀扫描检测泄露，可即时吊销。"
+    },
+    "subprocessInjection": {
+      "title": "进程注入",
+      "description": "将密钥直接注入子进程环境变量，确保密钥不会出现在父进程环境或 Shell 历史记录中。"
+    },
+    "auditLogging": {
+      "title": "审计追踪",
+      "description": "基于 HMAC 链式校验的 JSONL 追踪日志，完整记录每次密钥访问的来源、时间与操作。"
+    },
+    "headlessOperation": {
+      "title": "Headless 模式",
+      "description": "完全无需交互式输入即可运行，完美适配 CI/CD 流水线、自动化脚本及 Agent 场景。"
+    }
+  },
+  "quickStart": {
+    "title": "快速上手",
+    "description": "即刻开始使用。Authy 为单一可执行文件，零依赖，专为管道操作和自动化场景优化。",
+    "tabs": {
+      "install": "安装",
+      "initialize": "初始化",
+      "storeSecrets": "存储密钥",
+      "agentAccess": "Agent 接入"
+    }
+  },
+  "comparison": {
+    "title": "为何选择 Authy",
+    "description": "专为本地优先的 AI Agent 场景量身打造。",
+    "feature": "功能对比",
+    "features": {
+      "singleBinary": "单文件部署",
+      "noServerRequired": "无需服务器",
+      "scopedAccess": "权限隔离",
+      "sessionTokens": "会话令牌",
+      "interactiveTUI": "交互式界面",
+      "openSource": "开源",
+      "noAccountNeeded": "无需注册",
+      "auditLogging": "审计日志"
+    }
+  },
+  "securityBanner": {
+    "title": "告别 Shell 历史中的密钥泄露风险",
+    "description": "即使使用 {{code}} 也可能造成数据泄露。Authy 的 TUI 界面确保您输入的密钥永远不会出现在 Shell 历史或进程参数中。",
+    "masked": "已隐藏",
+    "successMessage": "密钥 'openai-key' 存储成功"
+  },
+  "footer": {
+    "description": "让 Agent 获得所需的密钥，而非系统的全部权限。安全可控，本地优先。",
+    "project": "项目",
+    "documentation": "文档",
+    "releases": "版本发布",
+    "license": "开源协议",
+    "community": "社区",
+    "discord": "Discord",
+    "issues": "问题反馈",
+    "discussions": "交流讨论",
+    "copyright": "© {{year}} Authy 项目 | MIT 协议",
+    "builtWithRust": "Rust 开发",
+    "securedWithAge": "age 加密"
+  },
+  "languageSwitcher": {
+    "en": "English",
+    "zh": "简体中文"
+  }
+}

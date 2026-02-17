@@ -1,0 +1,100 @@
+{
+  "nav": {
+    "features": "機能",
+    "howItWorks": "使い方",
+    "comparison": "比較",
+    "documentation": "ドキュメント",
+    "starOnGitHub": "GitHub でスター",
+    "viewOnGitHub": "ソースコードを見る"
+  },
+  "hero": {
+    "released": "v0.1.0 リリース",
+    "title": "",
+    "titleHighlight": "AI Agents",
+    "titleSuffix": "向けシークレット管理",
+    "description": "AI Agents にシークレットを安全に管理・配布。スコープベースのアクセス制御、短期トークン、完全な監査ログを提供。単一バイナリ、サーバー不要、アカウント登録不要。",
+    "getStarted": "始める",
+    "installCLI": "CLI をインストール",
+    "openSource": "MIT ライセンス",
+    "writtenInRust": "Rust 製",
+    "zeroDependencies": "依存関係なし"
+  },
+  "features": {
+    "title": "Agent 時代のために",
+    "description": "従来のパスワードマネージャーは自律的な Agent を想定していません。Authy はセキュリティと自動化の架け橋となります。",
+    "encryptedVault": {
+      "title": "暗号化ボールト",
+      "description": "age 暗号化による単一ファイル保存。MessagePack フォーマットで高速かつ安全。メタデータ漏洩の心配なし。"
+    },
+    "scopedPolicies": {
+      "title": "スコープポリシー",
+      "description": "Agent ごとに glob ベースの許可・拒否ルールを設定。ポリシーは暗号化ボールト内に保存され、改ざん不可能。"
+    },
+    "sessionTokens": {
+      "title": "セッショントークン",
+      "description": "短期間有効な読み取り専用 HMAC トークン。漏洩検知用のスキャン可能なプレフィックス付き、即時無効化にも対応。"
+    },
+    "subprocessInjection": {
+      "title": "サブプロセス注入",
+      "description": "シークレットを環境変数として子プロセスに直接注入。親プロセスやシェル履歴に痕跡を残しません。"
+    },
+    "auditLogging": {
+      "title": "監査ログ",
+      "description": "HMAC チェーンによる改ざん検知機能付き JSONL ログ。誰が、いつ、どのシークレットにアクセスしたかを完全追跡。"
+    },
+    "headlessOperation": {
+      "title": "Headless 対応",
+      "description": "対話的な操作なしで完全に動作。CI/CD パイプライン、自動化スクリプト、Agent での運用に最適。"
+    }
+  },
+  "quickStart": {
+    "title": "クイックスタート",
+    "description": "すぐに使い始められます。Authy は依存関係のない単一バイナリ。パイプライン処理と自動化を前提に設計されています。",
+    "tabs": {
+      "install": "インストール",
+      "initialize": "初期化",
+      "storeSecrets": "シークレット保存",
+      "agentAccess": "Agent 連携"
+    }
+  },
+  "comparison": {
+    "title": "なぜ Authy か",
+    "description": "ローカルファーストな AI Agents の制約に最適化して設計されています。",
+    "feature": "機能",
+    "features": {
+      "singleBinary": "単一バイナリ",
+      "noServerRequired": "サーバー不要",
+      "scopedAccess": "スコープアクセス",
+      "sessionTokens": "セッショントークン",
+      "interactiveTUI": "対話型 TUI",
+      "openSource": "オープンソース",
+      "noAccountNeeded": "アカウント不要",
+      "auditLogging": "監査ログ"
+    }
+  },
+  "securityBanner": {
+    "title": "シェル履歴へのシークレット漏洩を防ぐ",
+    "description": "{{code}} のような単純な操作でも、データ漏洩のリスクがあります。Authy の TUI で入力したシークレットは、シェル履歴やプロセス引数に一切残りません。",
+    "masked": "マスク済み",
+    "successMessage": "シークレット「openai-key」を保存しました"
+  },
+  "footer": {
+    "description": "Agent には必要なシークレットだけを。システム全体の鍵を渡す必要はありません。安全で、スコープ制御可能、ローカルファースト。",
+    "project": "プロジェクト",
+    "documentation": "ドキュメント",
+    "releases": "リリース",
+    "license": "ライセンス",
+    "community": "コミュニティ",
+    "discord": "Discord",
+    "issues": "イシュー",
+    "discussions": "ディスカッション",
+    "copyright": "© {{year}} Authy プロジェクト | MIT ライセンス",
+    "builtWithRust": "Rust 製",
+    "securedWithAge": "age 暗号化"
+  },
+  "languageSwitcher": {
+    "en": "English",
+    "zh": "中文",
+    "ja": "日本語"
+  }
+}

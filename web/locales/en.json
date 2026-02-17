@@ -1,0 +1,98 @@
+{
+  "nav": {
+    "features": "Features",
+    "howItWorks": "How it Works",
+    "comparison": "Comparison",
+    "documentation": "Documentation",
+    "starOnGitHub": "Star on GitHub",
+    "viewOnGitHub": "View on GitHub"
+  },
+  "hero": {
+    "released": "v0.1.0 Released",
+    "title": "Secrets Management for",
+    "titleHighlight": "AI Agents",
+    "description": "Securely manage secrets and dispatch them to AI agents with scoped access, short-lived tokens, and complete audit trails. Single binary, no server, no accounts.",
+    "getStarted": "Get Started",
+    "installCLI": "Install CLI",
+    "openSource": "Open Source (MIT)",
+    "writtenInRust": "Written in Rust",
+    "zeroDependencies": "Zero Dependencies"
+  },
+  "features": {
+    "title": "Built for the Agent Age",
+    "description": "Traditional password managers weren't built for autonomous agents. Authy bridges the gap between security and automation.",
+    "encryptedVault": {
+      "title": "Encrypted Vault",
+      "description": "Single age-encrypted file. Secrets are stored in MessagePack format for speed and security. No metadata leakage."
+    },
+    "scopedPolicies": {
+      "title": "Scoped Policies",
+      "description": "Glob-based allow/deny rules per agent scope. Policies are stored inside the encrypted vault and are tamper-proof."
+    },
+    "sessionTokens": {
+      "title": "Session Tokens",
+      "description": "Short-lived, read-only HMAC tokens. Scannable prefixes for leak detection and instant revocation capability."
+    },
+    "subprocessInjection": {
+      "title": "Subprocess Injection",
+      "description": "Inject secrets directly as environment variables. Secrets never appear in parent process environment or shell history."
+    },
+    "auditLogging": {
+      "title": "Audit Logging",
+      "description": "Tamper-evident JSONL append-only log with HMAC chaining. Track every secret access: who, what, when."
+    },
+    "headlessOperation": {
+      "title": "Headless Operation",
+      "description": "Works entirely without interactive prompts. Perfect for CI/CD pipelines, automation scripts, and agents."
+    }
+  },
+  "quickStart": {
+    "title": "Quick Start",
+    "description": "Get up and running in seconds. Authy is a single binary with zero dependencies. Designed to be pipe-friendly and automation-ready.",
+    "tabs": {
+      "install": "Install",
+      "initialize": "Initialize",
+      "storeSecrets": "Store Secrets",
+      "agentAccess": "Agent Access"
+    }
+  },
+  "comparison": {
+    "title": "Why Authy?",
+    "description": "Designed specifically for the unique constraints of local-first AI agents.",
+    "feature": "Feature",
+    "features": {
+      "singleBinary": "Single Binary",
+      "noServerRequired": "No Server Required",
+      "scopedAccess": "Scoped Access",
+      "sessionTokens": "Session Tokens",
+      "interactiveTUI": "Interactive TUI",
+      "openSource": "Open Source",
+      "noAccountNeeded": "No Account Needed",
+      "auditLogging": "Audit Logging"
+    }
+  },
+  "securityBanner": {
+    "title": "Stop leaking secrets in your shell history.",
+    "description": "Even {{code}} can leak data. Authy's TUI ensures secrets entered in the admin interface never touch your shell history or process arguments.",
+    "masked": "(masked)",
+    "successMessage": "Secret 'openai-key' stored successfully."
+  },
+  "footer": {
+    "description": "Give your agents the secrets they need, not the keys to the kingdom. Secure, scoped, and local-first.",
+    "project": "Project",
+    "documentation": "Documentation",
+    "releases": "Releases",
+    "license": "License",
+    "community": "Community",
+    "discord": "Discord",
+    "issues": "Issues",
+    "discussions": "Discussions",
+    "copyright": "© {{year}} Authy Project. MIT License.",
+    "builtWithRust": "Built with Rust",
+    "securedWithAge": "Secured with age"
+  },
+  "languageSwitcher": {
+    "en": "English",
+    "zh": "中文"
+  }
+}

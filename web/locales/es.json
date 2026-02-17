@@ -1,0 +1,99 @@
+{
+  "nav": {
+    "features": "Características",
+    "howItWorks": "Cómo funciona",
+    "comparison": "Comparativa",
+    "documentation": "Documentación",
+    "starOnGitHub": "Estrella en GitHub",
+    "viewOnGitHub": "Ver código fuente"
+  },
+  "hero": {
+    "released": "v0.1.0 Disponible",
+    "title": "Gestión de secretos para",
+    "titleHighlight": "AI Agents",
+    "description": "Gestiona y distribuye secretos de forma segura a tus AI Agents. Control de acceso por ámbito, tokens de corta duración y auditoría completa. Un solo ejecutable, sin servidor, sin registro.",
+    "getStarted": "Comenzar",
+    "installCLI": "Instalar CLI",
+    "openSource": "Licencia MIT",
+    "writtenInRust": "Desarrollado en Rust",
+    "zeroDependencies": "Sin dependencias"
+  },
+  "features": {
+    "title": "Diseñado para la era de los Agents",
+    "description": "Los gestores de contraseñas tradicionales no fueron pensados para agents autónomos. Authy conecta la seguridad con la automatización.",
+    "encryptedVault": {
+      "title": "Cofre cifrado",
+      "description": "Almacenamiento en un único archivo cifrado con age. Formato MessagePack para velocidad y seguridad, sin fugas de metadatos."
+    },
+    "scopedPolicies": {
+      "title": "Políticas de ámbito",
+      "description": "Reglas de permiso/denegación basadas en glob por cada ámbito de agent. Las políticas se guardan cifradas y son inmunes a manipulaciones."
+    },
+    "sessionTokens": {
+      "title": "Tokens de sesión",
+      "description": "Tokens HMAC de solo lectura con validez limitada. Prefijos escaneables para detectar fugas y capacidad de revocación inmediata."
+    },
+    "subprocessInjection": {
+      "title": "Inyección en subprocesos",
+      "description": "Inyecta secretos directamente como variables de entorno en el proceso hijo. Sin rastros en el proceso padre ni en el historial de shell."
+    },
+    "auditLogging": {
+      "title": "Registro de auditoría",
+      "description": "Log JSONL inmutable con encadenamiento HMAC. Registro completo de quién accedió a qué secreto y cuándo."
+    },
+    "headlessOperation": {
+      "title": "Modo Headless",
+      "description": "Funciona completamente sin interacción. Ideal para pipelines CI/CD, scripts de automatización y agents."
+    }
+  },
+  "quickStart": {
+    "title": "Inicio rápido",
+    "description": "Listo para usar en segundos. Authy es un ejecutable único sin dependencias. Diseñado para integrarse en pipelines y flujos automatizados.",
+    "tabs": {
+      "install": "Instalar",
+      "initialize": "Inicializar",
+      "storeSecrets": "Guardar secretos",
+      "agentAccess": "Conectar Agent"
+    }
+  },
+  "comparison": {
+    "title": "Por qué Authy",
+    "description": "Diseñado específicamente para las necesidades de los AI Agents locales.",
+    "feature": "Característica",
+    "features": {
+      "singleBinary": "Ejecutable único",
+      "noServerRequired": "Sin servidor",
+      "scopedAccess": "Acceso por ámbito",
+      "sessionTokens": "Tokens de sesión",
+      "interactiveTUI": "TUI interactiva",
+      "openSource": "Código abierto",
+      "noAccountNeeded": "Sin registro",
+      "auditLogging": "Auditoría"
+    }
+  },
+  "securityBanner": {
+    "title": "Evita que tus secretos acaben en el historial de shell",
+    "description": "Incluso {{code}} puede provocar fugas de datos. La TUI de Authy garantiza que los secretos que introduces nunca aparezcan en el historial de shell ni en los argumentos del proceso.",
+    "masked": "oculto",
+    "successMessage": "Secreto 'openai-key' guardado correctamente"
+  },
+  "footer": {
+    "description": "Proporciona a tus agents solo los secretos que necesitan, no las llaves maestras del sistema. Seguro, con control de ámbito y local-first.",
+    "project": "Proyecto",
+    "documentation": "Documentación",
+    "releases": "Versiones",
+    "license": "Licencia",
+    "community": "Comunidad",
+    "discord": "Discord",
+    "issues": "Incidencias",
+    "discussions": "Discusiones",
+    "copyright": "© {{year}} Proyecto Authy | Licencia MIT",
+    "builtWithRust": "Desarrollado en Rust",
+    "securedWithAge": "Cifrado con age"
+  },
+  "languageSwitcher": {
+    "en": "English",
+    "zh": "中文",
+    "es": "Español"
+  }
+}
