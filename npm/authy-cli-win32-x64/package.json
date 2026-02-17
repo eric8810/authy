@@ -5,7 +5,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/eric8810/authy"
+    "url": "git+https://github.com/eric8810/authy.git"
   },
   "os": ["win32"],
   "cpu": ["x64"]
