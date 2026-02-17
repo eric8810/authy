@@ -56,14 +56,14 @@ download_and_install() {
     ARCHIVE="${BINARY}-${TARGET}.tar.gz"
     URL="https://github.com/${REPO}/releases/download/${VERSION}/${ARCHIVE}"
 
-    TMPDIR="$(mktemp -d)"
-    trap 'rm -rf "$TMPDIR"' EXIT
+    WORK_DIR="$(mktemp -d)"
+    trap 'rm -rf "$WORK_DIR"' EXIT
 
     info "Downloading $URL..."
-    curl -fsSL "$URL" -o "${TMPDIR}/${ARCHIVE}"
+    curl -fsSL "$URL" -o "${WORK_DIR}/${ARCHIVE}"
 
     info "Extracting..."
-    tar xzf "${TMPDIR}/${ARCHIVE}" -C "$TMPDIR"
+    tar xzf "${WORK_DIR}/${ARCHIVE}" -C "$WORK_DIR"
 
     # Determine install directory
     if [ -w "/usr/local/bin" ]; then
@@ -73,7 +73,7 @@ download_and_install() {
         mkdir -p "$INSTALL_DIR"
     fi
 
-    install -m 755 "${TMPDIR}/${BINARY}" "${INSTALL_DIR}/${BINARY}"
+    install -m 755 "${WORK_DIR}/${BINARY}" "${INSTALL_DIR}/${BINARY}"
     info "Installed to ${INSTALL_DIR}/${BINARY}"
 
     # Check if install dir is in PATH

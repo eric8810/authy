@@ -55,7 +55,8 @@ function Download-And-Install($version) {
 
         # Add to User PATH if not present
         $userPath = [Environment]::GetEnvironmentVariable("Path", "User")
-        if ($userPath -notlike "*$installDir*") {
+        $pathEntries = $userPath -split ";" | Where-Object { $_ -ne "" }
+        if ($installDir -notin $pathEntries) {
             [Environment]::SetEnvironmentVariable("Path", "$userPath;$installDir", "User")
             $env:Path = "$env:Path;$installDir"
             Write-Host "Added $installDir to User PATH" -ForegroundColor Green
