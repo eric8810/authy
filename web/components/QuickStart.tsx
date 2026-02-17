@@ -19,18 +19,22 @@ const codeBlocks: Record<string, TerminalLine[]> = {
     { type: 'output', content: 'Master key saved to ~/.authy/keys/master.key' },
   ],
   store: [
-    { type: 'comment', content: 'Store secrets (reads from stdin to avoid history)' },
-    { type: 'command', content: 'echo "postgres://..." | authy store db-url' },
-    { type: 'output', content: 'Secret \'db-url\' stored.' },
-    { type: 'command', content: 'echo "sk-proj-123..." | authy store openai-api-key' },
-    { type: 'output', content: 'Secret \'openai-api-key\' stored.' },
+    { type: 'comment', content: 'Recommended: Use TUI for secure masked input' },
+    { type: 'command', content: 'authy admin --keyfile ~/.authy/keys/master.key' },
+    { type: 'output', content: '# TUI opens → Select Secrets → Add (masked input)' },
+    { type: 'comment', content: 'Or use CLI with interactive prompt' },
+    { type: 'command', content: 'authy store openai-api-key' },
+    { type: 'output', content: '# Type secret value, then Ctrl+D' },
+    { type: 'output', content: "Secret 'openai-api-key' stored." },
+    { type: 'comment', content: 'Or from file (for scripts)' },
+    { type: 'command', content: 'authy store db-url < ~/.secrets/db-credential' },
   ],
   agent: [
-    { type: 'comment', content: '1. Create policy for the agent' },
-    { type: 'command', content: 'authy policy create deploy-agent --allow "db-*" --deny "openai-*"' },
-    { type: 'comment', content: '2. Generate short-lived token' },
-    { type: 'command', content: 'authy session create --scope deploy-agent --ttl 1h' },
-    { type: 'output', content: 'authy_v1.eyJ...' },
+    { type: 'comment', content: 'Create policy for AI agent' },
+    { type: 'command', content: 'authy policy create claude-code --allow "anthropic-*" --allow "github-*" --deny "prod-*"' },
+    { type: 'comment', content: 'Launch Claude Code with scoped secrets injected' },
+    { type: 'command', content: 'authy run --scope claude-code --uppercase --replace-dash _ -- claude' },
+    { type: 'output', content: '[injected] ANTHROPIC_API_KEY, GITHUB_TOKEN (2 secrets)' },
   ]
 };
 

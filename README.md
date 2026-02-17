@@ -31,11 +31,17 @@ Authy fills the gap: a single binary that gives each agent **only the secrets it
 # Initialize a vault with a keyfile
 authy init --generate-keyfile ~/.authy/keys/master.key
 
-# Launch the admin TUI (recommended — secrets never touch shell history)
+# Recommended: Launch the admin TUI (secrets never touch shell history)
 authy admin --keyfile ~/.authy/keys/master.key
+# Or use passphrase: authy admin
 
-# Or use CLI commands (secrets read from stdin)
-echo "postgres://user:pass@db:5432/prod" | authy store db-url
+# CLI alternative: store secrets via interactive prompt
+authy store db-url
+# Type secret, then press Ctrl+D
+
+# Or from file (for scripts)
+authy store db-url < ~/.secrets/db-credential
+
 authy get db-url
 authy list
 ```
@@ -146,6 +152,13 @@ Session tokens are **read-only** — agents cannot store, remove, or modify secr
   keys/
     master.key        age identity (private key)
 ```
+
+## Documentation
+
+- [README.md](README.md) — Project overview and quick start
+- [ARCHITECTURE.md](ARCHITECTURE.md) — System design and data flow
+- [SECURITY.md](SECURITY.md) — Security model and threat analysis
+- [AI_AGENT_GUIDE.md](AI_AGENT_GUIDE.md) — Claude Code, OpenClaw & MCP integration
 
 ## Building
 
