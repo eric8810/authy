@@ -27,18 +27,18 @@ Status key: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` skipped
 
 ## Phase 2: Dashboard + secrets view (read-only)
 
-- [ ] Create `src/tui/dashboard.rs` — main layout
-  - [ ] Sidebar with section list (Secrets, Policies, Sessions, Audit)
-  - [ ] Tab / number key navigation between sections
-  - [ ] Status bar (vault path, auth method, last modified)
-- [ ] Create `src/tui/secrets.rs` — secrets list view
-  - [ ] Table: name, created, modified, version, tags
-  - [ ] j/k / arrow key navigation
-  - [ ] Enter → reveal popup
-- [ ] Reveal secret popup
-  - [ ] Show value (masked by default, Ctrl+R to reveal)
-  - [ ] Auto-close timer (30s default)
-  - [ ] Zeroize display buffer on close
+- [x] Create `src/tui/dashboard.rs` — main layout (integrated in `src/tui/mod.rs`)
+  - [x] Sidebar with section list (Secrets, Policies, Sessions, Audit)
+  - [x] Tab / number key navigation between sections
+  - [x] Status bar (vault path, auth method, last modified)
+- [x] Create `src/tui/secrets.rs` — secrets list view (integrated in `src/tui/mod.rs`)
+  - [x] Table: name, created, modified, version, tags
+  - [x] j/k / arrow key navigation
+  - [x] Enter → reveal popup
+- [x] Reveal secret popup
+  - [x] Show value (masked by default, Ctrl+R to reveal)
+  - [x] Auto-close timer (30s default)
+  - [x] Zeroize display buffer on close
 
 ## Phase 3: Secret write operations
 

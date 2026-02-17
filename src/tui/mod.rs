@@ -62,6 +62,18 @@ impl Section {
     }
 }
 
+/// The kind of popup overlay currently shown.
+#[derive(Debug, Clone)]
+pub enum PopupKind {
+    /// Reveal a secret value (name, value, masked flag, auto-close instant).
+    RevealSecret {
+        name: String,
+        value: String,
+        masked: bool,
+        auto_close_at: Instant,
+    },
+}
+
 /// Top-level screen state.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Screen {
@@ -96,6 +108,9 @@ pub struct TuiApp {
 
     // List cursor positions per section
     pub cursor: [usize; 4],
+
+    // Popup overlay (rendered on top of main screen)
+    pub popup: Option<PopupKind>,
 }
 
 impl TuiApp {
@@ -112,6 +127,7 @@ impl TuiApp {
             auth_error: None,
             keyfile,
             cursor: [0; 4],
+            popup: None,
         }
     }
 
@@ -276,6 +292,13 @@ fn event_loop(
             last_tick = Instant::now();
         }
 
+        // Auto-close popup if timer expired
+        if let Some(PopupKind::RevealSecret { auto_close_at, .. }) = &app.popup {
+            if Instant::now() >= *auto_close_at {
+                app.popup = None;
+            }
+        }
+
         if app.should_quit {
             break;
         }
@@ -286,6 +309,12 @@ fn event_loop(
 
 /// Handle key input on the main dashboard screen.
 fn handle_main_input(app: &mut TuiApp, key: event::KeyEvent) {
+    // If a popup is active, handle popup input first
+    if app.popup.is_some() {
+        handle_popup_input(app, key);
+        return;
+    }
+
     if app.input_mode == InputMode::Editing {
         return;
     }
@@ -317,7 +346,48 @@ fn handle_main_input(app: &mut TuiApp, key: event::KeyEvent) {
             let pos = app.cursor_pos().saturating_sub(1);
             app.set_cursor_pos(pos);
         }
+        // Reveal secret on Enter (Secrets section)
+        KeyCode::Enter => {
+            if app.section == Section::Secrets {
+                open_reveal_popup(app);
+            }
+        }
         _ => {}
+    }
+}
+
+/// Open the reveal-secret popup for the currently selected secret.
+fn open_reveal_popup(app: &mut TuiApp) {
+    let vault = match &app.vault {
+        Some(v) => v,
+        None => return,
+    };
+
+    let pos = app.cursor_pos();
+    if let Some((name, entry)) = vault.secrets.iter().nth(pos) {
+        app.popup = Some(PopupKind::RevealSecret {
+            name: name.clone(),
+            value: entry.value.clone(),
+            masked: true,
+            auto_close_at: Instant::now() + Duration::from_secs(30),
+        });
+    }
+}
+
+/// Handle key input when a popup is active.
+fn handle_popup_input(app: &mut TuiApp, key: event::KeyEvent) {
+    match key.code {
+        KeyCode::Esc | KeyCode::Enter | KeyCode::Char('q') => {
+            app.popup = None;
+        }
+        _ => {
+            // Ctrl+R toggles mask in reveal popup
+            if key.modifiers.contains(KeyModifiers::CONTROL) && key.code == KeyCode::Char('r') {
+                if let Some(PopupKind::RevealSecret { ref mut masked, .. }) = app.popup {
+                    *masked = !*masked;
+                }
+            }
+        }
     }
 }
 
@@ -339,7 +409,49 @@ fn list_len(app: &TuiApp) -> usize {
 fn draw(frame: &mut Frame, app: &TuiApp) {
     match app.screen {
         Screen::Auth => auth::draw(frame, app),
-        Screen::Main => draw_main(frame, app),
+        Screen::Main => {
+            draw_main(frame, app);
+            // Draw popup overlay on top if active
+            if let Some(ref popup) = app.popup {
+                draw_popup(frame, popup);
+            }
+        }
+    }
+}
+
+/// Draw a popup overlay.
+fn draw_popup(frame: &mut Frame, popup: &PopupKind) {
+    match popup {
+        PopupKind::RevealSecret {
+            name,
+            value,
+            masked,
+            auto_close_at,
+        } => {
+            let display_value = if *masked {
+                "\u{2022}".repeat(value.len().min(40))
+            } else {
+                value.clone()
+            };
+
+            let remaining = auto_close_at
+                .checked_duration_since(Instant::now())
+                .unwrap_or_default();
+
+            let title = name.to_string();
+            let footer = format!(
+                "[Esc] close  [Ctrl+R] {}  auto-close: {}s",
+                if *masked { "reveal" } else { "mask" },
+                remaining.as_secs()
+            );
+
+            let popup = widgets::Popup {
+                title: &title,
+                content: &display_value,
+                footer: &footer,
+            };
+            popup.render(frame);
+        }
     }
 }
 
@@ -428,20 +540,38 @@ fn draw_section_content(frame: &mut Frame, area: Rect, app: &TuiApp) {
 
     match app.section {
         Section::Secrets => {
+            // Header
+            let header = format!(
+                " {:<20} {:<12} {:<12} {:<5} {}",
+                "NAME", "CREATED", "MODIFIED", "VER", "TAGS"
+            );
+            let header_area = Rect { x: inner.x, y: inner.y, width: inner.width, height: 1 };
+            let header_p = Paragraph::new(Span::styled(header, Style::default().add_modifier(Modifier::BOLD)));
+            frame.render_widget(header_p, header_area);
+
+            let list_area = Rect {
+                x: inner.x,
+                y: inner.y + 1,
+                width: inner.width,
+                height: inner.height.saturating_sub(1),
+            };
+
             let items: Vec<String> = vault
                 .secrets
                 .iter()
                 .map(|(name, entry)| {
                     format!(
-                        " {:<20} v{:<4} {}",
+                        " {:<20} {:<12} {:<12} {:<5} {}",
                         name,
-                        entry.metadata.version,
+                        entry.metadata.created_at.format("%Y-%m-%d"),
+                        entry.metadata.modified_at.format("%Y-%m-%d"),
+                        format!("v{}", entry.metadata.version),
                         entry.metadata.tags.join(", ")
                     )
                 })
                 .collect();
 
-            draw_list(frame, inner, &items, app.cursor_pos());
+            draw_list(frame, list_area, &items, app.cursor_pos());
         }
         Section::Policies => {
             let items: Vec<String> = vault
