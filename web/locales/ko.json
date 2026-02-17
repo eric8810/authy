@@ -76,7 +76,7 @@
   },
   "securityBanner": {
     "title": "셸 기록에 시크릿이 유출되는 것을 방지하세요",
-    "description": "{{code}} 같은 단순한 작업도 데이터 유출 위험이 있습니다. Authy TUI에서 입력한 시크릿은 셸 기록이나 프로세스 인자에 절대 남지 않습니다.",
+    "description": "<0>echo \"secret\" | tool</0> 같은 단순한 작업도 데이터 유출 위험이 있습니다. Authy TUI에서 입력한 시크릿은 셸 기록이나 프로세스 인자에 절대 남지 않습니다.",
     "masked": "마스킹됨",
     "successMessage": "시크릿 'openai-key' 저장 완료"
   },

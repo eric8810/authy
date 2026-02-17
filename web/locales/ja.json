@@ -76,7 +76,7 @@
   },
   "securityBanner": {
     "title": "シェル履歴へのシークレット漏洩を防ぐ",
-    "description": "{{code}} のような単純な操作でも、データ漏洩のリスクがあります。Authy の TUI で入力したシークレットは、シェル履歴やプロセス引数に一切残りません。",
+    "description": "<0>echo \"secret\" | tool</0> のような単純な操作でも、データ漏洩のリスクがあります。Authy の TUI で入力したシークレットは、シェル履歴やプロセス引数に一切残りません。",
     "masked": "マスク済み",
     "successMessage": "シークレット「openai-key」を保存しました"
   },

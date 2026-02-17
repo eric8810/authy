@@ -75,7 +75,7 @@
   },
   "securityBanner": {
     "title": "Evita que tus secretos acaben en el historial de shell",
-    "description": "Incluso {{code}} puede provocar fugas de datos. La TUI de Authy garantiza que los secretos que introduces nunca aparezcan en el historial de shell ni en los argumentos del proceso.",
+    "description": "Incluso <0>echo \"secret\" | tool</0> puede provocar fugas de datos. La TUI de Authy garantiza que los secretos que introduces nunca aparezcan en el historial de shell ni en los argumentos del proceso.",
     "masked": "oculto",
     "successMessage": "Secreto 'openai-key' guardado correctamente"
   },

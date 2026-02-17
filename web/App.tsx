@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { Features } from './components/Features';
@@ -29,9 +29,9 @@ const App: React.FC = () => {
             </FadeIn>
             <FadeIn delay={100}>
               <p className="text-xl text-secondary">
-                {t('securityBanner.description', {
-                  code: <code className="bg-surfaceHighlight px-2 py-1 rounded text-white font-mono text-base">echo "secret" | tool</code>
-                })}
+                <Trans i18nKey="securityBanner.description">
+                  Even <code className="bg-surfaceHighlight px-2 py-1 rounded text-white font-mono text-base">echo "secret" | tool</code> can expose sensitive data in shell history. Authy's TUI uses masked input fields that never touch your shell history, process arguments, or parent environment. Secrets remain truly secret.
+                </Trans>
               </p>
             </FadeIn>
             <FadeIn delay={200}>

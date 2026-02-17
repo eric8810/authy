@@ -75,7 +75,7 @@
   },
   "securityBanner": {
     "title": "Stop leaking secrets in your shell history forever.",
-    "description": "Even {{code}} can expose sensitive data in shell history. Authy's TUI uses masked input fields that never touch your shell history, process arguments, or parent environment. Secrets remain truly secret.",
+    "description": "Even <0>echo \"secret\" | tool</0> can expose sensitive data in shell history. Authy's TUI uses masked input fields that never touch your shell history, process arguments, or parent environment. Secrets remain truly secret.",
     "masked": "(masked input)",
     "successMessage": "Secret 'openai-key' stored successfully and securely."
   },

@@ -76,7 +76,7 @@
   },
   "securityBanner": {
     "title": "告别 Shell 历史中的密钥泄露风险",
-    "description": "即使使用 {{code}} 也可能造成数据泄露。Authy 的 TUI 界面确保您输入的密钥永远不会出现在 Shell 历史或进程参数中。",
+    "description": "即使使用 <0>echo \"secret\" | tool</0> 也可能造成数据泄露。Authy 的 TUI 界面确保您输入的密钥永远不会出现在 Shell 历史或进程参数中。",
     "masked": "已隐藏",
     "successMessage": "密钥 'openai-key' 存储成功"
   },
