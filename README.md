@@ -31,17 +31,31 @@ Authy fills the gap: a single binary that gives each agent **only the secrets it
 # Initialize a vault with a keyfile
 authy init --generate-keyfile ~/.authy/keys/master.key
 
-# Store secrets (reads from stdin)
+# Launch the admin TUI (recommended — secrets never touch shell history)
+authy admin --keyfile ~/.authy/keys/master.key
+
+# Or use CLI commands (secrets read from stdin)
 echo "postgres://user:pass@db:5432/prod" | authy store db-url
-echo "sk-proj-abc123" | authy store openai-api-key
-echo "ghp_xxxxxxxxxxxx" | authy store github-token
-
-# Retrieve a secret
 authy get db-url
-
-# List all secrets
 authy list
 ```
+
+## Admin TUI
+
+`authy admin` launches an interactive terminal UI for managing secrets, policies, and sessions. Secrets entered through the TUI never appear in shell history, process arguments, or environment variables.
+
+```bash
+authy admin                                        # passphrase prompt
+authy admin --keyfile ~/.authy/keys/master.key     # keyfile auth
+```
+
+The TUI provides:
+- **Secrets** — store, reveal (masked by default, auto-close), rotate, delete
+- **Policies** — create, edit, delete, test against secret names
+- **Sessions** — create scoped tokens, revoke individual or all
+- **Audit** — scrollable log, text filter, HMAC chain verification
+
+Press `?` inside the TUI for key bindings.
 
 ## Agent Workflow
 
@@ -98,6 +112,8 @@ authy audit verify               Verify audit log integrity
 authy audit export               Export audit log as JSON
 
 authy config show                Show configuration
+
+authy admin                      Launch admin TUI (interactive management)
 ```
 
 ## Authentication Modes

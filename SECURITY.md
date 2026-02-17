@@ -34,7 +34,7 @@ Authy does **not** protect against:
 
 2. **Secrets never appear in process argument lists.** `authy run --scope deploy -- ./deploy.sh` contains no secret values in argv. Secrets are passed via `std::process::Command::envs()`.
 
-3. **Secrets never enter shell history.** Secret values are read from stdin, not CLI arguments. The `--value` flag (if ever added) would be documented as insecure.
+3. **Secrets never enter shell history.** The recommended admin workflow is `authy admin` (TUI), where secret values are typed into TUI input fields and never reach the shell. For CLI usage, secret values are read from stdin, not CLI arguments. Note: piping secrets via shell commands (e.g., `echo "secret" | authy store`) does appear in shell history — use the TUI to avoid this.
 
 4. **Session tokens are read-only.** No mutation operations (store, remove, rotate, policy changes) are possible with a session token. This is enforced at the auth layer.
 

@@ -147,6 +147,8 @@ pub enum PopupKind {
     AuditFilter {
         filter_input: widgets::TextInput,
     },
+    /// Help overlay.
+    Help,
 }
 
 /// Top-level screen state.
@@ -652,6 +654,10 @@ fn handle_main_input(app: &mut TuiApp, key: event::KeyEvent) {
             filter_input.value = app.audit_filter.clone();
             filter_input.cursor_pos = filter_input.value.len();
             app.popup = Some(PopupKind::AuditFilter { filter_input });
+        }
+        // Help overlay
+        KeyCode::Char('?') => {
+            app.popup = Some(PopupKind::Help);
         }
         _ => {}
     }
@@ -1219,6 +1225,9 @@ fn handle_popup_input(app: &mut TuiApp, key: event::KeyEvent) {
                 }
             }
         }
+        PopupKind::Help => {
+            // Any key closes help
+        }
         PopupKind::StatusMessage { .. } => {
             // Any key closes the status message
         }
@@ -1568,6 +1577,47 @@ fn draw_popup(frame: &mut Frame, popup: &PopupKind) {
                 Style::default().fg(Color::DarkGray),
             ));
             frame.render_widget(hint, Rect { x, y: inner.y + 2, width: w, height: 1 });
+        }
+        PopupKind::Help => {
+            let help_text = "\
+Tab/1-4    Switch section
+j/k ↑/↓    Navigate list
+Enter      Select / reveal
+
+Secrets:
+  s        Store new secret
+  r        Rotate secret
+  d        Delete secret
+
+Policies:
+  c        Create policy
+  e        Edit policy
+  d        Delete policy
+  t        Test policy
+
+Sessions:
+  c        Create session
+  r        Revoke session
+  R        Revoke all
+
+Audit:
+  /        Filter log
+  v        Verify chain
+
+Ctrl+R     Toggle mask
+Esc/q      Close / quit
+?          This help";
+
+            let area = widgets::centered_rect(50, 30.min(frame.area().height.saturating_sub(2)), frame.area());
+            frame.render_widget(ratatui::widgets::Clear, area);
+            let block = Block::default()
+                .borders(Borders::ALL)
+                .title(" Key Bindings ")
+                .border_style(Style::default().fg(Color::Cyan));
+            let inner = block.inner(area);
+            frame.render_widget(block, area);
+            let p = Paragraph::new(help_text);
+            frame.render_widget(p, inner);
         }
         PopupKind::StatusMessage {
             message,
