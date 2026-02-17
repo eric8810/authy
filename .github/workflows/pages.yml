@@ -49,7 +49,7 @@ jobs:
       - name: Build
         run: pnpm build
         env:
-          BASE_URL: '/authy/'
+          BASE_URL: '/'
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
