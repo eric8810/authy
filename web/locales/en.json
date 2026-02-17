@@ -8,10 +8,10 @@
     "viewOnGitHub": "View on GitHub"
   },
   "hero": {
-    "released": "v1.0.0 Released",
+    "released": "v0.2.0 — Run-Only Mode",
     "title": "Secrets Management for",
     "titleHighlight": "AI Agents",
-    "description": "Your agents need API keys — they don't need the keys to the kingdom. Authy is a CLI secrets manager with encrypted vault, scoped policies, short-lived tokens, and full audit trail. Single binary, no server, no accounts. Perfect for Claude Code, OpenClaw, MCP servers, and CI/CD pipelines.",
+    "description": "Your agents need API keys — they don't need the keys to the kingdom. Authy is a CLI secrets manager with encrypted vault, scoped policies, run-only tokens, and full audit trail. Agents inject secrets into subprocesses but never see the values. Single binary, no server, no accounts.",
     "getStarted": "Get Started",
     "aiAgentGuide": "AI Agent Integration Guide",
     "openSource": "Open Source (MIT License)",
@@ -20,7 +20,7 @@
   },
   "features": {
     "title": "Built for the Agent Age",
-    "description": "Traditional secrets managers weren't designed for AI agents. Claude Code reads .env files silently. OpenClaw stores API keys in plaintext. HashiCorp Vault requires a server. Authy gives you secure, scoped secret access for your AI agents without the complexity.",
+    "description": "Traditional secrets managers weren't designed for AI agents. Claude Code reads .env files silently. OpenClaw stores API keys in plaintext. HashiCorp Vault requires a server. Authy gives agents scoped access with run-only enforcement — they inject secrets into subprocesses but never see the values.",
     "encryptedVault": {
       "title": "Encrypted Vault",
       "description": "Single age-encrypted file using X25519 keys or scrypt passphrases. Secrets stored in MessagePack format for speed. All data encrypted at rest with modern cryptography. No metadata leakage."
@@ -30,12 +30,12 @@
       "description": "Glob-based allow/deny rules per agent scope. Define exactly what each agent can access. Policies stored inside the encrypted vault — tamper-proof by design. Deny overrides allow, default deny for security."
     },
     "sessionTokens": {
-      "title": "Short-Lived Session Tokens",
-      "description": "HMAC-SHA256 validated read-only tokens with time-based expiration. Scannable authy_v1. prefix for automated leak detection. Instant revocation capability when compromised."
+      "title": "Run-Only Tokens",
+      "description": "HMAC-SHA256 validated tokens with run-only enforcement. Agents can inject secrets via authy run but cannot read values directly. Short-lived with configurable TTL, scannable authy_v1. prefix for leak detection, and instant revocation."
     },
     "subprocessInjection": {
       "title": "Subprocess Secret Injection",
-      "description": "Inject secrets as environment variables only into the child process. Secrets never appear in parent shell history, process arguments, or environment. Zero trace after process exit."
+      "description": "Inject secrets as environment variables only into the child process. In run-only mode, this is the only way agents can access secrets — get, env, and export are blocked. Zero trace after process exit."
     },
     "auditLogging": {
       "title": "Tamper-Evident Audit Logging",
@@ -70,6 +70,8 @@
       "noAccountNeeded": "No Account Needed",
       "auditLogging": "Audit Logging",
       "subprocessInjection": "Subprocess Injection",
+      "runOnlyMode": "Run-Only Mode",
+      "jsonOutput": "Structured JSON Output",
       "builtForAgents": "Built for AI Agents"
     }
   },

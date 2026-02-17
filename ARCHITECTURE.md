@@ -44,15 +44,21 @@ src/
     mod.rs              Clap derive structs for all commands and subcommands
     init.rs             authy init — create vault, generate keyfile or prompt passphrase
     store.rs            authy store — decrypt vault, insert secret, re-encrypt
-    get.rs              authy get — decrypt vault, policy check, output to stdout
-    list.rs             authy list — decrypt vault, optional scope filter
+    get.rs              authy get — decrypt vault, policy check, run-only check, output to stdout
+    list.rs             authy list — decrypt vault, optional scope filter (allowed in run-only)
     remove.rs           authy remove — decrypt vault, delete secret, re-encrypt
     rotate.rs           authy rotate — update secret value, bump version
-    policy.rs           authy policy * — CRUD for scope policies
-    session.rs          authy session * — create/list/revoke tokens
-    run.rs              authy run — subprocess injection with scoped secrets
+    policy.rs           authy policy * — CRUD for scope policies (supports --run-only)
+    session.rs          authy session * — create/list/revoke tokens (supports --run-only)
+    run.rs              authy run — subprocess injection with scoped secrets (allowed in run-only)
+    env.rs              authy env — output secrets as shell/dotenv/json (blocked in run-only)
+    import.rs           authy import — import secrets from .env files
+    export.rs           authy export — export secrets as .env or JSON (blocked in run-only)
+    common.rs           Shared secret resolution (resolve_scoped_secrets)
+    json_output.rs      Serialize structs for JSON output
     audit.rs            authy audit * — show/verify/export audit log
     config.rs           authy config — show configuration
+    admin.rs            authy admin — launch TUI
 
   vault/
     mod.rs              Vault struct, VaultKey enum, load_vault(), save_vault()

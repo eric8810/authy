@@ -38,9 +38,11 @@ Authy does **not** protect against:
 
 4. **Session tokens are read-only.** No mutation operations (store, remove, rotate, policy changes) are possible with a session token. This is enforced at the auth layer.
 
-5. **Policy evaluation is deny-by-default.** A secret is only accessible if it matches an `allow` pattern and does not match any `deny` pattern.
+5. **Run-only mode blocks direct value access.** When `--run-only` is set on a token or policy, commands that expose secret values (`get`, `env`, `export`) are blocked. Only `authy run` (subprocess injection) and `authy list` (names only) are allowed. Either token-level or policy-level run-only triggers the restriction.
 
-6. **Policies are tamper-proof.** Policies are stored inside the encrypted vault. Modifying them requires the master key.
+6. **Policy evaluation is deny-by-default.** A secret is only accessible if it matches an `allow` pattern and does not match any `deny` pattern.
+
+7. **Policies are tamper-proof.** Policies are stored inside the encrypted vault. Modifying them requires the master key.
 
 ## Reporting Vulnerabilities
 

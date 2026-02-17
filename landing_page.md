@@ -60,11 +60,13 @@ Admin (TUI or CLI)          Agent
 |---------|-------------|
 | **Encrypted Vault** | `age`-encrypted single file; passphrase or X25519 keyfile auth |
 | **Scoped Policies** | Glob-based allow/deny rules; deny overrides allow; default deny |
-| **Session Tokens** | Short-lived, read-only, HMAC-validated; `authy_v1.` prefix for leak detection |
+| **Run-Only Mode** | Restrict agents to subprocess injection only — `get`, `env`, `export` blocked |
+| **Session Tokens** | Short-lived, HMAC-validated, run-only capable; `authy_v1.` prefix for leak detection |
 | **Subprocess Injection** | `authy run` injects secrets as env vars into the child process only |
+| **JSON Output** | `--json` on all read commands; structured errors to stderr |
 | **Audit Log** | Append-only JSONL with HMAC chain; actor, timestamp, outcome on every access |
 | **Admin TUI** | Full-screen terminal UI for secrets, policies, sessions, and audit — nothing touches shell history |
-| **Headless Mode** | CI/CD friendly; secrets to stdout, diagnostics to stderr; keyfile + token auth |
+| **Headless Mode** | CI/CD friendly; non-interactive with fail-fast; keyfile + token auth |
 
 ---
 
@@ -142,15 +144,17 @@ authy list
 ### Create a Policy and Launch an Agent
 
 ```bash
-# Define what the agent can see
+# Define what the agent can see — run-only means it can never read values directly
 authy policy create claude-code \
   --allow "anthropic-*" \
   --allow "github-*" \
-  --deny "prod-*"
+  --deny "prod-*" \
+  --run-only
 
 # Launch with scoped secrets injected
 authy run --scope claude-code --uppercase --replace-dash _ -- claude
 # Claude Code sees ANTHROPIC_API_KEY and GITHUB_TOKEN — nothing else
+# authy get / authy env / authy export are blocked
 ```
 
 ---
@@ -160,10 +164,12 @@ authy run --scope claude-code --uppercase --replace-dash _ -- claude
 ### AI Agents
 
 ```bash
-# Claude Code — secrets injected, never in config files
+# Claude Code — run-only policy, secrets injected, agent can't read them
+authy policy create claude-code --allow "anthropic-*" --allow "github-*" --run-only
 authy run --scope claude-code --uppercase --replace-dash _ -- claude
 
 # OpenClaw — replaces plaintext ~/.openclaw/openclaw.json
+authy policy create openclaw --allow "anthropic-*" --allow "discord-*" --run-only
 authy run --scope openclaw --uppercase --replace-dash _ -- openclaw
 
 # Any agent that reads env vars
@@ -225,10 +231,10 @@ fi
 ### Team Sharing
 
 ```bash
-# Admin creates a time-limited, read-only token
-authy session create --scope dev --ttl 8h --label "alice-dev"
+# Admin creates a run-only, time-limited token
+authy session create --scope dev --ttl 8h --label "alice-dev" --run-only
 
-# Developer uses the token — can read secrets, cannot modify anything
+# Developer uses the token — can inject secrets, cannot read values
 export AUTHY_TOKEN="authy_v1.eyJ..."
 export AUTHY_KEYFILE=~/.authy/keys/master.key
 authy run --scope dev --uppercase -- npm run dev
@@ -259,16 +265,19 @@ docker run \
 | `authy init` | Initialize vault with passphrase or keyfile |
 | `authy admin` | Launch interactive TUI |
 | `authy store <name>` | Store a secret (reads from stdin) |
-| `authy get <name>` | Retrieve a secret value (to stdout) |
-| `authy list` | List secret names |
+| `authy get <name>` | Retrieve a secret value (blocked in run-only mode) |
+| `authy list [--json]` | List secret names (allowed in run-only mode) |
 | `authy remove <name>` | Delete a secret |
 | `authy rotate <name>` | Update a secret value |
 | `authy run --scope <s> -- <cmd>` | Run command with scoped secrets injected |
-| `authy policy create <name>` | Create an access policy |
+| `authy env --scope <s>` | Output secrets as env vars (blocked in run-only mode) |
+| `authy import <file>` | Import secrets from .env file |
+| `authy export --format <f>` | Export secrets (blocked in run-only mode) |
+| `authy policy create <name> [--run-only]` | Create an access policy |
 | `authy policy test --scope <s> <name>` | Test if a policy allows access |
-| `authy session create --scope <s>` | Create a scoped, time-limited token |
+| `authy session create --scope <s> [--run-only]` | Create a scoped, time-limited token |
 | `authy session revoke <id>` | Revoke a session token |
-| `authy audit show` | View audit log |
+| `authy audit show [--json]` | View audit log |
 | `authy audit verify` | Verify audit log integrity |
 
 ---
@@ -282,8 +291,10 @@ docker run \
 | No account required | Y | Y | Y | N |
 | Open source | Y | Y | Y | N |
 | Scoped policies | Y | N | Y | Y |
+| Run-only mode | Y | N | N | N |
 | Short-lived tokens | Y | N | Y | Y |
 | Subprocess injection | Y | N | N | Y |
+| JSON output | Y | N | Y | Y |
 | Tamper-evident audit | Y | N | Y | Y |
 | Built for agents | Y | N | N | N |
 
@@ -294,6 +305,7 @@ docker run \
 - **Encryption** — `age` with X25519 (keyfile) or scrypt (passphrase); single encrypted vault file
 - **Secret hygiene** — Never in shell history, process argv, or parent env; zeroized on drop
 - **Access control** — Policies inside the encrypted vault; deny overrides allow; default deny
+- **Run-only enforcement** — Agents can only inject secrets via subprocess; direct value access blocked
 - **Token model** — HMAC-SHA256 with constant-time comparison; only the HMAC is stored, not the token
 - **Audit trail** — HMAC-chained JSONL; actor identity, timestamp, operation, outcome on every entry
 - **Revocation** — Instant token revocation; `authy_v1.` prefix for automated leak scanning

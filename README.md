@@ -20,6 +20,7 @@ Authy fills the gap: a single binary that gives each agent **only the secrets it
 - **Encrypted vault** — single `age`-encrypted file, no metadata leakage
 - **Scoped policies** — glob-based allow/deny rules per agent scope
 - **Session tokens** — short-lived, read-only, HMAC-validated
+- **Run-only mode** — restrict agents to `authy run` only; blocks `get`, `env`, `export`
 - **Subprocess injection** — `authy run` injects secrets as env vars into a child process only
 - **Audit log** — JSONL with HMAC chain for tamper detection
 - **Headless operation** — works without interactive prompts via keyfile + token
@@ -92,27 +93,31 @@ Press `?` inside the TUI for key bindings.
 ## Agent Workflow
 
 ```bash
-# 1. Admin creates a policy restricting what the agent can see
+# 1. Admin creates a run-only policy — agents can inject secrets but never read values
 authy policy create deploy-agent \
   --allow "db-*" \
   --allow "github-token" \
-  --deny "openai-*"
+  --deny "openai-*" \
+  --run-only
 
-# 2. Admin creates a short-lived session token
-authy session create --scope deploy-agent --ttl 1h
+# 2. Admin creates a run-only session token
+authy session create --scope deploy-agent --ttl 1h --run-only
 # Prints: authy_v1.dGhpcyBpcyBhIDMyIGJ5dGUgcmFuZG9t...
 
 # 3. Agent authenticates with the token
 export AUTHY_TOKEN="authy_v1.dGhpcyBpcyBhIDMyIGJ5dGUgcmFuZG9t..."
 export AUTHY_KEYFILE=~/.authy/keys/master.key
 
-# 4. Agent can only read allowed secrets
-authy get db-url              # works
-authy get openai-api-key      # denied
-
-# 5. Or inject all allowed secrets into a subprocess
+# 4. Agent injects secrets into a subprocess (the only allowed path)
 authy run --scope deploy-agent --uppercase --replace-dash _ -- ./deploy.sh
 # deploy.sh sees DB_URL and GITHUB_TOKEN in its env, nothing else
+
+# 5. Direct value access is blocked
+authy get db-url              # Error: Run-only mode
+authy env --scope deploy-agent  # Error: Run-only mode
+
+# 6. Listing names (no values) still works
+authy list --json             # OK — shows names only
 ```
 
 ## Commands
@@ -206,6 +211,23 @@ Set `AUTHY_NON_INTERACTIVE=1` to force non-interactive mode even with a TTY.
 
 Session tokens are **read-only** — agents cannot store, remove, or modify secrets or policies.
 
+### Run-Only Mode
+
+For maximum security, create tokens and policies with `--run-only`. This restricts agents to `authy run` (subprocess injection) and `authy list` (names only). Commands that expose secret values (`get`, `env`, `export`) are blocked with exit code 4.
+
+Run-only can be set at either level — token or policy — and either one triggers the restriction:
+
+```bash
+# Token-level: agent can only use `authy run`
+authy session create --scope my-scope --ttl 1h --run-only
+
+# Policy-level: all tokens using this scope are restricted
+authy policy create agent-scope --allow "*" --run-only
+
+# Toggle on existing policy
+authy policy update agent-scope --run-only true
+```
+
 ## Security Model
 
 - Secrets are encrypted at rest with [age](https://age-encryption.org/) (X25519)
@@ -254,6 +276,7 @@ The skill teaches agents how to retrieve secrets, list available credentials, in
 ## Documentation
 
 - [README.md](README.md) — Project overview and quick start
+- [CHANGELOG.md](CHANGELOG.md) — Version history and release notes
 - [ARCHITECTURE.md](ARCHITECTURE.md) — System design and data flow
 - [SECURITY.md](SECURITY.md) — Security model and threat analysis
 - [AI_AGENT_GUIDE.md](AI_AGENT_GUIDE.md) — Claude Code, OpenClaw & MCP integration

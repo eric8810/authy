@@ -72,9 +72,31 @@ Session tokens provide time-limited, read-only access scoped to a policy. Agents
 # Create a token valid for 8 hours
 authy session create --scope my-agent --ttl 8h
 # Output: authy_v1.dGhpcyBpcyBhIDMyIGJ5dGUg...
+
+# Create a run-only token — agent can only use `authy run`, not `get`/`env`/`export`
+authy session create --scope my-agent --ttl 8h --run-only
 ```
 
 Tokens have an `authy_v1.` prefix for leak detection in logs and code scanning tools.
+
+### Run-Only Mode
+
+For maximum security with AI agents, use `--run-only` on tokens and/or policies. This ensures agents can only inject secrets into subprocesses via `authy run` — they cannot read secret values directly.
+
+```bash
+# Policy-level: all tokens using this scope are restricted
+authy policy create agent-scope --allow "api-*" --allow "db-*" --run-only
+
+# Token-level: this specific token is restricted
+authy session create --scope agent-scope --ttl 8h --run-only
+```
+
+When run-only is active:
+- `authy run` works normally (secrets injected into subprocess)
+- `authy list` works (shows names only, no values)
+- `authy get`, `authy env`, `authy export` return exit code 4
+
+Either token-level or policy-level run-only triggers the restriction.
 
 ### Subprocess Injection
 
@@ -525,14 +547,15 @@ Audit entries include: timestamp, operation, secret name, actor identity (master
 
 ## Best Practices
 
-1. **Use the TUI for secret management** — secrets never touch shell history
-2. **Use scoped policies** — never use `--allow "*"` unless necessary
-3. **Prefer short-lived tokens** — use `--ttl` of hours, not days
-4. **Rotate secrets regularly** — `authy rotate` to update values
-5. **Monitor audit logs** — `authy audit show` to review access patterns
-6. **Revoke immediately** — `authy session revoke-all` if an agent is compromised
-7. **Block direct file access** — use `permissions.deny` in Claude Code settings to block `.env` and vault files
-8. **Don't bake secrets into Docker images** — mount the vault at runtime
+1. **Use `--run-only` for agent tokens and policies** — agents should inject secrets via `authy run`, never read values directly
+2. **Use the TUI for secret management** — secrets never touch shell history
+3. **Use scoped policies** — never use `--allow "*"` unless necessary
+4. **Prefer short-lived tokens** — use `--ttl` of hours, not days
+5. **Rotate secrets regularly** — `authy rotate` to update values
+6. **Monitor audit logs** — `authy audit show` to review access patterns
+7. **Revoke immediately** — `authy session revoke-all` if an agent is compromised
+8. **Block direct file access** — use `permissions.deny` in Claude Code settings to block `.env` and vault files
+9. **Don't bake secrets into Docker images** — mount the vault at runtime
 
 ---
 

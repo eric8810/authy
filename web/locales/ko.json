@@ -8,7 +8,7 @@
     "viewOnGitHub": "소스 코드 보기"
   },
   "hero": {
-    "released": "v0.1.0 출시",
+    "released": "v0.2.0 — 실행 전용 모드",
     "title": "",
     "titleHighlight": "AI Agents",
     "titleSuffix": "를 위한 시크릿 관리",
@@ -31,8 +31,8 @@
       "description": "Agent별 glob 기반 허용/거부 규칙 설정. 정책은 암호화 볼트에 저장되어 변조가 불가능합니다."
     },
     "sessionTokens": {
-      "title": "세션 토큰",
-      "description": "단기 유효 읽기 전용 HMAC 토큰. 유출 감지용 스캔 가능한 접두사 포함, 즉시 폐기 지원."
+      "title": "실행 전용 토큰",
+      "description": "실행 전용 제한이 적용된 HMAC-SHA256 검증 토큰. Agent는 authy run을 통해 시크릿을 주입할 수 있지만 값을 직접 읽을 수는 없습니다. 설정 가능한 TTL의 단기 토큰, 유출 감지용 스캔 가능한 authy_v1. 접두사, 즉시 폐기 지원."
     },
     "subprocessInjection": {
       "title": "서브프로세스 주입",
@@ -71,7 +71,9 @@
       "noAccountNeeded": "계정 불필요",
       "auditLogging": "감사 로그",
       "subprocessInjection": "서브프로세스 주입",
-      "builtForAgents": "Agent 전용 설계"
+      "builtForAgents": "Agent 전용 설계",
+      "runOnlyMode": "실행 전용 모드",
+      "jsonOutput": "구조화된 JSON 출력"
     }
   },
   "securityBanner": {

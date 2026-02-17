@@ -6,10 +6,10 @@ import { TerminalLine } from '../types';
 import { FadeIn } from './FadeIn';
 
 const heroDemoLines: TerminalLine[] = [
-  { type: 'comment', content: 'Define what your agent can see' },
-  { type: 'command', content: 'authy policy create claude-code --allow "anthropic-*" --deny "prod-*"' },
+  { type: 'comment', content: 'Create a run-only policy — agent can never read secret values' },
+  { type: 'command', content: 'authy policy create claude-code --allow "anthropic-*" --deny "prod-*" --run-only' },
   { type: 'output', content: "Policy 'claude-code' created." },
-  { type: 'comment', content: 'Launch Claude Code with scoped secrets injected' },
+  { type: 'comment', content: 'Secrets injected into subprocess — agent never sees them' },
   { type: 'command', content: 'authy run --scope claude-code --uppercase --replace-dash _ -- claude' },
   { type: 'output', content: '[injected] ANTHROPIC_API_KEY, GITHUB_TOKEN (2 secrets)' },
   { type: 'output', content: '[claude] Session started.' },

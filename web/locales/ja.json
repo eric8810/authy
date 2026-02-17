@@ -8,7 +8,7 @@
     "viewOnGitHub": "ソースコードを見る"
   },
   "hero": {
-    "released": "v0.1.0 リリース",
+    "released": "v0.2.0 — 実行専用モード",
     "title": "",
     "titleHighlight": "AI Agents",
     "titleSuffix": "向けシークレット管理",
@@ -31,8 +31,8 @@
       "description": "Agent ごとに glob ベースの許可・拒否ルールを設定。ポリシーは暗号化ボールト内に保存され、改ざん不可能。"
     },
     "sessionTokens": {
-      "title": "セッショントークン",
-      "description": "短期間有効な読み取り専用 HMAC トークン。漏洩検知用のスキャン可能なプレフィックス付き、即時無効化にも対応。"
+      "title": "実行専用トークン",
+      "description": "実行専用制限付き HMAC-SHA256 検証トークン。Agent は authy run を通じてシークレットを注入できますが、値を直接読み取ることはできません。設定可能な TTL の短期トークン、漏洩検知用のスキャン可能な authy_v1. プレフィックス、即時無効化に対応。"
     },
     "subprocessInjection": {
       "title": "サブプロセス注入",
@@ -71,7 +71,9 @@
       "noAccountNeeded": "アカウント不要",
       "auditLogging": "監査ログ",
       "subprocessInjection": "サブプロセス注入",
-      "builtForAgents": "Agent 向けに設計"
+      "builtForAgents": "Agent 向けに設計",
+      "runOnlyMode": "実行専用モード",
+      "jsonOutput": "構造化 JSON 出力"
     }
   },
   "securityBanner": {

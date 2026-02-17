@@ -31,8 +31,8 @@ const codeBlocks: Record<string, TerminalLine[]> = {
     { type: 'command', content: 'authy store db-url < ~/.secrets/db-credential' },
   ],
   agent: [
-    { type: 'comment', content: 'Create policy for AI agent' },
-    { type: 'command', content: 'authy policy create claude-code --allow "anthropic-*" --allow "github-*" --deny "prod-*"' },
+    { type: 'comment', content: 'Create run-only policy — agent injects secrets but never reads them' },
+    { type: 'command', content: 'authy policy create claude-code --allow "anthropic-*" --allow "github-*" --deny "prod-*" --run-only' },
     { type: 'comment', content: 'Launch Claude Code with scoped secrets injected' },
     { type: 'command', content: 'authy run --scope claude-code --uppercase --replace-dash _ -- claude' },
     { type: 'output', content: '[injected] ANTHROPIC_API_KEY, GITHUB_TOKEN (2 secrets)' },

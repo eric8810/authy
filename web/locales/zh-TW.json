@@ -8,7 +8,7 @@
     "viewOnGitHub": "檢視原始碼"
   },
   "hero": {
-    "released": "v0.1.0 現已發布",
+    "released": "v0.2.0 — 僅執行模式",
     "title": "",
     "titleHighlight": "AI Agents",
     "titleSuffix": "密鑰管理方案",
@@ -31,8 +31,8 @@
       "description": "基於 glob 模式的精細化權限控制，策略本身加密儲存於保險庫中，確保不可竄改。"
     },
     "sessionTokens": {
-      "title": "工作階段令牌",
-      "description": "短期有效的唯讀 HMAC 令牌，支援令牌前綴掃描偵測外洩，可立即撤銷。"
+      "title": "僅執行令牌",
+      "description": "具備僅執行限制的 HMAC-SHA256 驗證令牌。Agent 可透過 authy run 注入密鑰，但無法直接讀取值。短期有效且 TTL 可設定，支援 authy_v1. 前綴掃描偵測外洩，並可即時撤銷。"
     },
     "subprocessInjection": {
       "title": "程序注入",
@@ -71,7 +71,9 @@
       "noAccountNeeded": "無需註冊",
       "auditLogging": "稽核日誌",
       "subprocessInjection": "程序注入",
-      "builtForAgents": "面向 Agent 設計"
+      "builtForAgents": "面向 Agent 設計",
+      "runOnlyMode": "僅執行模式",
+      "jsonOutput": "結構化 JSON 輸出"
     }
   },
   "securityBanner": {

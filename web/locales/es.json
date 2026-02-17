@@ -8,7 +8,7 @@
     "viewOnGitHub": "Ver código fuente"
   },
   "hero": {
-    "released": "v0.1.0 Disponible",
+    "released": "v0.2.0 — Modo solo ejecución",
     "title": "Gestión de secretos para",
     "titleHighlight": "AI Agents",
     "description": "Tus agents necesitan claves API, pero no las llaves del reino. Cifrado, políticas de ámbito, tokens de corta duración y auditoría completa. Un solo ejecutable, sin servidor, sin registro.",
@@ -30,8 +30,8 @@
       "description": "Reglas de permiso/denegación basadas en glob por cada ámbito de agent. Las políticas se guardan cifradas y son inmunes a manipulaciones."
     },
     "sessionTokens": {
-      "title": "Tokens de sesión",
-      "description": "Tokens HMAC de solo lectura con validez limitada. Prefijos escaneables para detectar fugas y capacidad de revocación inmediata."
+      "title": "Tokens solo ejecución",
+      "description": "Tokens validados por HMAC-SHA256 con restricción de solo ejecución. Los agents pueden inyectar secretos mediante authy run, pero no pueden leer valores directamente. Corta duración con TTL configurable, prefijo escaneable authy_v1. para detección de fugas y revocación instantánea."
     },
     "subprocessInjection": {
       "title": "Inyección en subprocesos",
@@ -70,7 +70,9 @@
       "noAccountNeeded": "Sin registro",
       "auditLogging": "Auditoría",
       "subprocessInjection": "Inyección en subprocesos",
-      "builtForAgents": "Diseñado para Agents"
+      "builtForAgents": "Diseñado para Agents",
+      "runOnlyMode": "Modo solo ejecución",
+      "jsonOutput": "Salida JSON estructurada"
     }
   },
   "securityBanner": {
