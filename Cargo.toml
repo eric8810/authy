@@ -1,0 +1,69 @@
+[package]
+name = "authy"
+version = "0.1.0"
+edition = "2021"
+description = "CLI secrets store & dispatch for agents"
+license = "MIT"
+
+[[bin]]
+name = "authy"
+path = "src/main.rs"
+
+[dependencies]
+# CLI
+clap = { version = "4", features = ["derive", "env"] }
+
+# Encryption
+age = { version = "0.10", features = ["armor"] }
+
+# Crypto
+hmac = "0.12"
+sha2 = "0.10"
+hkdf = "0.12"
+
+# Serialization
+rmp-serde = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml = "0.8"
+
+# Memory safety
+zeroize = { version = "1", features = ["derive"] }
+secrecy = { version = "0.8", features = ["serde"] }
+
+# Time
+chrono = { version = "0.4", features = ["serde"] }
+humantime = "2"
+
+# Pattern matching
+globset = "0.4"
+
+# Interactive
+dialoguer = "0.11"
+console = "0.15"
+
+# Errors
+thiserror = "2"
+anyhow = "1"
+
+# Encoding
+base64 = "0.22"
+hex = "0.4"
+
+# Paths
+dirs = "6"
+
+# RNG
+rand = "0.8"
+
+# Subtle (constant-time compare)
+subtle = "2"
+
+[[test]]
+name = "integration"
+path = "tests/integration/mod.rs"
+
+[dev-dependencies]
+tempfile = "3"
+assert_cmd = "2"
+predicates = "3"
