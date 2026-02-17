@@ -9,12 +9,5 @@
   },
   "bin": {
     "authy": "bin/authy"
-  },
-  "optionalDependencies": {
-    "authy-cli-linux-x64": "0.1.0",
-    "authy-cli-linux-arm64": "0.1.0",
-    "authy-cli-darwin-x64": "0.1.0",
-    "authy-cli-darwin-arm64": "0.1.0",
-    "authy-cli-win32-x64": "0.1.0"
   }
 }

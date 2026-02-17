@@ -25,6 +25,6 @@ Thumbs.db
 audit.log
 
 # npm platform binaries (injected by CI)
-npm/authy-cli-*/bin/
+npm/authy-cli/bin/authy-*
 npm/authy-cli/node_modules/
 *.tgz

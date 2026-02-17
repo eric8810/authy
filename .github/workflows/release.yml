@@ -101,7 +101,7 @@ jobs:
           files: artifacts/**/*
 
   npm-publish:
-    name: Publish npm packages
+    name: Publish npm package
     needs: [build, release]
     runs-on: ubuntu-latest
     steps:
@@ -121,53 +121,40 @@ jobs:
         id: version
         run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
 
-      - name: Place binaries into platform packages
+      - name: Place binaries into npm package
         run: |
           # Linux x64
-          mkdir -p npm/authy-cli-linux-x64/bin
-          tar xzf artifacts/authy-x86_64-unknown-linux-gnu/authy-x86_64-unknown-linux-gnu.tar.gz -C npm/authy-cli-linux-x64/bin
+          tar xzf artifacts/authy-x86_64-unknown-linux-gnu/authy-x86_64-unknown-linux-gnu.tar.gz -C /tmp
+          mv /tmp/authy npm/authy-cli/bin/authy-linux-x64
 
           # Linux arm64
-          mkdir -p npm/authy-cli-linux-arm64/bin
-          tar xzf artifacts/authy-aarch64-unknown-linux-gnu/authy-aarch64-unknown-linux-gnu.tar.gz -C npm/authy-cli-linux-arm64/bin
+          tar xzf artifacts/authy-aarch64-unknown-linux-gnu/authy-aarch64-unknown-linux-gnu.tar.gz -C /tmp
+          mv /tmp/authy npm/authy-cli/bin/authy-linux-arm64
 
           # macOS x64
-          mkdir -p npm/authy-cli-darwin-x64/bin
-          tar xzf artifacts/authy-x86_64-apple-darwin/authy-x86_64-apple-darwin.tar.gz -C npm/authy-cli-darwin-x64/bin
+          tar xzf artifacts/authy-x86_64-apple-darwin/authy-x86_64-apple-darwin.tar.gz -C /tmp
+          mv /tmp/authy npm/authy-cli/bin/authy-darwin-x64
 
           # macOS arm64
-          mkdir -p npm/authy-cli-darwin-arm64/bin
-          tar xzf artifacts/authy-aarch64-apple-darwin/authy-aarch64-apple-darwin.tar.gz -C npm/authy-cli-darwin-arm64/bin
+          tar xzf artifacts/authy-aarch64-apple-darwin/authy-aarch64-apple-darwin.tar.gz -C /tmp
+          mv /tmp/authy npm/authy-cli/bin/authy-darwin-arm64
 
           # Windows x64
-          mkdir -p npm/authy-cli-win32-x64/bin
           cd artifacts/authy-x86_64-pc-windows-msvc
-          7z x authy-x86_64-pc-windows-msvc.zip -o../../npm/authy-cli-win32-x64/bin
+          7z x authy-x86_64-pc-windows-msvc.zip -o/tmp/win
           cd ../..
+          mv /tmp/win/authy.exe npm/authy-cli/bin/authy-win32-x64.exe
 
-      - name: Update package versions
+          # Make all binaries executable
+          chmod +x npm/authy-cli/bin/authy-*
+
+      - name: Update package version
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          for pkg in npm/authy-cli npm/authy-cli-linux-x64 npm/authy-cli-linux-arm64 npm/authy-cli-darwin-x64 npm/authy-cli-darwin-arm64 npm/authy-cli-win32-x64; do
-            jq --arg v "$VERSION" '.version = $v' "$pkg/package.json" > "$pkg/package.json.tmp"
-            mv "$pkg/package.json.tmp" "$pkg/package.json"
-          done
-
-          # Also update optionalDependencies versions in main package
-          jq --arg v "$VERSION" '
-            .optionalDependencies |= with_entries(.value = $v)
-          ' npm/authy-cli/package.json > npm/authy-cli/package.json.tmp
+          jq --arg v "$VERSION" '.version = $v' npm/authy-cli/package.json > npm/authy-cli/package.json.tmp
           mv npm/authy-cli/package.json.tmp npm/authy-cli/package.json
 
-      - name: Publish platform packages
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          for pkg in ./npm/authy-cli-linux-x64 ./npm/authy-cli-linux-arm64 ./npm/authy-cli-darwin-x64 ./npm/authy-cli-darwin-arm64 ./npm/authy-cli-win32-x64; do
-            npm publish "$pkg" --access public
-          done
-
-      - name: Publish main package
+      - name: Publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish ./npm/authy-cli --access public

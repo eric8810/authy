@@ -4,48 +4,27 @@
 const { execFileSync } = require("child_process");
 const path = require("path");
 
-const PLATFORM_MAP = {
-  "linux-x64": "authy-cli-linux-x64",
-  "linux-arm64": "authy-cli-linux-arm64",
-  "darwin-x64": "authy-cli-darwin-x64",
-  "darwin-arm64": "authy-cli-darwin-arm64",
-  "win32-x64": "authy-cli-win32-x64",
+const PLATFORMS = {
+  "linux-x64": "authy-linux-x64",
+  "linux-arm64": "authy-linux-arm64",
+  "darwin-x64": "authy-darwin-x64",
+  "darwin-arm64": "authy-darwin-arm64",
+  "win32-x64": "authy-win32-x64.exe",
 };
 
-function getBinaryPath() {
-  const key = `${process.platform}-${process.arch}`;
-  const pkg = PLATFORM_MAP[key];
+const key = `${process.platform}-${process.arch}`;
+const binary = PLATFORMS[key];
 
-  if (!pkg) {
-    console.error(
-      `Unsupported platform: ${process.platform}-${process.arch}`
-    );
-    console.error(`Supported: ${Object.keys(PLATFORM_MAP).join(", ")}`);
-    process.exit(1);
-  }
-
-  const binary = process.platform === "win32" ? "authy.exe" : "authy";
-
-  try {
-    const pkgDir = path.dirname(require.resolve(`${pkg}/package.json`));
-    return path.join(pkgDir, "bin", binary);
-  } catch {
-    console.error(
-      `Could not find package '${pkg}'. Make sure optional dependencies are installed.`
-    );
-    console.error(
-      "Try: npm install --include=optional"
-    );
-    process.exit(1);
-  }
+if (!binary) {
+  console.error(`Unsupported platform: ${key}`);
+  console.error(`Supported: ${Object.keys(PLATFORMS).join(", ")}`);
+  process.exit(1);
 }
 
-const binPath = getBinaryPath();
+const binPath = path.join(__dirname, binary);
 
 try {
-  const result = execFileSync(binPath, process.argv.slice(2), {
-    stdio: "inherit",
-  });
+  execFileSync(binPath, process.argv.slice(2), { stdio: "inherit" });
 } catch (err) {
   if (err.status !== null) {
     process.exit(err.status);
