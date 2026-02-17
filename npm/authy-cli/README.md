@@ -2,7 +2,7 @@
 
 A CLI secrets store & dispatch tool built for AI agents.
 
-Authy stores encrypted secrets locally and dispatches them to agents with policy-based scoping, short-lived session tokens, and audit logging. No server required.
+Authy stores encrypted secrets locally and dispatches them to agents with policy-based scoping, run-only tokens, and audit logging. Agents inject secrets into subprocesses but never see the values. No server required.
 
 ## Install
 
@@ -36,9 +36,6 @@ authy init --generate-keyfile ~/.authy/keys/master.key
 # Store a secret (reads from stdin)
 authy store db-url
 
-# Retrieve it
-authy get db-url
-
 # Launch the admin TUI (secrets never touch shell history)
 authy admin --keyfile ~/.authy/keys/master.key
 ```
@@ -46,21 +43,30 @@ authy admin --keyfile ~/.authy/keys/master.key
 ## Agent Workflow
 
 ```bash
-# Create a scoped policy
-authy policy create deploy-agent --allow "db-*" --deny "openai-*"
+# Create a run-only policy — agent can inject secrets but never read values
+authy policy create deploy-agent --allow "db-*" --deny "openai-*" --run-only
 
-# Create a short-lived session token
-authy session create --scope deploy-agent --ttl 1h
+# Create a run-only session token
+authy session create --scope deploy-agent --ttl 1h --run-only
 
-# Agent uses the token to read only allowed secrets
+# Agent injects secrets into a subprocess (the only allowed path)
 export AUTHY_TOKEN="authy_v1...."
 export AUTHY_KEYFILE=~/.authy/keys/master.key
-authy get db-url          # works
-authy get openai-api-key  # denied
+authy run --scope deploy-agent --uppercase --replace-dash _ -- ./deploy.sh
 
-# Or inject secrets into a subprocess
-authy run --scope deploy-agent -- ./deploy.sh
+# Direct value access is blocked
+authy get db-url              # Error: Run-only mode
+authy list --json             # OK — shows names only
 ```
+
+## What's New in v0.2.0
+
+- **Run-only mode** — `--run-only` on tokens and policies blocks `get`/`env`/`export`
+- **JSON output** — `--json` global flag on all read commands
+- **`authy env`** — output secrets as shell/dotenv/json
+- **`authy import`** — import from .env files
+- **`authy export`** — export as .env or JSON
+- **Non-interactive mode** — fails fast in CI/CD without prompting
 
 ## Supported Platforms
 
