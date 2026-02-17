@@ -6,6 +6,7 @@ mod error;
 mod policy;
 mod session;
 mod subprocess;
+mod tui;
 mod types;
 mod vault;
 
@@ -46,6 +47,8 @@ fn main() {
         Commands::Audit { command } => cli::audit::run(command),
 
         Commands::Config { command } => cli::config::run(command),
+
+        Commands::Admin { keyfile } => cli::admin::run(keyfile.clone()),
     };
 
     if let Err(e) = result {

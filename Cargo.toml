@@ -42,6 +42,10 @@ globset = "0.4"
 dialoguer = "0.11"
 console = "0.15"
 
+# TUI
+ratatui = "0.29"
+crossterm = "0.28"
+
 # Errors
 thiserror = "2"
 anyhow = "1"

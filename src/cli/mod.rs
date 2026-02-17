@@ -1,3 +1,4 @@
+pub mod admin;
 pub mod audit;
 pub mod config;
 pub mod get;
@@ -109,6 +110,13 @@ pub enum Commands {
     Config {
         #[command(subcommand)]
         command: ConfigCommands,
+    },
+
+    /// Launch admin TUI (interactive vault management)
+    Admin {
+        /// Keyfile path (alternative to passphrase prompt in TUI)
+        #[arg(long, env = "AUTHY_KEYFILE")]
+        keyfile: Option<String>,
     },
 }
 
