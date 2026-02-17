@@ -1,0 +1,12 @@
+{
+  "name": "authy-cli-darwin-x64",
+  "version": "0.1.0",
+  "description": "Authy CLI binary for macOS x64",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eric8810/authy"
+  },
+  "os": ["darwin"],
+  "cpu": ["x64"]
+}

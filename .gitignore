@@ -23,3 +23,8 @@ Thumbs.db
 # Authy runtime
 .authy/
 audit.log
+
+# npm platform binaries (injected by CI)
+npm/authy-cli-*/bin/
+npm/authy-cli/node_modules/
+*.tgz

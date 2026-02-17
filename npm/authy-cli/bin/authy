@@ -1,0 +1,54 @@
+#!/usr/bin/env node
+"use strict";
+
+const { execFileSync } = require("child_process");
+const path = require("path");
+
+const PLATFORM_MAP = {
+  "linux-x64": "authy-cli-linux-x64",
+  "linux-arm64": "authy-cli-linux-arm64",
+  "darwin-x64": "authy-cli-darwin-x64",
+  "darwin-arm64": "authy-cli-darwin-arm64",
+  "win32-x64": "authy-cli-win32-x64",
+};
+
+function getBinaryPath() {
+  const key = `${process.platform}-${process.arch}`;
+  const pkg = PLATFORM_MAP[key];
+
+  if (!pkg) {
+    console.error(
+      `Unsupported platform: ${process.platform}-${process.arch}`
+    );
+    console.error(`Supported: ${Object.keys(PLATFORM_MAP).join(", ")}`);
+    process.exit(1);
+  }
+
+  const binary = process.platform === "win32" ? "authy.exe" : "authy";
+
+  try {
+    const pkgDir = path.dirname(require.resolve(`${pkg}/package.json`));
+    return path.join(pkgDir, "bin", binary);
+  } catch {
+    console.error(
+      `Could not find package '${pkg}'. Make sure optional dependencies are installed.`
+    );
+    console.error(
+      "Try: npm install --include=optional"
+    );
+    process.exit(1);
+  }
+}
+
+const binPath = getBinaryPath();
+
+try {
+  const result = execFileSync(binPath, process.argv.slice(2), {
+    stdio: "inherit",
+  });
+} catch (err) {
+  if (err.status !== null) {
+    process.exit(err.status);
+  }
+  throw err;
+}
