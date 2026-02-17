@@ -6,7 +6,7 @@ Your agents need API keys. They don't need the keys to the kingdom.
 
 Encrypted vault. Scoped policies. Short-lived tokens. Full audit trail. Single binary, no server, no accounts.
 
-[Get Started](#quick-start) · [View on GitHub](https://github.com/yourusername/authy) · [Read the Docs](#documentation)
+[Get Started](#quick-start) · [View on GitHub](https://github.com/eric8810/authy) · [Read the Docs](#documentation)
 
 ---
 
@@ -72,8 +72,27 @@ Admin (TUI or CLI)          Agent
 
 ### Install
 
+**npm (recommended)**
+
 ```bash
-git clone https://github.com/yourusername/authy.git
+npm install -g authy-cli
+# or: npx authy-cli --help
+```
+
+**Install script**
+
+```bash
+# Linux / macOS
+curl -fsSL https://raw.githubusercontent.com/eric8810/authy/main/install.sh | sh
+
+# Windows (PowerShell)
+irm https://raw.githubusercontent.com/eric8810/authy/main/install.ps1 | iex
+```
+
+**From source**
+
+```bash
+git clone https://github.com/eric8810/authy.git
 cd authy && cargo build --release
 cp target/release/authy /usr/local/bin/
 ```

@@ -6,11 +6,12 @@ import { FadeIn } from './FadeIn';
 
 const codeBlocks: Record<string, TerminalLine[]> = {
   install: [
-    { type: 'comment', content: 'Install via Cargo' },
-    { type: 'command', content: 'cargo install --git https://github.com/eric8810/authy' },
-    { type: 'output', content: 'Installing authy v0.1.0...' },
-    { type: 'comment', content: 'Or download binary' },
-    { type: 'command', content: 'curl -L https://github.com/eric8810/authy/releases/latest | tar xz' },
+    { type: 'comment', content: 'Install via npm (recommended)' },
+    { type: 'command', content: 'npm install -g authy-cli' },
+    { type: 'output', content: 'added 1 package in 1.2s' },
+    { type: 'comment', content: 'Or use install script (Linux/macOS)' },
+    { type: 'command', content: 'curl -fsSL https://raw.githubusercontent.com/eric8810/authy/main/install.sh | sh' },
+    { type: 'output', content: 'Installed authy to /usr/local/bin/authy' },
   ],
   init: [
     { type: 'comment', content: 'Initialize a new vault with a keyfile' },

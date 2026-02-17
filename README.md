@@ -25,6 +25,32 @@ Authy fills the gap: a single binary that gives each agent **only the secrets it
 - **Headless operation** — works without interactive prompts via keyfile + token
 - **Pipe-friendly** — `authy get` outputs raw values to stdout, diagnostics to stderr
 
+## Install
+
+**npm (recommended)**
+
+```bash
+npm install -g authy-cli
+# or: npx authy-cli --help
+```
+
+**Install script**
+
+```bash
+# Linux / macOS
+curl -fsSL https://raw.githubusercontent.com/eric8810/authy/main/install.sh | sh
+
+# Windows (PowerShell)
+irm https://raw.githubusercontent.com/eric8810/authy/main/install.ps1 | iex
+```
+
+**From source**
+
+```bash
+cargo build --release
+# Binary at target/release/authy
+```
+
 ## Quick Start
 
 ```bash
@@ -159,13 +185,6 @@ Session tokens are **read-only** — agents cannot store, remove, or modify secr
 - [ARCHITECTURE.md](ARCHITECTURE.md) — System design and data flow
 - [SECURITY.md](SECURITY.md) — Security model and threat analysis
 - [AI_AGENT_GUIDE.md](AI_AGENT_GUIDE.md) — Claude Code, OpenClaw & MCP integration
-
-## Building
-
-```bash
-cargo build --release
-# Binary at target/release/authy
-```
 
 ## License
 
