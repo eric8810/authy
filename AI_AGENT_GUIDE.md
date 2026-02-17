@@ -483,6 +483,10 @@ authy session create --scope my-scope --ttl 8h
 List the environment variables a scope would inject:
 
 ```bash
+# Preview with authy env (no subprocess needed)
+authy env --scope my-scope --format shell --uppercase --replace-dash '_'
+
+# Or via run:
 authy run --scope my-scope --uppercase --replace-dash _ -- env | grep -E 'API|DB|TOKEN'
 ```
 

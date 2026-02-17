@@ -1101,6 +1101,7 @@ fn handle_popup_input(app: &mut TuiApp, key: event::KeyEvent) {
                         expires_at,
                         revoked: false,
                         label: None,
+                        run_only: false,
                     };
 
                     if let Some(ref mut vault) = app.vault {

@@ -1,8 +1,13 @@
 pub mod admin;
 pub mod audit;
+pub mod common;
 pub mod config;
+pub mod env;
+pub mod export;
 pub mod get;
+pub mod import;
 pub mod init;
+pub mod json_output;
 pub mod list;
 pub mod policy;
 pub mod remove;
@@ -16,6 +21,10 @@ use clap::{Parser, Subcommand};
 #[derive(Parser)]
 #[command(name = "authy", version, about = "CLI secrets store & dispatch for agents")]
 pub struct Cli {
+    /// Output results as JSON
+    #[arg(long, global = true)]
+    pub json: bool,
+
     #[command(subcommand)]
     pub command: Commands,
 }
@@ -100,6 +109,65 @@ pub enum Commands {
         command: Vec<String>,
     },
 
+    /// Output secrets as environment variables
+    Env {
+        /// Scope (policy name) for secret access
+        #[arg(long)]
+        scope: String,
+        /// Uppercase env var names
+        #[arg(long)]
+        uppercase: bool,
+        /// Replace dashes with this character (e.g. '_')
+        #[arg(long)]
+        replace_dash: Option<char>,
+        /// Prefix for env var names
+        #[arg(long)]
+        prefix: Option<String>,
+        /// Output format: shell, dotenv, json
+        #[arg(long, default_value = "shell")]
+        format: String,
+        /// Omit 'export' keyword in shell format
+        #[arg(long)]
+        no_export: bool,
+    },
+
+    /// Import secrets from a .env file
+    Import {
+        /// Path to .env file (use '-' for stdin)
+        file: String,
+        /// Keep original names (don't transform to lower-kebab-case)
+        #[arg(long)]
+        keep_names: bool,
+        /// Add prefix to secret names
+        #[arg(long)]
+        prefix: Option<String>,
+        /// Overwrite existing secrets
+        #[arg(long)]
+        force: bool,
+        /// Preview changes without storing
+        #[arg(long)]
+        dry_run: bool,
+    },
+
+    /// Export secrets as .env or JSON
+    Export {
+        /// Output format: env, json
+        #[arg(long, default_value = "env")]
+        format: String,
+        /// Scope (policy name) to filter secrets
+        #[arg(long)]
+        scope: Option<String>,
+        /// Uppercase env var names
+        #[arg(long)]
+        uppercase: bool,
+        /// Replace dashes with this character (e.g. '_')
+        #[arg(long)]
+        replace_dash: Option<char>,
+        /// Prefix for env var names
+        #[arg(long)]
+        prefix: Option<String>,
+    },
+
     /// View and verify audit logs
     Audit {
         #[command(subcommand)]
@@ -135,6 +203,9 @@ pub enum PolicyCommands {
         /// Description
         #[arg(long)]
         description: Option<String>,
+        /// Restrict to run-only mode (secrets can only be injected via `authy run`)
+        #[arg(long)]
+        run_only: bool,
     },
     /// Show a policy
     Show {
@@ -152,6 +223,9 @@ pub enum PolicyCommands {
         /// New description
         #[arg(long)]
         description: Option<String>,
+        /// Enable run-only mode (secrets can only be injected via `authy run`)
+        #[arg(long)]
+        run_only: Option<bool>,
     },
     /// List all policies
     List,
@@ -182,6 +256,9 @@ pub enum SessionCommands {
         /// Optional label for this session
         #[arg(long)]
         label: Option<String>,
+        /// Restrict to run-only mode (secrets can only be injected via `authy run`)
+        #[arg(long)]
+        run_only: bool,
     },
     /// List active sessions
     List,

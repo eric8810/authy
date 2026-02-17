@@ -13,6 +13,9 @@ pub struct Policy {
     pub deny: Vec<String>,
     pub created_at: chrono::DateTime<chrono::Utc>,
     pub modified_at: chrono::DateTime<chrono::Utc>,
+    /// When true, secrets can only be injected via `run` — `get`, `env`, `export` are blocked.
+    #[serde(default)]
+    pub run_only: bool,
 }
 
 impl Policy {
@@ -25,6 +28,7 @@ impl Policy {
             deny,
             created_at: now,
             modified_at: now,
+            run_only: false,
         }
     }
 

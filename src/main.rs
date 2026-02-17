@@ -15,6 +15,7 @@ use cli::{Cli, Commands};
 
 fn main() {
     let cli = Cli::parse();
+    let json = cli.json;
 
     let result = match &cli.command {
         Commands::Init {
@@ -24,17 +25,17 @@ fn main() {
 
         Commands::Store { name, force } => cli::store::run(name, *force),
 
-        Commands::Get { name, scope } => cli::get::run(name, scope.as_deref()),
+        Commands::Get { name, scope } => cli::get::run(name, scope.as_deref(), json),
 
-        Commands::List { scope } => cli::list::run(scope.as_deref()),
+        Commands::List { scope } => cli::list::run(scope.as_deref(), json),
 
         Commands::Remove { name } => cli::remove::run(name),
 
         Commands::Rotate { name } => cli::rotate::run(name),
 
-        Commands::Policy { command } => cli::policy::run(command),
+        Commands::Policy { command } => cli::policy::run(command, json),
 
-        Commands::Session { command } => cli::session::run(command),
+        Commands::Session { command } => cli::session::run(command, json),
 
         Commands::Run {
             scope,
@@ -44,7 +45,32 @@ fn main() {
             command,
         } => cli::run::run(scope, *uppercase, *replace_dash, prefix.clone(), command),
 
-        Commands::Audit { command } => cli::audit::run(command),
+        Commands::Env {
+            scope,
+            uppercase,
+            replace_dash,
+            prefix,
+            format,
+            no_export,
+        } => cli::env::run(scope, *uppercase, *replace_dash, prefix.clone(), format, *no_export),
+
+        Commands::Import {
+            file,
+            keep_names,
+            prefix,
+            force,
+            dry_run,
+        } => cli::import::run(file, *keep_names, prefix.as_deref(), *force, *dry_run),
+
+        Commands::Export {
+            format,
+            scope,
+            uppercase,
+            replace_dash,
+            prefix,
+        } => cli::export::run(format, scope.as_deref(), *uppercase, *replace_dash, prefix.clone()),
+
+        Commands::Audit { command } => cli::audit::run(command, json),
 
         Commands::Config { command } => cli::config::run(command),
 
@@ -52,7 +78,20 @@ fn main() {
     };
 
     if let Err(e) = result {
-        eprintln!("Error: {}", e);
-        std::process::exit(1);
+        if json {
+            let json_err = error::JsonError::from_error(&e);
+            eprintln!(
+                "{}",
+                serde_json::to_string(&json_err).unwrap_or_else(|_| format!(
+                    "{{\"error\":{{\"code\":\"{}\",\"message\":\"{}\",\"exit_code\":{}}}}}",
+                    e.error_code(),
+                    e,
+                    e.exit_code()
+                ))
+            );
+        } else {
+            eprintln!("Error: {}", e);
+        }
+        std::process::exit(e.exit_code());
     }
 }

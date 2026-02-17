@@ -1,6 +1,6 @@
 [package]
 name = "authy"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 description = "CLI secrets store & dispatch for agents"
 license = "MIT"

@@ -8,6 +8,8 @@ pub struct AuthContext {
     pub scope: Option<String>,
     /// Whether this context allows write operations.
     pub can_write: bool,
+    /// When true, secrets can only be injected via `run` — `get`, `env`, `export` are blocked.
+    pub run_only: bool,
 }
 
 #[derive(Debug, Clone)]
@@ -23,6 +25,7 @@ impl AuthContext {
             method: AuthMethod::Passphrase,
             scope: None,
             can_write: true,
+            run_only: false,
         }
     }
 
@@ -31,14 +34,16 @@ impl AuthContext {
             method: AuthMethod::Keyfile,
             scope: None,
             can_write: true,
+            run_only: false,
         }
     }
 
-    pub fn from_token(session_id: String, scope: String) -> Self {
+    pub fn from_token(session_id: String, scope: String, run_only: bool) -> Self {
         Self {
             method: AuthMethod::SessionToken { session_id },
             scope: Some(scope),
             can_write: false,
+            run_only,
         }
     }
 

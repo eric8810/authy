@@ -23,6 +23,9 @@ pub struct SessionRecord {
     pub expires_at: DateTime<Utc>,
     pub revoked: bool,
     pub label: Option<String>,
+    /// When true, this token can only use `run` and `list` — not `get`, `env`, or `export`.
+    #[serde(default)]
+    pub run_only: bool,
 }
 
 /// Generate a session token and its HMAC.

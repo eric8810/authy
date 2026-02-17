@@ -138,6 +138,9 @@ authy session revoke <id>        Revoke a session
 authy session revoke-all         Revoke all sessions
 
 authy run --scope <s> -- <cmd>   Run a command with injected secrets
+authy env --scope <s>            Output secrets as env vars (shell/dotenv/json)
+authy import <file>              Import secrets from a .env file
+authy export --format <fmt>      Export secrets as .env or JSON
 
 authy audit show                 Show audit log entries
 authy audit verify               Verify audit log integrity
@@ -147,6 +150,51 @@ authy config show                Show configuration
 
 authy admin                      Launch admin TUI (interactive management)
 ```
+
+All read commands support `--json` for structured JSON output.
+
+### Env Command
+
+Output secrets as environment variables in shell, dotenv, or JSON format:
+
+```bash
+# Shell format (sourceable)
+eval "$(authy env --scope agent --format shell --uppercase --replace-dash '_')"
+
+# Dotenv format
+authy env --scope agent --format dotenv > .env
+
+# JSON format
+authy env --scope agent --format json | jq .
+```
+
+### Import / Export
+
+Migrate from .env files or export for backup:
+
+```bash
+# Import from .env (transforms UPPER_SNAKE to lower-kebab by default)
+authy import .env
+authy import .env --keep-names --force
+authy import .env --dry-run
+authy import -   # read from stdin
+
+# Export
+authy export --format env --scope agent
+authy export --format json
+```
+
+### Non-Interactive Mode
+
+When stdin is not a TTY (e.g., in CI/CD or agent scripts), authy fails fast instead of prompting. Set credentials via environment variables:
+
+```bash
+export AUTHY_KEYFILE=~/.authy/keys/master.key
+# or: export AUTHY_PASSPHRASE=...
+# or: export AUTHY_TOKEN=... (with AUTHY_KEYFILE)
+```
+
+Set `AUTHY_NON_INTERACTIVE=1` to force non-interactive mode even with a TTY.
 
 ## Authentication Modes
 
@@ -178,6 +226,30 @@ Session tokens are **read-only** — agents cannot store, remove, or modify secr
   keys/
     master.key        age identity (private key)
 ```
+
+## Agent Skills
+
+Authy ships with an [Agent Skills](https://agentskills.io) compatible skill at `skills/authy/SKILL.md`. This works with Claude Code, Cursor, OpenClaw, and 38+ other AI coding agents.
+
+**Install via npx:**
+
+```bash
+npx skills add eric8810/authy
+```
+
+**Install via ClawHub:**
+
+```bash
+clawhub install eric8810/authy
+```
+
+**Manual install (Claude Code):**
+
+```bash
+cp -r skills/authy ~/.claude/skills/authy
+```
+
+The skill teaches agents how to retrieve secrets, list available credentials, inject secrets into subprocesses, and handle errors — without ever reading `.env` files or hardcoding credentials.
 
 ## Documentation
 

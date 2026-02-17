@@ -1,22 +1,25 @@
 use crate::audit;
 use crate::auth;
+use crate::cli::json_output::{
+    SessionCreateResponse, SessionListItem, SessionListResponse,
+};
 use crate::cli::SessionCommands;
 use crate::error::{AuthyError, Result};
 use crate::session::{self, SessionRecord};
 use crate::vault;
 
-pub fn run(cmd: &SessionCommands) -> Result<()> {
+pub fn run(cmd: &SessionCommands, json: bool) -> Result<()> {
     match cmd {
-        SessionCommands::Create { scope, ttl, label } => {
-            create(scope, ttl, label.as_deref())
+        SessionCommands::Create { scope, ttl, label, run_only } => {
+            create(scope, ttl, label.as_deref(), *run_only, json)
         }
-        SessionCommands::List => list(),
+        SessionCommands::List => list(json),
         SessionCommands::Revoke { id } => revoke(id),
         SessionCommands::RevokeAll => revoke_all(),
     }
 }
 
-fn create(scope: &str, ttl: &str, label: Option<&str>) -> Result<()> {
+fn create(scope: &str, ttl: &str, label: Option<&str>, run_only: bool, json: bool) -> Result<()> {
     let (key, auth_ctx) = auth::resolve_auth(true)?;
     let mut vault = vault::load_vault(&key)?;
 
@@ -44,6 +47,7 @@ fn create(scope: &str, ttl: &str, label: Option<&str>) -> Result<()> {
         expires_at,
         revoked: false,
         label: label.map(|s| s.to_string()),
+        run_only,
     };
 
     vault.sessions.push(record);
@@ -62,36 +66,85 @@ fn create(scope: &str, ttl: &str, label: Option<&str>) -> Result<()> {
         &audit_key,
     )?;
 
-    // Print the token to stdout (the only time it's ever shown)
-    println!("{}", token);
-    eprintln!("Session '{}' created (scope={}, expires={})", session_id, scope, expires_at);
+    if json {
+        let response = SessionCreateResponse {
+            token,
+            session_id,
+            scope: scope.to_string(),
+            run_only,
+            expires: expires_at.to_rfc3339(),
+        };
+        println!(
+            "{}",
+            serde_json::to_string(&response)
+                .map_err(|e| AuthyError::Serialization(e.to_string()))?
+        );
+    } else {
+        // Print the token to stdout (the only time it's ever shown)
+        println!("{}", token);
+        let mode = if run_only { ", mode=run-only" } else { "" };
+        eprintln!("Session '{}' created (scope={}, expires={}{})", session_id, scope, expires_at, mode);
+    }
     Ok(())
 }
 
-fn list() -> Result<()> {
+fn list(json: bool) -> Result<()> {
     let (key, _) = auth::resolve_auth(false)?;
     let vault = vault::load_vault(&key)?;
 
-    if vault.sessions.is_empty() {
-        eprintln!("No sessions.");
-        return Ok(());
-    }
-
     let now = chrono::Utc::now();
-    for session in &vault.sessions {
-        let status = if session.revoked {
-            "revoked".to_string()
-        } else if now > session.expires_at {
-            "expired".to_string()
-        } else {
-            "active".to_string()
-        };
 
-        let label = session.label.as_deref().unwrap_or("-");
+    if json {
+        let sessions: Vec<SessionListItem> = vault
+            .sessions
+            .iter()
+            .map(|s| {
+                let status = if s.revoked {
+                    "revoked"
+                } else if now > s.expires_at {
+                    "expired"
+                } else {
+                    "active"
+                };
+                SessionListItem {
+                    id: s.id.clone(),
+                    scope: s.scope.clone(),
+                    status: status.to_string(),
+                    run_only: s.run_only,
+                    label: s.label.clone(),
+                    created: s.created_at.to_rfc3339(),
+                    expires: s.expires_at.to_rfc3339(),
+                }
+            })
+            .collect();
+        let response = SessionListResponse { sessions };
         println!(
-            "{:<16} scope={:<16} status={:<8} label={} expires={}",
-            session.id, session.scope, status, label, session.expires_at
+            "{}",
+            serde_json::to_string(&response)
+                .map_err(|e| AuthyError::Serialization(e.to_string()))?
         );
+    } else {
+        if vault.sessions.is_empty() {
+            eprintln!("No sessions.");
+            return Ok(());
+        }
+
+        for session in &vault.sessions {
+            let status = if session.revoked {
+                "revoked".to_string()
+            } else if now > session.expires_at {
+                "expired".to_string()
+            } else {
+                "active".to_string()
+            };
+
+            let label = session.label.as_deref().unwrap_or("-");
+            let mode = if session.run_only { " run-only" } else { "" };
+            println!(
+                "{:<16} scope={:<16} status={:<8} label={} expires={}{}",
+                session.id, session.scope, status, label, session.expires_at, mode
+            );
+        }
     }
 
     Ok(())

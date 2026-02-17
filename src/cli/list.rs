@@ -1,9 +1,10 @@
 use crate::audit;
 use crate::auth;
+use crate::cli::json_output::{ListResponse, SecretListItem};
 use crate::error::{AuthyError, Result};
 use crate::vault;
 
-pub fn run(scope: Option<&str>) -> Result<()> {
+pub fn run(scope: Option<&str>, json: bool) -> Result<()> {
     let (key, auth_ctx) = auth::resolve_auth(false)?;
     let vault = vault::load_vault(&key)?;
 
@@ -23,8 +24,28 @@ pub fn run(scope: Option<&str>) -> Result<()> {
         names
     };
 
-    for name in &filtered {
-        println!("{}", name);
+    if json {
+        let secrets: Vec<SecretListItem> = filtered
+            .iter()
+            .filter_map(|name| {
+                vault.secrets.get(*name).map(|entry| SecretListItem {
+                    name: name.to_string(),
+                    version: entry.metadata.version,
+                    created: entry.metadata.created_at.to_rfc3339(),
+                    modified: entry.metadata.modified_at.to_rfc3339(),
+                })
+            })
+            .collect();
+        let response = ListResponse { secrets };
+        println!(
+            "{}",
+            serde_json::to_string(&response)
+                .map_err(|e| crate::error::AuthyError::Serialization(e.to_string()))?
+        );
+    } else {
+        for name in &filtered {
+            println!("{}", name);
+        }
     }
 
     // Audit log
