@@ -5,6 +5,7 @@ import { Hero } from './components/Hero';
 import { Features } from './components/Features';
 import { QuickStart } from './components/QuickStart';
 import { Comparison } from './components/Comparison';
+import { AgentSkills } from './components/AgentSkills';
 import { Footer } from './components/Footer';
 import { FadeIn } from './components/FadeIn';
 
@@ -19,7 +20,8 @@ const App: React.FC = () => {
         <Features />
         <QuickStart />
         <Comparison />
-        
+        <AgentSkills />
+
         <section className="py-24 px-6 border-y border-surfaceHighlight bg-surfaceHighlight/5">
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <FadeIn>

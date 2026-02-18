@@ -75,6 +75,31 @@
       "builtForAgents": "Built for AI Agents"
     }
   },
+  "agentSkills": {
+    "title": "Teach Your Agent in One Command",
+    "description": "Agent Skills are portable instruction files that teach AI agents how to use tools. Install the authy skill and your agent instantly knows how to inject secrets — without reading docs or guessing commands.",
+    "highlights": {
+      "install": {
+        "title": "One-Line Install",
+        "description": "npx skills add drops a SKILL.md into your project. Your agent reads it automatically on next session — no config, no setup."
+      },
+      "runOnly": {
+        "title": "Run-Only by Design",
+        "description": "The skill only teaches authy run and authy list. Agents never learn about get, env, or export — the attack surface stays minimal."
+      },
+      "twoCommands": {
+        "title": "Two Commands, That's It",
+        "description": "Agents learn to discover secret names with authy list and inject them into subprocesses with authy run. Nothing more."
+      }
+    },
+    "installTitle": "Install the Skill",
+    "installDescription": "Choose your preferred registry. The skill file teaches your agent exactly two commands — list names, inject into subprocesses.",
+    "tabs": {
+      "npxSkills": "npx skills",
+      "clawhub": "ClawHub",
+      "whatAgentLearns": "What Agent Learns"
+    }
+  },
   "securityBanner": {
     "title": "Stop leaking secrets in your shell history forever.",
     "description": "Even <0>echo \"secret\" | tool</0> can expose sensitive data in shell history. Authy's TUI uses masked input fields that never touch your shell history, process arguments, or parent environment. Secrets remain truly secret.",

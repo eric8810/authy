@@ -75,6 +75,31 @@
       "jsonOutput": "Salida JSON estructurada"
     }
   },
+  "agentSkills": {
+    "title": "Enseña a tu agente con un comando",
+    "description": "Los Agent Skills son archivos de instrucciones portables que enseñan a los agentes IA a usar herramientas. Instala el skill de authy y tu agente sabrá al instante cómo inyectar secretos — sin leer documentación ni adivinar comandos.",
+    "highlights": {
+      "install": {
+        "title": "Instalación en una línea",
+        "description": "npx skills add coloca un archivo SKILL.md en tu proyecto. Tu agente lo lee automáticamente en la próxima sesión — sin configuración."
+      },
+      "runOnly": {
+        "title": "Diseño solo ejecución",
+        "description": "El skill solo enseña authy run y authy list. Los agentes nunca aprenden get, env o export — la superficie de ataque se mantiene mínima."
+      },
+      "twoCommands": {
+        "title": "Solo dos comandos",
+        "description": "Los agentes aprenden a descubrir nombres de secretos con authy list e inyectarlos en subprocesos con authy run. Nada más."
+      }
+    },
+    "installTitle": "Instalar el skill",
+    "installDescription": "Elige tu registro preferido. El archivo de skill enseña a tu agente exactamente dos comandos — listar nombres e inyectar en subprocesos.",
+    "tabs": {
+      "npxSkills": "npx skills",
+      "clawhub": "ClawHub",
+      "whatAgentLearns": "Qué aprende el agente"
+    }
+  },
   "securityBanner": {
     "title": "Evita que tus secretos acaben en el historial de shell",
     "description": "Incluso <0>echo \"secret\" | tool</0> puede provocar fugas de datos. La TUI de Authy garantiza que los secretos que introduces nunca aparezcan en el historial de shell ni en los argumentos del proceso.",

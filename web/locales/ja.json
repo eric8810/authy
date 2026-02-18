@@ -76,6 +76,31 @@
       "jsonOutput": "構造化 JSON 出力"
     }
   },
+  "agentSkills": {
+    "title": "1つのコマンドでエージェントに教える",
+    "description": "Agent Skills は AI エージェントにツールの使い方を教えるポータブルな指示ファイルです。authy スキルをインストールすると、エージェントはすぐにシークレットの注入方法を学びます — ドキュメントを読んだりコマンドを推測する必要はありません。",
+    "highlights": {
+      "install": {
+        "title": "ワンライン・インストール",
+        "description": "npx skills add でプロジェクトに SKILL.md を配置。エージェントは次回のセッションで自動的に読み込みます — 設定不要。"
+      },
+      "runOnly": {
+        "title": "実行専用設計",
+        "description": "スキルは authy run と authy list のみを教えます。エージェントは get、env、export を学びません — 攻撃面を最小に保ちます。"
+      },
+      "twoCommands": {
+        "title": "2つのコマンドだけ",
+        "description": "エージェントは authy list でシークレット名を発見し、authy run でサブプロセスに注入する方法を学びます。それだけです。"
+      }
+    },
+    "installTitle": "スキルをインストール",
+    "installDescription": "お好みのレジストリを選択してください。スキルファイルはエージェントに2つのコマンドだけを教えます — 名前の一覧とサブプロセスへの注入。",
+    "tabs": {
+      "npxSkills": "npx skills",
+      "clawhub": "ClawHub",
+      "whatAgentLearns": "エージェントが学ぶこと"
+    }
+  },
   "securityBanner": {
     "title": "シェル履歴へのシークレット漏洩を防ぐ",
     "description": "<0>echo \"secret\" | tool</0> のような単純な操作でも、データ漏洩のリスクがあります。Authy の TUI で入力したシークレットは、シェル履歴やプロセス引数に一切残りません。",

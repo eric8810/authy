@@ -75,6 +75,31 @@
       "jsonOutput": "Strukturierte JSON-Ausgabe"
     }
   },
+  "agentSkills": {
+    "title": "Bringen Sie Ihrem Agenten mit einem Befehl bei",
+    "description": "Agent Skills sind portable Anleitungsdateien, die KI-Agenten den Umgang mit Tools beibringen. Installieren Sie den Authy-Skill und Ihr Agent weiß sofort, wie Secrets injiziert werden — ohne Dokumentation zu lesen oder Befehle zu erraten.",
+    "highlights": {
+      "install": {
+        "title": "Installation in einer Zeile",
+        "description": "npx skills add legt eine SKILL.md-Datei in Ihr Projekt. Ihr Agent liest sie automatisch bei der nächsten Sitzung — keine Konfiguration nötig."
+      },
+      "runOnly": {
+        "title": "Nur-Ausführung-Design",
+        "description": "Der Skill lehrt nur authy run und authy list. Agenten lernen nie get, env oder export — die Angriffsfläche bleibt minimal."
+      },
+      "twoCommands": {
+        "title": "Nur zwei Befehle",
+        "description": "Agenten lernen, Secret-Namen mit authy list zu entdecken und sie mit authy run in Subprozesse zu injizieren. Mehr nicht."
+      }
+    },
+    "installTitle": "Skill installieren",
+    "installDescription": "Wählen Sie Ihre bevorzugte Registry. Die Skill-Datei lehrt Ihren Agenten genau zwei Befehle — Namen auflisten und in Subprozesse injizieren.",
+    "tabs": {
+      "npxSkills": "npx skills",
+      "clawhub": "ClawHub",
+      "whatAgentLearns": "Was der Agent lernt"
+    }
+  },
   "securityBanner": {
     "title": "Verhindern Sie, dass Secrets in der Shell-Historie landen",
     "description": "Selbst <0>echo \"secret\" | tool</0> kann zu Datenlecks führen. Die TUI von Authy garantiert, dass eingegebene Secrets nie in der Shell-Historie oder Prozessargumenten erscheinen.",

@@ -76,6 +76,31 @@
       "jsonOutput": "結構化 JSON 輸出"
     }
   },
+  "agentSkills": {
+    "title": "一條指令，教會你的 Agent",
+    "description": "Agent Skills 是可攜式的指令檔案，用於教 AI Agent 使用工具。安裝 authy skill 後，你的 Agent 立即知道如何注入密鑰 — 無需閱讀文件或猜測指令。",
+    "highlights": {
+      "install": {
+        "title": "一行安裝",
+        "description": "npx skills add 會在專案中放置一個 SKILL.md 檔案。Agent 下次啟動時自動讀取 — 無需設定。"
+      },
+      "runOnly": {
+        "title": "僅執行設計",
+        "description": "技能僅教授 authy run 和 authy list。Agent 永遠不會學到 get、env 或 export — 攻擊面保持最小。"
+      },
+      "twoCommands": {
+        "title": "僅需兩個指令",
+        "description": "Agent 學會使用 authy list 發現密鑰名稱，使用 authy run 將密鑰注入子程序。僅此而已。"
+      }
+    },
+    "installTitle": "安裝技能",
+    "installDescription": "選擇你偏好的註冊表。技能檔案只教 Agent 兩個指令 — 列出名稱，注入子程序。",
+    "tabs": {
+      "npxSkills": "npx skills",
+      "clawhub": "ClawHub",
+      "whatAgentLearns": "Agent 學到什麼"
+    }
+  },
   "securityBanner": {
     "title": "告別 Shell 歷史中的密鑰外洩風險",
     "description": "即使使用 <0>echo \"secret\" | tool</0> 也可能造成資料外洩。Authy 的 TUI 介面確保您輸入的密鑰永遠不會出現在 Shell 歷史或程序參數中。",

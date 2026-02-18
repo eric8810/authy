@@ -76,6 +76,31 @@
       "builtForAgents": "面向 Agent 设计"
     }
   },
+  "agentSkills": {
+    "title": "一条命令，教会你的 Agent",
+    "description": "Agent Skills 是可移植的指令文件，用于教 AI Agent 使用工具。安装 authy skill 后，你的 Agent 立即知道如何注入密钥 — 无需阅读文档或猜测命令。",
+    "highlights": {
+      "install": {
+        "title": "一行安装",
+        "description": "npx skills add 会在项目中放置一个 SKILL.md 文件。Agent 下次启动时自动读取 — 无需配置。"
+      },
+      "runOnly": {
+        "title": "仅运行设计",
+        "description": "技能仅教授 authy run 和 authy list。Agent 永远不会学到 get、env 或 export — 攻击面保持最小。"
+      },
+      "twoCommands": {
+        "title": "仅需两个命令",
+        "description": "Agent 学会使用 authy list 发现密钥名称，使用 authy run 将密钥注入子进程。仅此而已。"
+      }
+    },
+    "installTitle": "安装技能",
+    "installDescription": "选择你偏好的注册表。技能文件只教 Agent 两个命令 — 列出名称，注入子进程。",
+    "tabs": {
+      "npxSkills": "npx skills",
+      "clawhub": "ClawHub",
+      "whatAgentLearns": "Agent 学到什么"
+    }
+  },
   "securityBanner": {
     "title": "告别 Shell 历史中的密钥泄露风险",
     "description": "即使使用 <0>echo \"secret\" | tool</0> 也可能造成数据泄露。Authy 的 TUI 界面确保您输入的密钥永远不会出现在 Shell 历史或进程参数中。",

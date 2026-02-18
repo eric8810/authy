@@ -76,6 +76,31 @@
       "jsonOutput": "구조화된 JSON 출력"
     }
   },
+  "agentSkills": {
+    "title": "한 줄 명령으로 에이전트 교육",
+    "description": "Agent Skills는 AI 에이전트에게 도구 사용법을 알려주는 이동식 지침 파일입니다. authy 스킬을 설치하면 에이전트가 즉시 시크릿 주입 방법을 학습합니다 — 문서를 읽거나 명령을 추측할 필요 없습니다.",
+    "highlights": {
+      "install": {
+        "title": "원라인 설치",
+        "description": "npx skills add로 프로젝트에 SKILL.md를 배치합니다. 에이전트가 다음 세션에서 자동으로 읽습니다 — 설정 불필요."
+      },
+      "runOnly": {
+        "title": "실행 전용 설계",
+        "description": "스킬은 authy run과 authy list만 가르칩니다. 에이전트는 get, env, export를 배우지 않습니다 — 공격 표면을 최소로 유지합니다."
+      },
+      "twoCommands": {
+        "title": "명령어 2개면 충분",
+        "description": "에이전트는 authy list로 시크릿 이름을 확인하고 authy run으로 서브프로세스에 주입하는 방법을 배웁니다. 그것뿐입니다."
+      }
+    },
+    "installTitle": "스킬 설치",
+    "installDescription": "선호하는 레지스트리를 선택하세요. 스킬 파일은 에이전트에게 두 가지 명령만 가르칩니다 — 이름 목록 조회와 서브프로세스 주입.",
+    "tabs": {
+      "npxSkills": "npx skills",
+      "clawhub": "ClawHub",
+      "whatAgentLearns": "에이전트가 배우는 것"
+    }
+  },
   "securityBanner": {
     "title": "셸 기록에 시크릿이 유출되는 것을 방지하세요",
     "description": "<0>echo \"secret\" | tool</0> 같은 단순한 작업도 데이터 유출 위험이 있습니다. Authy TUI에서 입력한 시크릿은 셸 기록이나 프로세스 인자에 절대 남지 않습니다.",
