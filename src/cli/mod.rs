@@ -1,15 +1,18 @@
 pub mod admin;
+pub mod alias;
 pub mod audit;
 pub mod common;
 pub mod config;
 pub mod env;
 pub mod export;
 pub mod get;
+pub mod hook;
 pub mod import;
 pub mod init;
 pub mod json_output;
 pub mod list;
 pub mod policy;
+pub mod project_info;
 pub mod remove;
 pub mod rotate;
 pub mod run;
@@ -92,9 +95,9 @@ pub enum Commands {
 
     /// Run a command with secrets injected as env vars
     Run {
-        /// Scope for secret access
+        /// Scope for secret access (optional if .authy.toml exists)
         #[arg(long)]
-        scope: String,
+        scope: Option<String>,
         /// Uppercase env var names
         #[arg(long)]
         uppercase: bool,
@@ -111,9 +114,9 @@ pub enum Commands {
 
     /// Output secrets as environment variables
     Env {
-        /// Scope (policy name) for secret access
+        /// Scope (policy name) for secret access (optional if .authy.toml exists)
         #[arg(long)]
-        scope: String,
+        scope: Option<String>,
         /// Uppercase env var names
         #[arg(long)]
         uppercase: bool,
@@ -178,6 +181,40 @@ pub enum Commands {
     Config {
         #[command(subcommand)]
         command: ConfigCommands,
+    },
+
+    /// Show project config from .authy.toml
+    ProjectInfo {
+        /// Show a specific field (scope, keyfile, vault, uppercase, replace-dash, prefix, dir, aliases)
+        #[arg(long)]
+        field: Option<String>,
+        /// Start directory for .authy.toml discovery
+        #[arg(long)]
+        dir: Option<String>,
+    },
+
+    /// Generate shell aliases for tools
+    Alias {
+        /// Scope (policy name) — optional if --from-project is used
+        scope: Option<String>,
+        /// Shell syntax to generate (bash, zsh, fish, powershell)
+        #[arg(long, default_value = "bash")]
+        shell: String,
+        /// Read scope, naming, and aliases from .authy.toml
+        #[arg(long)]
+        from_project: bool,
+        /// Output unalias commands for the project in AUTHY_PROJECT_DIR
+        #[arg(long)]
+        cleanup: bool,
+        /// Tool names to alias
+        #[arg(trailing_var_arg = true)]
+        tools: Vec<String>,
+    },
+
+    /// Output shell hook code for auto-activation on cd
+    Hook {
+        /// Shell to generate hook for (bash, zsh, fish)
+        shell: String,
     },
 
     /// Launch admin TUI (interactive vault management)

@@ -120,6 +120,35 @@ authy env --scope deploy-agent  # Error: Run-only mode
 authy list --json             # OK — shows names only
 ```
 
+## Project Config (`.authy.toml`)
+
+Drop a `.authy.toml` in your project root. Authy discovers it automatically — no `--scope` needed:
+
+```toml
+[authy]
+scope = "my-project"
+keyfile = "~/.authy/keys/master.key"
+uppercase = true
+replace_dash = "_"
+aliases = ["claude", "aider"]
+```
+
+With this file present:
+
+```bash
+# --scope is inferred from .authy.toml
+authy run -- claude
+authy env --format shell
+
+# Generate shell aliases from config
+authy alias --from-project
+
+# Shell hook: auto-activate on cd (like direnv)
+eval "$(authy hook bash)"    # add to ~/.bashrc
+eval "$(authy hook zsh)"     # add to ~/.zshrc
+authy hook fish | source     # add to ~/.config/fish/config.fish
+```
+
 ## Commands
 
 ```
@@ -142,10 +171,14 @@ authy session list               List active sessions
 authy session revoke <id>        Revoke a session
 authy session revoke-all         Revoke all sessions
 
-authy run --scope <s> -- <cmd>   Run a command with injected secrets
-authy env --scope <s>            Output secrets as env vars (shell/dotenv/json)
+authy run [--scope <s>] -- <cmd> Run a command with injected secrets
+authy env [--scope <s>]          Output secrets as env vars (shell/dotenv/json)
 authy import <file>              Import secrets from a .env file
 authy export --format <fmt>      Export secrets as .env or JSON
+
+authy project-info               Show .authy.toml project config
+authy alias [scope] [tools...]   Generate shell aliases for tools
+authy hook <shell>               Output shell hook code for auto-activation
 
 authy audit show                 Show audit log entries
 authy audit verify               Verify audit log integrity
@@ -157,6 +190,7 @@ authy admin                      Launch admin TUI (interactive management)
 ```
 
 All read commands support `--json` for structured JSON output.
+`--scope` is optional for `run`, `env`, and `export` when `.authy.toml` is present.
 
 ### Env Command
 

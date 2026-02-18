@@ -207,13 +207,34 @@ For MCP servers that need secrets in args (like Postgres), use wrapper scripts:
 }
 ```
 
-### Shell Alias
+### Project Config + Shell Hook
 
-Avoid typing the full wrapper each time:
+Drop `.authy.toml` in your project root for automatic activation:
+
+```toml
+# .authy.toml
+[authy]
+scope = "claude-code"
+keyfile = "~/.authy/keys/master.key"
+uppercase = true
+replace_dash = "_"
+aliases = ["claude", "aider"]
+```
 
 ```bash
-# Add to ~/.bashrc or ~/.zshrc
-alias claude='authy run --scope claude-code --uppercase --replace-dash _ -- claude'
+# Add to ~/.bashrc or ~/.zshrc (one-time)
+eval "$(authy hook bash)"
+```
+
+Now `cd` into the project and type `claude` — secrets are injected automatically.
+
+### Shell Alias (Manual)
+
+Or generate aliases explicitly:
+
+```bash
+eval "$(authy alias --from-project)"
+# Or: eval "$(authy alias claude-code claude aider)"
 ```
 
 ### CI/CD
@@ -266,8 +287,8 @@ docker run \
 | `authy list [--json]` | List secret names (allowed in run-only mode) |
 | `authy remove <name>` | Delete a secret |
 | `authy rotate <name>` | Update a secret value |
-| `authy run --scope <s> -- <cmd>` | Run command with scoped secrets injected |
-| `authy env --scope <s>` | Output secrets as env vars (blocked in run-only mode) |
+| `authy run [--scope <s>] -- <cmd>` | Run command with scoped secrets injected |
+| `authy env [--scope <s>]` | Output secrets as env vars (blocked in run-only mode) |
 | `authy import <file>` | Import secrets from .env file |
 | `authy export --format <f>` | Export secrets (blocked in run-only mode) |
 | `authy policy create <name> [--run-only]` | Create an access policy |
@@ -275,6 +296,9 @@ docker run \
 | `authy session create --scope <s> [--run-only]` | Create a scoped, time-limited token |
 | `authy session revoke <id>` | Revoke a session token |
 | `authy audit show [--json]` | View audit log |
+| `authy project-info` | Show .authy.toml project config |
+| `authy alias` | Generate shell aliases for tools |
+| `authy hook <shell>` | Output shell hook code for auto-activation |
 | `authy audit verify` | Verify audit log integrity |
 
 ---

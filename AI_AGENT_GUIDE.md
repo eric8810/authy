@@ -196,16 +196,49 @@ Configure in `.mcp.json`:
 }
 ```
 
-### Approach 4: Shell Alias
+### Approach 4: Project Config + Shell Hook
 
-If you always launch Claude Code with Authy, create a shell alias so you don't need to type the full `authy run` wrapper each time:
+The most seamless approach — drop a `.authy.toml` in your project and let the shell hook handle everything:
 
-```bash
-# Add to ~/.bashrc or ~/.zshrc
-alias claude='authy run --scope claude-code --uppercase --replace-dash _ -- claude'
+```toml
+# .authy.toml (in project root)
+[authy]
+scope = "claude-code"
+keyfile = "~/.authy/keys/master.key"
+uppercase = true
+replace_dash = "_"
+aliases = ["claude", "aider"]
 ```
 
-Now just type `claude` — secrets are injected automatically via `authy run` subprocess isolation.
+```bash
+# Add shell hook to ~/.bashrc or ~/.zshrc (one-time setup)
+eval "$(authy hook bash)"    # or: eval "$(authy hook zsh)"
+```
+
+Now when you `cd` into the project, Authy automatically:
+1. Sets `AUTHY_KEYFILE` from the config
+2. Creates aliases so `claude` → `authy run --scope claude-code --uppercase --replace-dash _ -- claude`
+3. Cleans up aliases when you leave the project
+
+No manual wrapping needed — just type `claude`.
+
+### Approach 5: Shell Alias (Manual)
+
+If you prefer explicit control over the generated alias:
+
+```bash
+# Generate aliases from .authy.toml
+eval "$(authy alias --from-project)"
+
+# Or generate a one-off alias
+eval "$(authy alias claude-code claude aider)"
+```
+
+Or add a static alias to `~/.bashrc` / `~/.zshrc`:
+
+```bash
+alias claude='authy run --scope claude-code --uppercase --replace-dash _ -- claude'
+```
 
 ### Protecting Secrets from Claude Code
 
@@ -344,25 +377,47 @@ authy policy create ci-deploy \
 authy run --scope ci-deploy --uppercase --replace-dash _ -- ./scripts/deploy.sh
 ```
 
-### Pattern: Multi-Project Setup
+### Pattern: Multi-Project Setup with `.authy.toml`
 
-Different projects need different secrets:
+Different projects need different secrets. Use `.authy.toml` for per-project config:
 
 ```bash
-# Frontend project: API keys only
-authy policy create frontend \
-  --allow "api-*" \
-  --allow "feature-flags-*"
+# Frontend project
+authy policy create frontend --allow "api-*" --allow "feature-flags-*"
 
-# Backend project: database + cache + APIs
-authy policy create backend \
-  --allow "db-dev-*" \
-  --allow "cache-*" \
-  --allow "api-*" \
-  --deny "db-prod-*"
+# Backend project
+authy policy create backend --allow "db-dev-*" --allow "cache-*" --allow "api-*" --deny "db-prod-*"
+```
 
-cd ~/frontend && authy run --scope frontend --uppercase -- npm run dev
-cd ~/backend && authy run --scope backend --uppercase --replace-dash _ -- cargo run
+```toml
+# ~/frontend/.authy.toml
+[authy]
+scope = "frontend"
+uppercase = true
+aliases = ["claude"]
+```
+
+```toml
+# ~/backend/.authy.toml
+[authy]
+scope = "backend"
+uppercase = true
+replace_dash = "_"
+aliases = ["claude", "aider"]
+```
+
+With the shell hook active (`eval "$(authy hook bash)"`), aliases activate automatically when you `cd` into each project:
+
+```bash
+cd ~/frontend && claude    # → authy run --scope frontend --uppercase -- claude
+cd ~/backend && claude     # → authy run --scope backend --uppercase --replace-dash _ -- claude
+```
+
+Or without the shell hook, `--scope` is still inferred from `.authy.toml`:
+
+```bash
+cd ~/frontend && authy run -- npm run dev     # scope=frontend from .authy.toml
+cd ~/backend && authy run -- cargo run        # scope=backend from .authy.toml
 ```
 
 ### Pattern: Shared Team Access

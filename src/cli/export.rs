@@ -3,6 +3,7 @@ use serde::Serialize;
 use crate::audit;
 use crate::auth;
 use crate::cli::common;
+use crate::config::project::ProjectConfig;
 use crate::error::{AuthyError, Result};
 use crate::subprocess::{transform_name, NamingOptions};
 use crate::vault;
@@ -18,11 +19,31 @@ struct ExportJsonEntry {
 
 pub fn run(
     format: &str,
-    scope: Option<&str>,
-    uppercase: bool,
-    replace_dash: Option<char>,
-    prefix: Option<String>,
+    scope_arg: Option<&str>,
+    uppercase_arg: bool,
+    replace_dash_arg: Option<char>,
+    prefix_arg: Option<String>,
 ) -> Result<()> {
+    // Merge CLI args with project config (scope remains optional for export)
+    let project = ProjectConfig::discover_from_cwd().ok().flatten();
+    let project_config = project.as_ref().map(|(c, _)| c);
+
+    let scope = scope_arg
+        .map(|s| s.to_string())
+        .or_else(|| project_config.map(|c| c.scope.clone()));
+
+    let uppercase = uppercase_arg || project_config.is_some_and(|c| c.uppercase);
+    let replace_dash =
+        replace_dash_arg.or_else(|| project_config.and_then(|c| c.replace_dash_char()));
+    let prefix = prefix_arg.or_else(|| project_config.and_then(|c| c.prefix.clone()));
+
+    // If project has keyfile and AUTHY_KEYFILE not set, set it
+    if std::env::var("AUTHY_KEYFILE").is_err() {
+        if let Some(kf) = project_config.and_then(|c| c.expanded_keyfile()) {
+            std::env::set_var("AUTHY_KEYFILE", &kf);
+        }
+    }
+
     // Without scope: require master auth (reject tokens)
     let require_write = scope.is_none();
     let (key, auth_ctx) = auth::resolve_auth(require_write)?;
@@ -34,7 +55,7 @@ pub fn run(
     }
 
     // Policy-level run_only enforcement
-    if let Some(scope_name) = scope {
+    if let Some(ref scope_name) = scope {
         if let Some(policy) = vault_data.policies.get(scope_name) {
             if policy.run_only {
                 return Err(AuthyError::RunOnly);
@@ -50,7 +71,7 @@ pub fn run(
 
     match format {
         "env" => {
-            if let Some(scope) = scope {
+            if let Some(ref scope) = scope {
                 let secrets = common::resolve_scoped_secrets(&vault_data, scope, &auth_ctx)?;
                 let mut pairs: Vec<(String, String)> = secrets
                     .iter()
@@ -76,7 +97,7 @@ pub fn run(
             }
         }
         "json" => {
-            if let Some(scope) = scope {
+            if let Some(ref scope) = scope {
                 let secrets = common::resolve_scoped_secrets(&vault_data, scope, &auth_ctx)?;
                 let mut entries: Vec<ExportJsonEntry> = secrets
                     .keys()
@@ -128,7 +149,7 @@ pub fn run(
     let material = audit::key_material(&key);
     let audit_key = audit::derive_audit_key(&material);
     let detail = match scope {
-        Some(s) => format!("format={}, scope={}", format, s),
+        Some(ref s) => format!("format={}, scope={}", format, s),
         None => format!("format={}, scope=all", format),
     };
     audit::log_event(

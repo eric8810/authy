@@ -1,6 +1,6 @@
 {
   "name": "authy-cli",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "CLI secrets store & dispatch for AI agents",
   "license": "MIT",
   "repository": {

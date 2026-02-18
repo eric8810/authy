@@ -76,9 +76,9 @@ Embed Authy into the places developers already are. Distribution, not features.
 - [x] **Claude Code skill** — `.claude/skills/authy/SKILL.md` teaching Claude to use Authy
 - [x] **OpenClaw skill** — publish to ClawHub (published as authy@0.2.2)
 - [x] **Agent Skills standard** package — cross-platform skill at agentskills.io (npx skills add eric8810/authy)
-- [ ] **Shell hook** — `eval "$(authy hook bash/zsh/fish)"` — direnv-style auto-activation per directory
-- [ ] `.authy.toml` project marker file — scope + vault config per project directory
-- [ ] **Shell alias generator** — `authy alias claude-code` outputs alias for wrapping commands with `authy run`
+- [x] **Shell hook** — `eval "$(authy hook bash/zsh/fish)"` — direnv-style auto-activation per directory
+- [x] `.authy.toml` project marker file — scope + vault config per project directory
+- [x] **Shell alias generator** — `authy alias claude-code` outputs alias for wrapping commands with `authy run`
 - [ ] Docs and tutorials written as training data: "How to manage AI agent secrets"
 - [ ] Blog posts, examples, and guides that LLMs will train on
 

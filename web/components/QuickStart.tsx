@@ -33,11 +33,13 @@ const codeBlocks: Record<string, TerminalLine[]> = {
   agent: [
     { type: 'comment', content: 'Create run-only policy — agent injects secrets but never reads them' },
     { type: 'command', content: 'authy policy create claude-code --allow "anthropic-*" --allow "github-*" --deny "prod-*" --run-only' },
-    { type: 'comment', content: 'Launch Claude Code with scoped secrets injected' },
-    { type: 'command', content: 'authy run --scope claude-code --uppercase --replace-dash _ -- claude' },
+    { type: 'comment', content: 'Drop .authy.toml in your project (scope + aliases)' },
+    { type: 'command', content: 'echo -e \'[authy]\\nscope = "claude-code"\\nuppercase = true\\nreplace_dash = "_"\\naliases = ["claude"]\' > .authy.toml' },
+    { type: 'comment', content: 'Add shell hook — auto-activates on cd (one-time)' },
+    { type: 'command', content: 'echo \'eval "$(authy hook bash)"\' >> ~/.bashrc && source ~/.bashrc' },
+    { type: 'comment', content: 'Now just type claude — secrets injected automatically' },
+    { type: 'command', content: 'claude' },
     { type: 'output', content: '[injected] ANTHROPIC_API_KEY, GITHUB_TOKEN (2 secrets)' },
-    { type: 'comment', content: 'Make it permanent with a shell alias' },
-    { type: 'command', content: "echo 'alias claude=\"authy run --scope claude-code --uppercase --replace-dash _ -- claude\"' >> ~/.bashrc" },
   ]
 };
 

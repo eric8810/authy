@@ -1,18 +1,42 @@
 use crate::audit;
 use crate::auth;
 use crate::cli::common;
+use crate::config::project::ProjectConfig;
 use crate::error::{AuthyError, Result};
 use crate::subprocess::{transform_name, NamingOptions};
 use crate::vault;
 
 pub fn run(
-    scope: &str,
-    uppercase: bool,
-    replace_dash: Option<char>,
-    prefix: Option<String>,
+    scope_arg: Option<&str>,
+    uppercase_arg: bool,
+    replace_dash_arg: Option<char>,
+    prefix_arg: Option<String>,
     format: &str,
     no_export: bool,
 ) -> Result<()> {
+    // Merge CLI args with project config
+    let project = ProjectConfig::discover_from_cwd().ok().flatten();
+    let project_config = project.as_ref().map(|(c, _)| c);
+
+    let scope = scope_arg
+        .map(|s| s.to_string())
+        .or_else(|| project_config.map(|c| c.scope.clone()))
+        .ok_or_else(|| {
+            AuthyError::Other("No --scope provided and no .authy.toml found.".to_string())
+        })?;
+
+    let uppercase = uppercase_arg || project_config.is_some_and(|c| c.uppercase);
+    let replace_dash =
+        replace_dash_arg.or_else(|| project_config.and_then(|c| c.replace_dash_char()));
+    let prefix = prefix_arg.or_else(|| project_config.and_then(|c| c.prefix.clone()));
+
+    // If project has keyfile and AUTHY_KEYFILE not set, set it
+    if std::env::var("AUTHY_KEYFILE").is_err() {
+        if let Some(kf) = project_config.and_then(|c| c.expanded_keyfile()) {
+            std::env::set_var("AUTHY_KEYFILE", &kf);
+        }
+    }
+
     let (key, auth_ctx) = auth::resolve_auth(false)?;
     let vault = vault::load_vault(&key)?;
 
@@ -22,13 +46,13 @@ pub fn run(
     }
 
     // Policy-level run_only enforcement
-    if let Some(policy) = vault.policies.get(scope) {
+    if let Some(policy) = vault.policies.get(&scope) {
         if policy.run_only {
             return Err(AuthyError::RunOnly);
         }
     }
 
-    let secrets = common::resolve_scoped_secrets(&vault, scope, &auth_ctx)?;
+    let secrets = common::resolve_scoped_secrets(&vault, &scope, &auth_ctx)?;
 
     let naming = NamingOptions {
         uppercase,
@@ -88,7 +112,12 @@ pub fn run(
         None,
         &auth_ctx.actor_name(),
         "success",
-        Some(&format!("scope={}, secrets={}, format={}", scope, secrets.len(), format)),
+        Some(&format!(
+            "scope={}, secrets={}, format={}",
+            scope,
+            secrets.len(),
+            format
+        )),
         &audit_key,
     )?;
 

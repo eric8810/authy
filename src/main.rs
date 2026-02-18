@@ -43,7 +43,7 @@ fn main() {
             replace_dash,
             prefix,
             command,
-        } => cli::run::run(scope, *uppercase, *replace_dash, prefix.clone(), command),
+        } => cli::run::run(scope.as_deref(), *uppercase, *replace_dash, prefix.clone(), command),
 
         Commands::Env {
             scope,
@@ -52,7 +52,7 @@ fn main() {
             prefix,
             format,
             no_export,
-        } => cli::env::run(scope, *uppercase, *replace_dash, prefix.clone(), format, *no_export),
+        } => cli::env::run(scope.as_deref(), *uppercase, *replace_dash, prefix.clone(), format, *no_export),
 
         Commands::Import {
             file,
@@ -73,6 +73,20 @@ fn main() {
         Commands::Audit { command } => cli::audit::run(command, json),
 
         Commands::Config { command } => cli::config::run(command),
+
+        Commands::ProjectInfo { field, dir } => {
+            cli::project_info::run(field.as_deref(), dir.as_deref(), json)
+        }
+
+        Commands::Alias {
+            scope,
+            shell,
+            from_project,
+            cleanup,
+            tools,
+        } => cli::alias::run(scope.as_deref(), shell, *from_project, *cleanup, tools),
+
+        Commands::Hook { shell } => cli::hook::run(shell),
 
         Commands::Admin { keyfile } => cli::admin::run(keyfile.clone()),
     };
