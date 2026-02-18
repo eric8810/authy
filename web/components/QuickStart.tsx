@@ -36,6 +36,8 @@ const codeBlocks: Record<string, TerminalLine[]> = {
     { type: 'comment', content: 'Launch Claude Code with scoped secrets injected' },
     { type: 'command', content: 'authy run --scope claude-code --uppercase --replace-dash _ -- claude' },
     { type: 'output', content: '[injected] ANTHROPIC_API_KEY, GITHUB_TOKEN (2 secrets)' },
+    { type: 'comment', content: 'Make it permanent with a shell alias' },
+    { type: 'command', content: "echo 'alias claude=\"authy run --scope claude-code --uppercase --replace-dash _ -- claude\"' >> ~/.bashrc" },
   ]
 };
 
