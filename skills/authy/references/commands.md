@@ -40,16 +40,8 @@ authy run --scope db --uppercase --replace-dash '_' -- ./task.sh
 rm task.sh
 ```
 
-## Operator Commands (Not for Agents)
+## Notes
 
-| Command | Purpose |
-|---------|---------|
-| `authy init` | Initialize vault |
-| `authy store <name>` | Store a secret |
-| `authy get <name>` | Read a secret value |
-| `authy remove <name>` | Remove a secret |
-| `authy import <file>` | Import from .env |
-| `authy export --format <f>` | Export secrets |
-| `authy env --scope <s>` | Output as env vars |
-| `authy policy create <name> --allow <glob> [--run-only]` | Create policy |
-| `authy session create --scope <s> [--run-only]` | Create token |
+- Your token is run-only — only the commands listed above are available
+- Secrets are injected into subprocesses as env vars and never written to disk
+- Do not echo, print, or redirect environment variables containing secrets
