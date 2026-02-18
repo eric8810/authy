@@ -116,7 +116,7 @@ Flags:
 
 ## Claude Code Integration
 
-Claude Code lacks a built-in secrets vault. It relies on environment variables, file-based deny rules, and hooks. Authy fills this gap.
+Claude Code lacks a built-in secrets vault. It relies on environment variables and file-based deny rules. Authy fills this gap.
 
 ### Approach 1: Launch Claude Code with Injected Secrets
 
@@ -196,40 +196,16 @@ Configure in `.mcp.json`:
 }
 ```
 
-### Approach 4: SessionStart Hook
+### Approach 4: Shell Alias
 
-Claude Code hooks can inject secrets at session startup via `CLAUDE_ENV_FILE`. This avoids wrapping the `claude` command:
+If you always launch Claude Code with Authy, create a shell alias so you don't need to type the full `authy run` wrapper each time:
 
 ```bash
-#!/bin/bash
-# .claude/hooks/inject-secrets.sh
-if [ -n "$CLAUDE_ENV_FILE" ]; then
-  echo "export BRAVE_API_KEY=$(authy get brave-api-key)" >> "$CLAUDE_ENV_FILE"
-  echo "export GITHUB_TOKEN=$(authy get github-token)" >> "$CLAUDE_ENV_FILE"
-fi
-exit 0
+# Add to ~/.bashrc or ~/.zshrc
+alias claude='authy run --scope claude-code --uppercase --replace-dash _ -- claude'
 ```
 
-Configure in `.claude/settings.json` or `.claude/settings.local.json`:
-
-```json
-{
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": ".claude/hooks/inject-secrets.sh"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-Put the hook config in `.claude/settings.local.json` (gitignored) if you don't want to share it with the team, or in `.claude/settings.json` (committed) if the team should all use Authy.
+Now just type `claude` — secrets are injected automatically via `authy run` subprocess isolation.
 
 ### Protecting Secrets from Claude Code
 
@@ -248,7 +224,7 @@ Claude Code can read `.env` files and other sensitive files unless explicitly bl
 }
 ```
 
-This prevents Claude Code from directly reading your vault, keyfiles, or `.env` files. Secrets are only accessible through the environment variables injected by `authy run` or the SessionStart hook.
+This prevents Claude Code from directly reading your vault, keyfiles, or `.env` files. Secrets are only accessible through the environment variables injected by `authy run`.
 
 ### Giving Claude Code a Session Token
 
@@ -565,5 +541,4 @@ Audit entries include: timestamp, operation, secret name, actor identity (master
 - [Authy Architecture](ARCHITECTURE.md) — System design and data flow
 - [Claude Code MCP Docs](https://code.claude.com/docs/en/mcp) — MCP server configuration
 - [Claude Code Settings](https://code.claude.com/docs/en/settings) — Settings hierarchy and permissions
-- [Claude Code Hooks](https://code.claude.com/docs/en/hooks) — Hook lifecycle and configuration
 - [OpenClaw Security Docs](https://docs.openclaw.ai/gateway/security) — OpenClaw security guidance

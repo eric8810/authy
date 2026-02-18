@@ -207,16 +207,13 @@ For MCP servers that need secrets in args (like Postgres), use wrapper scripts:
 }
 ```
 
-### Claude Code Hooks
+### Shell Alias
 
-Inject secrets at session startup without wrapping the `claude` command:
+Avoid typing the full wrapper each time:
 
 ```bash
-#!/bin/bash
-# .claude/hooks/inject-secrets.sh
-if [ -n "$CLAUDE_ENV_FILE" ]; then
-  echo "export GITHUB_TOKEN=$(authy get github-token)" >> "$CLAUDE_ENV_FILE"
-fi
+# Add to ~/.bashrc or ~/.zshrc
+alias claude='authy run --scope claude-code --uppercase --replace-dash _ -- claude'
 ```
 
 ### CI/CD
