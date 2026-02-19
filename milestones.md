@@ -84,20 +84,31 @@ Embed Authy into the places developers already are. Distribution, not features.
 
 **Success criteria:** A developer setting up Claude Code, OpenClaw, or a new agent project encounters Authy as the default secrets pattern.
 
-## v0.4 — Secrets Handoff Protocol
+## v0.4 — Tool Launcher
 
-`authy run` becomes the standard way ANY layer passes secrets to the next layer.
+Developer launches tools with secrets. Agents connect to tools. Agents never touch secrets.
 
-- [ ] Framework layer: `authy run --scope framework -- python agent.py`
-- [ ] Orchestrator layer: `authy run --scope agent-a -- python sub_agent.py`
-- [ ] Tool layer: `authy run --scope mcp-stripe -- npx @stripe/mcp-server`
-- [ ] Runtime layer: `authy env --scope sandbox-1` piped into container env
-- [ ] Delegation tokens — Agent A issues a scoped, time-limited token to sub-agent B
-- [ ] Named agent identities — distinct profiles with distinct credential access
-- [ ] Per-agent audit attribution — every access logged against agent identity
-- [ ] Passphrase change / re-key vault
+- [ ] **`authy up`** — read `[tools]` from `.authy.toml`, resolve config placeholders, launch each tool with `authy run` (secrets in env + resolved config files)
+- [ ] **`authy down`** — stop tools, remove resolved config files
+- [ ] **File placeholders** — `<authy:key-name>` in config files, resolved by `authy up` to `config_target` path
+- [ ] **`.authy.toml` tool declarations:**
+  ```toml
+  [tools.stripe]
+  scope = "payments"
+  command = "npx @stripe/mcp-server"
+  config = "config/stripe.yaml"       # source with placeholders
+  config_target = "/tmp/stripe.yaml"  # resolved file for tool
+  ```
+- [ ] **Safe/sensitive command split** — formalize: safe commands (list, run) work with agent tokens; sensitive commands (get, store, export, import, rotate) require TTY or master key
+- [ ] **Passphrase change / re-key vault**
 
-**Success criteria:** Multi-agent systems use `authy run` to scope credentials per agent. Each agent sees only what it needs. Full audit trail of which agent accessed what.
+**Success criteria:** `authy up` starts tools with secrets, agent connects and works, agent never sees an API key.
+
+### Deferred to v0.5+
+
+- Agent identity (named agents with scoped access)
+- Per-agent audit attribution
+- Delegation tokens (agent-to-agent scope narrowing)
 
 ## v0.5 — Platform Integration Layer
 
@@ -149,6 +160,17 @@ Authy is on every agent's PATH like `git` is on every developer's PATH.
 - Appearance in LLM training data (can an agent use Authy without being told?)
 - Number of `.authy.toml` files in public repositories
 - Community skills/plugins built on top of Authy
+
+## Competitive Landscape
+
+| Tool | What it does | Authy's advantage |
+|------|-------------|-------------------|
+| **vestauth** | Agent identity via Ed25519 HTTP signatures (RFC 9421). Agents prove who they are, tools verify. | Requires every tool to add verification code — won't scale. Authy uses process isolation (zero tool changes). No secret storage — relies on dotenvx. Needs hosted key directory. |
+| **agent-vault** | File I/O redaction layer. Agents see `<agent-vault:key>` placeholders, real values restored on write. | File-only — doesn't cover runtime/env secrets. No scoping, no policies, no audit log. AES-256-GCM vs age. TypeScript/npm vs Rust single binary. We adopt their file redaction idea in v0.4 (`authy read`/`authy write`). |
+| **dotenvx** | Encrypted `.env` files with `dotenvx run`. | No agent scoping, no policies, no session tokens, no audit. Secrets still flow into agent's env. |
+| **.env files** | The status quo. Plain text secrets in project directories. | Everything. But this is what 90% of developers use today. |
+
+**Our position:** Authy covers both surfaces (runtime + file) with scoping, policies, audit, and process isolation. No other tool does all of these.
 
 ## Anti-Goals (What We Don't Build)
 
