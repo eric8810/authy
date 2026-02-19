@@ -59,14 +59,12 @@ authy get db-url              # Error: Run-only mode
 authy list --json             # OK — shows names only
 ```
 
-## What's New in v0.2.0
+## What's New in v0.3.0
 
-- **Run-only mode** — `--run-only` on tokens and policies blocks `get`/`env`/`export`
-- **JSON output** — `--json` global flag on all read commands
-- **`authy env`** — output secrets as shell/dotenv/json
-- **`authy import`** — import from .env files
-- **`authy export`** — export as .env or JSON
-- **Non-interactive mode** — fails fast in CI/CD without prompting
+- **Project config (`.authy.toml`)** — auto-discovered config with scope and secret bindings; `--scope` is now optional
+- **Shell hook** — direnv-style hook for bash/zsh/fish that activates project config on `cd`
+- **Alias generator** — generate shell aliases that wrap tools with `authy run`
+- **Agent Skills** — install via `npx skills add authy` or `npx clawhub install authy`
 
 ## Supported Platforms
 
