@@ -14,6 +14,18 @@ authy run --scope "*" -- ./my-script.sh      # script sees $API_KEY in its env
 
 That's it. Secret is encrypted in the vault, injected into the subprocess, never in your shell history or `.env` files.
 
+## Config File Placeholders
+
+```bash
+# Template with placeholders (safe to commit)
+echo 'host: <authy:db-host>\nport: <authy:db-port>' > config.yaml.tpl
+
+# Resolve to real values at deploy time
+authy resolve config.yaml.tpl --scope deploy --output config.yaml
+```
+
+`authy run` covers env vars. `authy resolve` covers config files.
+
 ## Install
 
 ```bash
@@ -56,7 +68,7 @@ export AUTHY_KEYFILE=~/.authy/keys/master.key
 authy run --scope backend --uppercase --replace-dash '_' -- node server.js
 ```
 
-`--run-only` means the agent can inject secrets into subprocesses but can never read values directly. `authy get`, `authy env`, `authy export` all return an error.
+`--run-only` means the agent can inject secrets into subprocesses and resolve config templates, but can never read values directly. `authy get`, `authy env`, `authy export` all return an error.
 
 ## Project Config
 
@@ -98,7 +110,7 @@ Works with Claude Code, Cursor, OpenClaw, and 38+ AI coding agents:
 npx skills add eric8810/authy
 ```
 
-The skill teaches agents to use `authy run` (inject secrets) and `authy list` (discover names). Agents never learn commands that expose values.
+The skill teaches agents to use `authy run` (inject secrets), `authy resolve` (config templates), and `authy list` (discover names). Agents never learn commands that expose values.
 
 ## Security
 
@@ -139,9 +151,13 @@ Sessions
 
 Agent Commands
   authy run [--scope <s>] -- <cmd> Run a command with injected secrets
+  authy resolve <file>             Resolve <authy:key> placeholders in files
   authy env [--scope <s>]          Output secrets as env vars
   authy import <file>              Import from .env file
   authy export --format <fmt>      Export as .env or JSON
+
+Vault Management
+  authy rekey                      Re-encrypt vault with new credentials
 
 Project
   authy project-info               Show .authy.toml config

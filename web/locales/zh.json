@@ -8,7 +8,7 @@
     "viewOnGitHub": "查看源码"
   },
   "hero": {
-    "released": "v0.3.0 — 项目配置与Shell钩子",
+    "released": "v0.4.0 — 文件占位符与保险库重新加密",
     "title": "",
     "titleHighlight": "AI Agents",
     "titleSuffix": "密钥管理方案",
@@ -37,6 +37,10 @@
     "subprocessInjection": {
       "title": "进程注入",
       "description": "将密钥作为环境变量注入子进程。在仅运行模式下，这是 Agent 访问密钥的唯一方式 — get、env、export 均被阻止。"
+    },
+    "filePlaceholders": {
+      "title": "配置文件解析",
+      "description": "将任意配置文件中的 <authy:key-name> 占位符替换为保险库中的真实值。模板可安全提交至版本控制。部署时使用 authy resolve 解析。支持仅运行模式。"
     },
     "auditLogging": {
       "title": "审计追踪",
@@ -86,11 +90,11 @@
       },
       "runOnly": {
         "title": "仅运行设计",
-        "description": "技能仅教授 authy run 和 authy list。Agent 永远不会学到 get、env 或 export — 攻击面保持最小。"
+        "description": "技能仅教授 authy run、authy resolve 和 authy list。Agent 永远不会学到 get、env 或 export — 攻击面保持最小。"
       },
-      "twoCommands": {
-        "title": "仅需两个命令",
-        "description": "Agent 学会使用 authy list 发现密钥名称，使用 authy run 将密钥注入子进程。仅此而已。"
+      "threeCommands": {
+        "title": "仅需三个命令",
+        "description": "Agent 学会使用 authy list 发现密钥名称，使用 authy run 将密钥注入子进程，使用 authy resolve 解析配置模板。仅此而已。"
       }
     },
     "installTitle": "安装技能",

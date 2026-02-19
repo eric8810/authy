@@ -8,7 +8,7 @@
     "viewOnGitHub": "Ver código-fonte"
   },
   "hero": {
-    "released": "v0.3.0 — Configuração de projeto e hook de shell",
+    "released": "v0.4.0 — Marcadores de arquivo e recriptografia do cofre",
     "title": "Gerenciamento de segredos para",
     "titleHighlight": "AI Agents",
     "description": "Seus agents precisam de chaves API, não das chaves do reino. Cofre criptografado, políticas de escopo, tokens de curta duração e auditoria completa. Um único executável, sem servidor, sem cadastro.",
@@ -36,6 +36,10 @@
     "subprocessInjection": {
       "title": "Injeção em subprocessos",
       "description": "Injeta segredos diretamente como variáveis de ambiente no processo filho. Sem rastros no processo pai nem no histórico de shell."
+    },
+    "filePlaceholders": {
+      "title": "Resolução de arquivos de configuração",
+      "description": "Substitua os marcadores <authy:key-name> em qualquer arquivo de configuração por valores reais do cofre. Os modelos podem ser commitados com segurança. Resolução no deploy com authy resolve. Funciona no modo somente execução."
     },
     "auditLogging": {
       "title": "Log de auditoria",
@@ -85,11 +89,11 @@
       },
       "runOnly": {
         "title": "Design somente execução",
-        "description": "O skill ensina apenas authy run e authy list. Agentes nunca aprendem get, env ou export — a superfície de ataque permanece mínima."
+        "description": "O skill ensina apenas authy run, authy resolve e authy list. Agentes nunca aprendem get, env ou export — a superfície de ataque permanece mínima."
       },
-      "twoCommands": {
-        "title": "Apenas dois comandos",
-        "description": "Agentes aprendem a descobrir nomes de segredos com authy list e injetá-los em subprocessos com authy run. Nada mais."
+      "threeCommands": {
+        "title": "Apenas três comandos",
+        "description": "Agentes aprendem a descobrir nomes de segredos com authy list, injetá-los em subprocessos com authy run e resolver modelos de configuração com authy resolve. Nada mais."
       }
     },
     "installTitle": "Instalar o skill",

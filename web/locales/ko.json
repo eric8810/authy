@@ -8,7 +8,7 @@
     "viewOnGitHub": "소스 코드 보기"
   },
   "hero": {
-    "released": "v0.3.0 — 프로젝트 설정 및 셸 훅",
+    "released": "v0.4.0 — 파일 플레이스홀더 및 볼트 재암호화",
     "title": "",
     "titleHighlight": "AI Agents",
     "titleSuffix": "를 위한 시크릿 관리",
@@ -37,6 +37,10 @@
     "subprocessInjection": {
       "title": "서브프로세스 주입",
       "description": "시크릿을 환경 변수로 자식 프로세스에 직접 주입. 부모 프로세스나 셸 기록에 흔적을 남기지 않습니다."
+    },
+    "filePlaceholders": {
+      "title": "설정 파일 해석",
+      "description": "모든 설정 파일의 <authy:key-name> 플레이스홀더를 볼트의 실제 값으로 대체합니다. 템플릿은 안전하게 커밋할 수 있습니다. 배포 시 authy resolve로 해석합니다. 실행 전용 모드에서 동작합니다."
     },
     "auditLogging": {
       "title": "감사 로그",
@@ -86,11 +90,11 @@
       },
       "runOnly": {
         "title": "실행 전용 설계",
-        "description": "스킬은 authy run과 authy list만 가르칩니다. 에이전트는 get, env, export를 배우지 않습니다 — 공격 표면을 최소로 유지합니다."
+        "description": "스킬은 authy run, authy resolve, authy list만 가르칩니다. 에이전트는 get, env, export를 배우지 않습니다 — 공격 표면을 최소로 유지합니다."
       },
-      "twoCommands": {
-        "title": "명령어 2개면 충분",
-        "description": "에이전트는 authy list로 시크릿 이름을 확인하고 authy run으로 서브프로세스에 주입하는 방법을 배웁니다. 그것뿐입니다."
+      "threeCommands": {
+        "title": "명령어 3개면 충분",
+        "description": "에이전트는 authy list로 시크릿 이름을 확인하고, authy run으로 서브프로세스에 주입하고, authy resolve로 설정 템플릿을 해석하는 방법을 배웁니다. 그것뿐입니다."
       }
     },
     "installTitle": "스킬 설치",

@@ -19,6 +19,14 @@ authy run --scope "*" -- ./my-script.sh      # script sees $API_KEY in its env
 
 Secret is encrypted in the vault, injected into the subprocess, never in shell history or `.env` files.
 
+## Config File Placeholders
+
+```bash
+authy resolve config.yaml.tpl --scope deploy --output config.yaml
+```
+
+Replace `<authy:key-name>` placeholders in config files with real values. Safe for run-only mode.
+
 ## Give Agents Scoped Access
 
 ```bash

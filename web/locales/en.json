@@ -8,7 +8,7 @@
     "viewOnGitHub": "View on GitHub"
   },
   "hero": {
-    "released": "v0.3.0 — Project Config & Shell Hook",
+    "released": "v0.4.0 — File Placeholders & Vault Rekey",
     "title": "Secrets Management for",
     "titleHighlight": "AI Agents",
     "description": "Your agents need API keys — they don't need the keys to the kingdom. Authy is a CLI secrets manager with encrypted vault, scoped policies, run-only tokens, and full audit trail. Agents inject secrets into subprocesses but never see the values. Single binary, no server, no accounts.",
@@ -36,6 +36,10 @@
     "subprocessInjection": {
       "title": "Subprocess Secret Injection",
       "description": "Inject secrets as environment variables only into the child process. In run-only mode, this is the only way agents can access secrets — get, env, and export are blocked. Zero trace after process exit."
+    },
+    "filePlaceholders": {
+      "title": "Config File Resolution",
+      "description": "Replace <authy:key-name> placeholders in any config file with real values from the vault. Templates are safe to commit. Resolve at deploy time with authy resolve. Works in run-only mode."
     },
     "auditLogging": {
       "title": "Tamper-Evident Audit Logging",
@@ -85,11 +89,11 @@
       },
       "runOnly": {
         "title": "Run-Only by Design",
-        "description": "The skill only teaches authy run and authy list. Agents never learn about get, env, or export — the attack surface stays minimal."
+        "description": "The skill only teaches authy run, authy resolve, and authy list. Agents never learn about get, env, or export — the attack surface stays minimal."
       },
-      "twoCommands": {
-        "title": "Two Commands, That's It",
-        "description": "Agents learn to discover secret names with authy list and inject them into subprocesses with authy run. Nothing more."
+      "threeCommands": {
+        "title": "Three Commands, That's It",
+        "description": "Agents learn to discover secret names with authy list, inject them into subprocesses with authy run, and resolve config templates with authy resolve. Nothing more."
       }
     },
     "installTitle": "Install the Skill",

@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2026-02-19
+
+### Added
+
+- **`authy resolve <file>`** — Replace `<authy:key-name>` placeholders in any file with secret values from the vault. Outputs to `--output` path or stdout. Safe for run-only mode — agents can resolve config templates without reading values directly.
+- **`authy rekey`** — Re-encrypt the vault with new credentials. Switch between passphrase and keyfile auth with `--generate-keyfile`, `--new-keyfile`, or `--to-passphrase`. Requires master key authentication; all session tokens are invalidated after rekey.
+- **Safe/sensitive command classification** — Formalized which commands are safe for run-only mode (`run`, `resolve`, `list`) vs sensitive (`get`, `env`, `export`). Documented in GUIDE.md with a classification table.
+
+### Changed
+
+- Agent skill (`SKILL.md`) now teaches agents `authy resolve` alongside `authy run` and `authy list`
+- `auth::read_keyfile` visibility changed to `pub(crate)` for reuse by rekey command
+
 ## [0.3.0] - 2026-02-18
 
 ### Added

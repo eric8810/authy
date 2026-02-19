@@ -63,6 +63,8 @@ Admin (TUI or CLI)          Agent
 | **Run-Only Mode** | Restrict agents to subprocess injection only — `get`, `env`, `export` blocked |
 | **Session Tokens** | Short-lived, HMAC-validated, run-only capable; `authy_v1.` prefix for leak detection |
 | **Subprocess Injection** | `authy run` injects secrets as env vars into the child process only |
+| **Config File Resolution** | `authy resolve` replaces `<authy:key>` placeholders in any config file |
+| **Vault Rekey** | `authy rekey` re-encrypts the vault with new credentials; switch between passphrase and keyfile |
 | **JSON Output** | `--json` on all read commands; structured errors to stderr |
 | **Audit Log** | Append-only JSONL with HMAC chain; actor, timestamp, outcome on every access |
 | **Admin TUI** | Full-screen terminal UI for secrets, policies, sessions, and audit — nothing touches shell history |
@@ -160,6 +162,19 @@ authy run --scope claude-code --uppercase --replace-dash _ -- claude
 ---
 
 ## Use Cases
+
+### Config File Templates
+
+```bash
+# Template with placeholders (safe to commit)
+cat config.yaml.tpl
+# host: <authy:db-host>
+# port: <authy:db-port>
+# api_key: <authy:api-key>
+
+# Resolve at deploy time
+authy resolve config.yaml.tpl --scope deploy --output config.yaml
+```
 
 ### AI Agents
 
@@ -288,6 +303,8 @@ docker run \
 | `authy remove <name>` | Delete a secret |
 | `authy rotate <name>` | Update a secret value |
 | `authy run [--scope <s>] -- <cmd>` | Run command with scoped secrets injected |
+| `authy resolve <file>` | Resolve `<authy:key>` placeholders in config files |
+| `authy rekey` | Re-encrypt vault with new credentials |
 | `authy env [--scope <s>]` | Output secrets as env vars (blocked in run-only mode) |
 | `authy import <file>` | Import secrets from .env file |
 | `authy export --format <f>` | Export secrets (blocked in run-only mode) |

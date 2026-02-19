@@ -8,7 +8,7 @@
     "viewOnGitHub": "Quellcode ansehen"
   },
   "hero": {
-    "released": "v0.3.0 — Projektkonfiguration & Shell-Hook",
+    "released": "v0.4.0 — Datei-Platzhalter & Tresor-Neuverschlüsselung",
     "title": "Secrets-Verwaltung für",
     "titleHighlight": "AI Agents",
     "description": "Ihre Agents brauchen API-Schlüssel, nicht die Schlüssel zum Königreich. Verschlüsselter Tresor, bereichsbasierte Richtlinien, kurzlebige Tokens und vollständiges Audit. Eine einzelne Binary, kein Server, kein Konto nötig.",
@@ -36,6 +36,10 @@
     "subprocessInjection": {
       "title": "Subprozess-Injektion",
       "description": "Injiziert Secrets direkt als Umgebungsvariablen in den Kindprozess. Keine Spuren im Elternprozess oder in der Shell-Historie."
+    },
+    "filePlaceholders": {
+      "title": "Konfigurationsdatei-Auflösung",
+      "description": "Ersetzen Sie <authy:key-name>-Platzhalter in jeder Konfigurationsdatei durch echte Werte aus dem Tresor. Templates können sicher committet werden. Auflösung beim Deployment mit authy resolve. Funktioniert im Nur-Ausführungsmodus."
     },
     "auditLogging": {
       "title": "Audit-Protokoll",
@@ -85,11 +89,11 @@
       },
       "runOnly": {
         "title": "Nur-Ausführung-Design",
-        "description": "Der Skill lehrt nur authy run und authy list. Agenten lernen nie get, env oder export — die Angriffsfläche bleibt minimal."
+        "description": "Der Skill lehrt nur authy run, authy resolve und authy list. Agenten lernen nie get, env oder export — die Angriffsfläche bleibt minimal."
       },
-      "twoCommands": {
-        "title": "Nur zwei Befehle",
-        "description": "Agenten lernen, Secret-Namen mit authy list zu entdecken und sie mit authy run in Subprozesse zu injizieren. Mehr nicht."
+      "threeCommands": {
+        "title": "Nur drei Befehle",
+        "description": "Agenten lernen, Secret-Namen mit authy list zu entdecken, sie mit authy run in Subprozesse zu injizieren und Konfigurationsvorlagen mit authy resolve aufzulösen. Mehr nicht."
       }
     },
     "installTitle": "Skill installieren",

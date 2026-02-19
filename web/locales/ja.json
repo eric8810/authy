@@ -8,7 +8,7 @@
     "viewOnGitHub": "ソースコードを見る"
   },
   "hero": {
-    "released": "v0.3.0 — プロジェクト設定とシェルフック",
+    "released": "v0.4.0 — ファイルプレースホルダーとボールト再暗号化",
     "title": "",
     "titleHighlight": "AI Agents",
     "titleSuffix": "向けシークレット管理",
@@ -37,6 +37,10 @@
     "subprocessInjection": {
       "title": "サブプロセス注入",
       "description": "シークレットを環境変数として子プロセスに直接注入。親プロセスやシェル履歴に痕跡を残しません。"
+    },
+    "filePlaceholders": {
+      "title": "設定ファイル解決",
+      "description": "任意の設定ファイル内の <authy:key-name> プレースホルダーをボールトの実際の値に置換します。テンプレートは安全にコミットできます。デプロイ時に authy resolve で解決。実行専用モードで動作します。"
     },
     "auditLogging": {
       "title": "監査ログ",
@@ -86,11 +90,11 @@
       },
       "runOnly": {
         "title": "実行専用設計",
-        "description": "スキルは authy run と authy list のみを教えます。エージェントは get、env、export を学びません — 攻撃面を最小に保ちます。"
+        "description": "スキルは authy run、authy resolve、authy list のみを教えます。エージェントは get、env、export を学びません — 攻撃面を最小に保ちます。"
       },
-      "twoCommands": {
-        "title": "2つのコマンドだけ",
-        "description": "エージェントは authy list でシークレット名を発見し、authy run でサブプロセスに注入する方法を学びます。それだけです。"
+      "threeCommands": {
+        "title": "3つのコマンドだけ",
+        "description": "エージェントは authy list でシークレット名を発見し、authy run でサブプロセスに注入し、authy resolve で設定テンプレートを解決する方法を学びます。それだけです。"
       }
     },
     "installTitle": "スキルをインストール",

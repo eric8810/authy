@@ -8,7 +8,7 @@
     "viewOnGitHub": "Voir le code source"
   },
   "hero": {
-    "released": "v0.3.0 — Configuration projet & hook shell",
+    "released": "v0.4.0 — Espaces réservés de fichiers & rechiffrement du coffre",
     "title": "Gestion des secrets pour",
     "titleHighlight": "AI Agents",
     "description": "Vos agents ont besoin de clés API, pas des clés du royaume. Coffre chiffré, politiques de périmètre, tokens à durée limitée et audit complet. Un seul exécutable, pas de serveur, pas de compte.",
@@ -36,6 +36,10 @@
     "subprocessInjection": {
       "title": "Injection en sous-processus",
       "description": "Injecte les secrets directement comme variables d'environnement dans le processus fils. Aucune trace dans le processus parent ni dans l'historique shell."
+    },
+    "filePlaceholders": {
+      "title": "Résolution de fichiers de configuration",
+      "description": "Remplacez les espaces réservés <authy:key-name> dans n'importe quel fichier de configuration par les valeurs réelles du coffre. Les modèles peuvent être commités en toute sécurité. Résolution au déploiement avec authy resolve. Fonctionne en mode exécution seule."
     },
     "auditLogging": {
       "title": "Journal d'audit",
@@ -85,11 +89,11 @@
       },
       "runOnly": {
         "title": "Conception exécution seule",
-        "description": "Le skill n'enseigne que authy run et authy list. Les agents n'apprennent jamais get, env ou export — la surface d'attaque reste minimale."
+        "description": "Le skill n'enseigne que authy run, authy resolve et authy list. Les agents n'apprennent jamais get, env ou export — la surface d'attaque reste minimale."
       },
-      "twoCommands": {
-        "title": "Deux commandes, c'est tout",
-        "description": "Les agents apprennent à découvrir les noms de secrets avec authy list et à les injecter dans des sous-processus avec authy run. Rien de plus."
+      "threeCommands": {
+        "title": "Trois commandes, c'est tout",
+        "description": "Les agents apprennent à découvrir les noms de secrets avec authy list, à les injecter dans des sous-processus avec authy run et à résoudre les modèles de configuration avec authy resolve. Rien de plus."
       }
     },
     "installTitle": "Installer le skill",

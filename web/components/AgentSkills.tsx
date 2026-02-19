@@ -12,19 +12,20 @@ const installBlocks: Record<string, TerminalLine[]> = {
     { type: 'output', content: '✔ Found 1 skill' },
     { type: 'output', content: '  authy — Inject secrets into subprocesses via environment variables' },
     { type: 'output', content: '✔ Installed authy skill' },
-    { type: 'comment', content: 'Your agent now knows how to use authy run and authy list' },
+    { type: 'comment', content: 'Your agent now knows how to use authy run, authy resolve, and authy list' },
   ],
   clawhub: [
     { type: 'comment', content: 'Install from ClawHub registry' },
     { type: 'command', content: 'npx clawhub install authy' },
-    { type: 'output', content: '✔ Installed authy@0.3.0' },
+    { type: 'output', content: '✔ Installed authy@0.4.0' },
     { type: 'comment', content: 'Or browse at clawhub.dev/skills/authy' },
   ],
   result: [
     { type: 'comment', content: 'After installing the skill, your agent learns:' },
     { type: 'comment', content: '' },
-    { type: 'output', content: '1. authy list --scope <policy> --json   → discover secret names' },
-    { type: 'output', content: '2. authy run --scope <policy> -- <cmd>  → inject secrets into commands' },
+    { type: 'output', content: '1. authy list --scope <policy> --json          → discover secret names' },
+    { type: 'output', content: '2. authy run --scope <policy> -- <cmd>         → inject secrets into commands' },
+    { type: 'output', content: '3. authy resolve <file> --scope <policy>       → resolve config placeholders' },
     { type: 'comment', content: '' },
     { type: 'comment', content: 'The agent never sees secret values — only names.' },
     { type: 'comment', content: 'Run-only tokens block get, env, and export.' },
@@ -34,7 +35,7 @@ const installBlocks: Record<string, TerminalLine[]> = {
 const highlights = [
   { icon: Puzzle, key: 'install' },
   { icon: ShieldCheck, key: 'runOnly' },
-  { icon: BookOpen, key: 'twoCommands' },
+  { icon: BookOpen, key: 'threeCommands' },
 ];
 
 export const AgentSkills: React.FC = () => {

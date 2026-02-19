@@ -8,7 +8,7 @@
     "viewOnGitHub": "檢視原始碼"
   },
   "hero": {
-    "released": "v0.3.0 — 專案配置與Shell掛鉤",
+    "released": "v0.4.0 — 檔案佔位符與保險庫重新加密",
     "title": "",
     "titleHighlight": "AI Agents",
     "titleSuffix": "密鑰管理方案",
@@ -37,6 +37,10 @@
     "subprocessInjection": {
       "title": "程序注入",
       "description": "將密鑰直接注入子程序環境變數，確保密鑰不會出現在父程序環境或 Shell 歷史記錄中。"
+    },
+    "filePlaceholders": {
+      "title": "設定檔解析",
+      "description": "將任意設定檔中的 <authy:key-name> 佔位符替換為保險庫中的真實值。範本可安全提交至版本控制。部署時使用 authy resolve 解析。支援僅執行模式。"
     },
     "auditLogging": {
       "title": "稽核追蹤",
@@ -86,11 +90,11 @@
       },
       "runOnly": {
         "title": "僅執行設計",
-        "description": "技能僅教授 authy run 和 authy list。Agent 永遠不會學到 get、env 或 export — 攻擊面保持最小。"
+        "description": "技能僅教授 authy run、authy resolve 和 authy list。Agent 永遠不會學到 get、env 或 export — 攻擊面保持最小。"
       },
-      "twoCommands": {
-        "title": "僅需兩個指令",
-        "description": "Agent 學會使用 authy list 發現密鑰名稱，使用 authy run 將密鑰注入子程序。僅此而已。"
+      "threeCommands": {
+        "title": "僅需三個指令",
+        "description": "Agent 學會使用 authy list 發現密鑰名稱，使用 authy run 將密鑰注入子程序，使用 authy resolve 解析設定範本。僅此而已。"
       }
     },
     "installTitle": "安裝技能",

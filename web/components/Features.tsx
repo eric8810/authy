@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Shield, Key, FileJson, TerminalSquare, Lock, Monitor } from 'lucide-react';
+import { Shield, Key, FileJson, TerminalSquare, Lock, Monitor, FileCode } from 'lucide-react';
 import { Feature } from '../types';
 import { FadeIn } from './FadeIn';
 
@@ -27,6 +27,11 @@ export const Features: React.FC = () => {
       title: t('features.subprocessInjection.title'),
       description: t('features.subprocessInjection.description'),
       icon: TerminalSquare
+    },
+    {
+      title: t('features.filePlaceholders.title'),
+      description: t('features.filePlaceholders.description'),
+      icon: FileCode
     },
     {
       title: t('features.auditLogging.title'),
