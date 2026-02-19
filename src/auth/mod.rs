@@ -145,7 +145,7 @@ pub fn resolve_auth_for_init(
 }
 
 /// Read an age keyfile from disk. Returns (identity_string, public_key_string).
-fn read_keyfile(path: &str) -> Result<(String, String)> {
+pub(crate) fn read_keyfile(path: &str) -> Result<(String, String)> {
     let content = fs::read_to_string(path)
         .map_err(|e| AuthyError::InvalidKeyfile(format!("Cannot read {}: {}", path, e)))?;
 

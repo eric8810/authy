@@ -14,7 +14,18 @@ Session tokens are **read-only** — agents cannot store, remove, or modify secr
 
 ### Run-Only Mode
 
-Run-only restricts agents to `authy run` (subprocess injection) and `authy list` (names only). Commands that expose secret values (`get`, `env`, `export`) return exit code 4.
+Run-only restricts agents to safe commands and blocks sensitive ones that expose secret values directly.
+
+#### Safe vs Sensitive Commands
+
+| Command | Classification | Run-only allowed? |
+|---------|---------------|-------------------|
+| `authy run` | Safe — injects into subprocess | Yes |
+| `authy resolve` | Safe — writes to file/stdout | Yes |
+| `authy list` | Safe — names only, no values | Yes |
+| `authy get` | Sensitive — exposes value | No (exit 4) |
+| `authy env` | Sensitive — exposes values | No (exit 4) |
+| `authy export` | Sensitive — exposes values | No (exit 4) |
 
 Run-only can be set at either level — either one triggers the restriction:
 
@@ -122,6 +133,41 @@ authy run [--scope <s>] [--uppercase] [--replace-dash <c>] -- <command> [args...
 ```
 
 Secrets matching the scope are injected as environment variables into the child process. The parent process (agent) never sees them.
+
+### File Placeholder Resolution
+
+```bash
+authy resolve <file> [--scope <s>] [--output <path>]
+```
+
+Replaces `<authy:key-name>` placeholders in a file with secret values. Safe for run-only mode — the resolved output goes to a file or stdout, never returned as a raw value.
+
+```bash
+# Resolve config template to stdout
+authy resolve config.yaml.tpl --scope deploy
+
+# Resolve to a file
+authy resolve config.yaml.tpl --scope deploy --output config.yaml
+```
+
+### Rekey (Change Credentials)
+
+```bash
+authy rekey [--generate-keyfile <path>] [--new-keyfile <path>] [--to-passphrase]
+```
+
+Re-encrypts the vault with new credentials. Requires master key authentication (tokens cannot rekey). All existing session tokens are invalidated after rekey.
+
+```bash
+# Switch from passphrase to keyfile
+authy rekey --generate-keyfile ~/.authy/keys/new.key
+
+# Switch to an existing keyfile
+authy rekey --new-keyfile ~/.authy/keys/other.key
+
+# Switch from keyfile to passphrase
+authy rekey --to-passphrase
+```
 
 ### Audit
 

@@ -13,7 +13,9 @@ pub mod json_output;
 pub mod list;
 pub mod policy;
 pub mod project_info;
+pub mod rekey;
 pub mod remove;
+pub mod resolve;
 pub mod rotate;
 pub mod run;
 pub mod session;
@@ -215,6 +217,31 @@ pub enum Commands {
     Hook {
         /// Shell to generate hook for (bash, zsh, fish)
         shell: String,
+    },
+
+    /// Resolve <authy:key-name> placeholders in a file
+    Resolve {
+        /// Source file with <authy:key-name> placeholders
+        file: String,
+        /// Output path (default: stdout)
+        #[arg(long, short)]
+        output: Option<String>,
+        /// Scope for secret access
+        #[arg(long)]
+        scope: Option<String>,
+    },
+
+    /// Re-encrypt the vault with new credentials
+    Rekey {
+        /// Generate a new keyfile at this path
+        #[arg(long)]
+        generate_keyfile: Option<String>,
+        /// Switch to passphrase auth
+        #[arg(long)]
+        to_passphrase: bool,
+        /// Re-encrypt with an existing keyfile
+        #[arg(long)]
+        new_keyfile: Option<String>,
     },
 
     /// Launch admin TUI (interactive vault management)

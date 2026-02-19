@@ -88,6 +88,22 @@ fn main() {
 
         Commands::Hook { shell } => cli::hook::run(shell),
 
+        Commands::Resolve {
+            file,
+            output,
+            scope,
+        } => cli::resolve::run(file, output.as_deref(), scope.as_deref()),
+
+        Commands::Rekey {
+            generate_keyfile,
+            to_passphrase,
+            new_keyfile,
+        } => cli::rekey::run(
+            generate_keyfile.as_deref(),
+            *to_passphrase,
+            new_keyfile.as_deref(),
+        ),
+
         Commands::Admin { keyfile } => cli::admin::run(keyfile.clone()),
     };
 

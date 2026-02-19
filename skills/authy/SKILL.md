@@ -45,6 +45,22 @@ authy list --scope <policy> --json
 
 Output: `{"secrets":[{"name":"db-host","version":1,...}]}`
 
+## Resolve Placeholders in Files
+
+Replace `<authy:key-name>` placeholders in config files with secret values:
+
+```bash
+authy resolve config.yaml.tpl --scope <policy> --output config.yaml
+```
+
+Placeholders use the format `<authy:key-name>`. Example template:
+
+```yaml
+database:
+  host: <authy:db-host>
+  port: <authy:db-port>
+```
+
 ## Write Scripts That Use Secrets
 
 Write code that reads environment variables, then run it with `authy run`:
@@ -70,7 +86,7 @@ authy run --scope my-scope --uppercase --replace-dash '_' -- ./task.sh
 
 ## Rules
 
-1. **Only use `authy run` and `authy list`** — these are the only commands available to you
+1. **Only use `authy run`, `authy resolve`, and `authy list`** — these are the only commands available to you
 2. **Never hardcode credentials** — reference env vars, run via `authy run`
 3. **Never echo, print, or log env vars** in subprocess scripts — secrets exist in memory only
 4. **Never redirect env vars to files** — do not write `$SECRET` to disk
