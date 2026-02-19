@@ -84,28 +84,20 @@ Embed Authy into the places developers already are. Distribution, not features.
 
 **Success criteria:** A developer setting up Claude Code, OpenClaw, or a new agent project encounters Authy as the default secrets pattern.
 
-## v0.4 — Tool Launcher
+## v0.4 — File-Layer Secrets
 
-Developer launches tools with secrets. Agents connect to tools. Agents never touch secrets.
+`authy run` covers env vars. `authy resolve` covers config files. Together they handle both surfaces where secrets live.
 
-- [ ] **`authy up`** — read `[tools]` from `.authy.toml`, resolve config placeholders, launch each tool with `authy run` (secrets in env + resolved config files)
-- [ ] **`authy down`** — stop tools, remove resolved config files
-- [ ] **File placeholders** — `<authy:key-name>` in config files, resolved by `authy up` to `config_target` path
-- [ ] **`.authy.toml` tool declarations:**
-  ```toml
-  [tools.stripe]
-  scope = "payments"
-  command = "npx @stripe/mcp-server"
-  config = "config/stripe.yaml"       # source with placeholders
-  config_target = "/tmp/stripe.yaml"  # resolved file for tool
-  ```
-- [ ] **Safe/sensitive command split** — formalize: safe commands (list, run) work with agent tokens; sensitive commands (get, store, export, import, rotate) require TTY or master key
-- [ ] **Passphrase change / re-key vault**
+- [ ] **`authy resolve <file>`** — replace `<authy:key-name>` placeholders with real values from vault, output to `--output` path or stdout
+- [ ] **Placeholder format** — `<authy:key-name>` in any config file (yaml, json, toml, etc.), safe to commit and share
+- [ ] **Safe/sensitive command split** — formalize: safe commands (list, run, resolve) work with agent tokens; sensitive commands (get, store, export, import, rotate) require TTY or master key
+- [ ] **`authy rekey`** — change passphrase or switch between passphrase/keyfile auth
 
-**Success criteria:** `authy up` starts tools with secrets, agent connects and works, agent never sees an API key.
+**Success criteria:** Secrets in config files use placeholders. `authy resolve` produces real files at deploy/launch time. Agents only see placeholder files.
 
 ### Deferred to v0.5+
 
+- `authy up` / `authy down` (tool launcher — agent platforms already handle process management)
 - Agent identity (named agents with scoped access)
 - Per-agent audit attribution
 - Delegation tokens (agent-to-agent scope narrowing)
