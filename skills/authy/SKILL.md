@@ -5,7 +5,7 @@ license: MIT
 compatibility: Requires `authy` on PATH. Auth via AUTHY_TOKEN (run-only) + AUTHY_KEYFILE.
 metadata:
   author: eric8810
-  version: "0.2.0"
+  version: "0.3.0"
   homepage: https://github.com/eric8810/authy
   openclaw:
     requires:
