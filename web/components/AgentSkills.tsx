@@ -17,7 +17,7 @@ const installBlocks: Record<string, TerminalLine[]> = {
   clawhub: [
     { type: 'comment', content: 'Install from ClawHub registry' },
     { type: 'command', content: 'npx clawhub install authy' },
-    { type: 'output', content: '✔ Installed authy@0.2.2' },
+    { type: 'output', content: '✔ Installed authy@0.3.0' },
     { type: 'comment', content: 'Or browse at clawhub.dev/skills/authy' },
   ],
   result: [

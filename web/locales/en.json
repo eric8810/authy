@@ -8,7 +8,7 @@
     "viewOnGitHub": "View on GitHub"
   },
   "hero": {
-    "released": "v0.2.0 — Run-Only Mode",
+    "released": "v0.3.0 — Project Config & Shell Hook",
     "title": "Secrets Management for",
     "titleHighlight": "AI Agents",
     "description": "Your agents need API keys — they don't need the keys to the kingdom. Authy is a CLI secrets manager with encrypted vault, scoped policies, run-only tokens, and full audit trail. Agents inject secrets into subprocesses but never see the values. Single binary, no server, no accounts.",

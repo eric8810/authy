@@ -8,7 +8,7 @@
     "viewOnGitHub": "소스 코드 보기"
   },
   "hero": {
-    "released": "v0.2.0 — 실행 전용 모드",
+    "released": "v0.3.0 — 프로젝트 설정 및 셸 훅",
     "title": "",
     "titleHighlight": "AI Agents",
     "titleSuffix": "를 위한 시크릿 관리",

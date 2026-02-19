@@ -8,7 +8,7 @@
     "viewOnGitHub": "ソースコードを見る"
   },
   "hero": {
-    "released": "v0.2.0 — 実行専用モード",
+    "released": "v0.3.0 — プロジェクト設定とシェルフック",
     "title": "",
     "titleHighlight": "AI Agents",
     "titleSuffix": "向けシークレット管理",
