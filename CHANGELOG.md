@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 2026-02-18
+
+### Added
+
+- **Project config (`.authy.toml`)** — Auto-discovered project config with scope and secret bindings. `--scope` is now optional on `run`/`env`/`export` when `.authy.toml` is present.
+- **Shell hook** — direnv-style shell hook for bash, zsh, and fish that activates project config automatically on `cd`.
+- **Alias generator** — Generate shell aliases that wrap tools with `authy run` for seamless secret injection.
+- **Agent Skills landing page section** — Install the authy skill via `npx skills` or ClawHub, with tabbed terminal demos and translations for all 9 locales.
+
+### Changed
+
+- `--scope` is optional on `run`/`env`/`export` when `.authy.toml` is present in the project tree
+- Replaced SessionStart hook approach with shell alias (preserves `authy run` subprocess isolation)
+
+### Security
+
+- Tightened agent skill scope: removed operator commands (`get`, `export`, `env`, `store`, `init`) from agent-facing references — agents only see `run` + `list`
+- Added subprocess security rules: no echo/print/redirect of env vars
+- Declared `AUTHY_KEYFILE` as required file path in ClawHub metadata
+- Replaced permissive skill rules with explicit allowlist
+
 ## [0.2.0] - 2026-02-17
 
 ### Added
