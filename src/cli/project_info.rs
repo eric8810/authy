@@ -1,8 +1,8 @@
 use serde::Serialize;
 use std::path::PathBuf;
 
-use crate::config::project::ProjectConfig;
-use crate::error::{AuthyError, Result};
+use authy::config::project::ProjectConfig;
+use authy::error::{AuthyError, Result};
 
 #[derive(Serialize)]
 struct ProjectInfoJson {

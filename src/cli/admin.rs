@@ -1,5 +1,5 @@
-use crate::auth;
-use crate::error::{AuthyError, Result};
+use authy::auth;
+use authy::error::{AuthyError, Result};
 use crate::tui;
 
 pub fn run(keyfile: Option<String>) -> Result<()> {

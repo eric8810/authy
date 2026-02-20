@@ -23,6 +23,12 @@ pub struct SecretMetadata {
     pub description: Option<String>,
 }
 
+impl Default for SecretMetadata {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl SecretMetadata {
     pub fn new() -> Self {
         let now = Utc::now();

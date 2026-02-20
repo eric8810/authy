@@ -10,12 +10,12 @@ use crossterm::execute;
 use ratatui::prelude::*;
 use ratatui::widgets::{Block, Borders, Paragraph};
 
-use crate::audit;
-use crate::auth::context::{AuthContext, AuthMethod};
-use crate::error::{AuthyError, Result};
-use crate::policy::Policy;
-use crate::session;
-use crate::vault::{self, secret::SecretEntry, Vault, VaultKey};
+use authy::audit;
+use authy::auth::context::{AuthContext, AuthMethod};
+use authy::error::{AuthyError, Result};
+use authy::policy::Policy;
+use authy::session;
+use authy::vault::{self, secret::SecretEntry, Vault, VaultKey};
 
 /// Which sidebar section is active.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -317,7 +317,7 @@ impl TuiApp {
     pub fn session_hmac_key(&self) -> Option<Vec<u8>> {
         self.key.as_ref().map(|k| {
             let material = audit::key_material(k);
-            crate::vault::crypto::derive_key(&material, b"session-hmac", 32)
+            authy::vault::crypto::derive_key(&material, b"session-hmac", 32)
         })
     }
 }

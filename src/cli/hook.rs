@@ -1,4 +1,4 @@
-use crate::error::{AuthyError, Result};
+use authy::error::{AuthyError, Result};
 
 pub fn run(shell: &str) -> Result<()> {
     let output = match shell {

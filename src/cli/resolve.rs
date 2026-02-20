@@ -1,11 +1,11 @@
 use std::fs;
 
-use crate::audit;
-use crate::auth;
+use authy::audit;
+use authy::auth;
 use crate::cli::common;
-use crate::config::project::ProjectConfig;
-use crate::error::{AuthyError, Result};
-use crate::vault;
+use authy::config::project::ProjectConfig;
+use authy::error::{AuthyError, Result};
+use authy::vault;
 
 pub fn run(file: &str, output: Option<&str>, scope_arg: Option<&str>) -> Result<()> {
     // Merge scope from CLI arg / .authy.toml / token scope

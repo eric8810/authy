@@ -1,7 +1,7 @@
 use crate::cli::ConfigCommands;
-use crate::config::Config;
-use crate::error::Result;
-use crate::vault;
+use authy::config::Config;
+use authy::error::Result;
+use authy::vault;
 
 pub fn run(cmd: &ConfigCommands) -> Result<()> {
     match cmd {
@@ -12,7 +12,7 @@ pub fn run(cmd: &ConfigCommands) -> Result<()> {
 fn show() -> Result<()> {
     let config = Config::load(&vault::config_path())?;
     let toml_str = toml::to_string_pretty(&config)
-        .map_err(|e| crate::error::AuthyError::Other(format!("Config serialize error: {}", e)))?;
+        .map_err(|e| authy::error::AuthyError::Other(format!("Config serialize error: {}", e)))?;
     println!("{}", toml_str);
     Ok(())
 }

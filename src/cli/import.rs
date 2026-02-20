@@ -1,10 +1,10 @@
 use std::io::{self, BufRead};
 
-use crate::audit;
-use crate::auth;
-use crate::error::Result;
-use crate::vault;
-use crate::vault::secret::SecretEntry;
+use authy::audit;
+use authy::auth;
+use authy::error::Result;
+use authy::vault;
+use authy::vault::secret::SecretEntry;
 
 pub fn run(
     file: &str,

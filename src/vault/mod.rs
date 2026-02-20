@@ -20,6 +20,12 @@ pub struct Vault {
     pub sessions: Vec<SessionRecord>,
 }
 
+impl Default for Vault {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Vault {
     /// Create a new empty vault.
     pub fn new() -> Self {

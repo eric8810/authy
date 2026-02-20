@@ -1,12 +1,12 @@
-use crate::audit;
-use crate::auth;
+use authy::audit;
+use authy::auth;
 use crate::cli::json_output::{
     PolicyListItem, PolicyListResponse, PolicyShowResponse, PolicyTestResponse,
 };
 use crate::cli::PolicyCommands;
-use crate::error::{AuthyError, Result};
-use crate::policy::Policy;
-use crate::vault;
+use authy::error::{AuthyError, Result};
+use authy::policy::Policy;
+use authy::vault;
 
 pub fn run(cmd: &PolicyCommands, json: bool) -> Result<()> {
     match cmd {

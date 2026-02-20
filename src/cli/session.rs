@@ -1,12 +1,12 @@
-use crate::audit;
-use crate::auth;
+use authy::audit;
+use authy::auth;
 use crate::cli::json_output::{
     SessionCreateResponse, SessionListItem, SessionListResponse,
 };
 use crate::cli::SessionCommands;
-use crate::error::{AuthyError, Result};
-use crate::session::{self, SessionRecord};
-use crate::vault;
+use authy::error::{AuthyError, Result};
+use authy::session::{self, SessionRecord};
+use authy::vault;
 
 pub fn run(cmd: &SessionCommands, json: bool) -> Result<()> {
     match cmd {
@@ -34,7 +34,7 @@ fn create(scope: &str, ttl: &str, label: Option<&str>, run_only: bool, json: boo
 
     // Derive the HMAC key for token generation
     let material = audit::key_material(&key);
-    let hmac_key = crate::vault::crypto::derive_key(&material, b"session-hmac", 32);
+    let hmac_key = authy::vault::crypto::derive_key(&material, b"session-hmac", 32);
 
     let (token, token_hmac) = session::generate_token(&hmac_key);
     let session_id = session::generate_session_id();

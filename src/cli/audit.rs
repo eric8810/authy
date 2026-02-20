@@ -1,9 +1,9 @@
-use crate::audit as audit_mod;
-use crate::auth;
+use authy::audit as audit_mod;
+use authy::auth;
 use crate::cli::json_output::{AuditEntryItem, AuditShowResponse};
 use crate::cli::AuditCommands;
-use crate::error::Result;
-use crate::vault;
+use authy::error::Result;
+use authy::vault;
 
 pub fn run(cmd: &AuditCommands, json: bool) -> Result<()> {
     match cmd {
@@ -26,7 +26,7 @@ fn show(count: usize, json: bool) -> Result<()> {
             println!(
                 "{}",
                 serde_json::to_string(&response)
-                    .map_err(|e| crate::error::AuthyError::Serialization(e.to_string()))?
+                    .map_err(|e| authy::error::AuthyError::Serialization(e.to_string()))?
             );
         } else {
             eprintln!("No audit log entries.");
@@ -61,7 +61,7 @@ fn show(count: usize, json: bool) -> Result<()> {
         println!(
             "{}",
             serde_json::to_string(&response)
-                .map_err(|e| crate::error::AuthyError::Serialization(e.to_string()))?
+                .map_err(|e| authy::error::AuthyError::Serialization(e.to_string()))?
         );
     } else {
         for entry in display {
@@ -108,7 +108,7 @@ fn verify() -> Result<()> {
 fn export() -> Result<()> {
     let entries = audit_mod::read_entries(&vault::audit_path())?;
     let json = serde_json::to_string_pretty(&entries)
-        .map_err(|e| crate::error::AuthyError::Serialization(e.to_string()))?;
+        .map_err(|e| authy::error::AuthyError::Serialization(e.to_string()))?;
     println!("{}", json);
     Ok(())
 }

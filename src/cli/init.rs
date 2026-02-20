@@ -1,8 +1,8 @@
-use crate::audit;
-use crate::auth;
-use crate::config::Config;
-use crate::error::{AuthyError, Result};
-use crate::vault::{self, Vault};
+use authy::audit;
+use authy::auth;
+use authy::config::Config;
+use authy::error::{AuthyError, Result};
+use authy::vault::{self, Vault};
 
 pub fn run(passphrase: Option<String>, generate_keyfile: Option<String>) -> Result<()> {
     if vault::is_initialized() {

@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
-use crate::error::{AuthyError, Result};
-use crate::auth::context::AuthContext;
-use crate::vault::Vault;
+use authy::error::{AuthyError, Result};
+use authy::auth::context::AuthContext;
+use authy::vault::Vault;
 
 /// Resolve secrets accessible under a given scope (policy name).
 /// Returns a HashMap of secret_name -> secret_value for all allowed secrets.

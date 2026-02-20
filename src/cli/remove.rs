@@ -1,7 +1,7 @@
-use crate::audit;
-use crate::auth;
-use crate::error::{AuthyError, Result};
-use crate::vault;
+use authy::audit;
+use authy::auth;
+use authy::error::{AuthyError, Result};
+use authy::vault;
 
 pub fn run(name: &str) -> Result<()> {
     let (key, auth_ctx) = auth::resolve_auth(true)?;

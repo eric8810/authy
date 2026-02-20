@@ -85,11 +85,12 @@ pub fn validate_token<'a>(
 }
 
 /// Parse a duration string like "1h", "30m", "7d".
+#[cfg(feature = "cli")]
 pub fn parse_ttl(s: &str) -> Result<chrono::Duration> {
     let duration: std::time::Duration =
-        humantime::parse_duration(s).map_err(|e| AuthyError::Other(format!("Invalid TTL: {}", e)))?;
+        humantime::parse_duration(s).map_err(|e| AuthyError::Other(format!("Invalid TTL: {e}")))?;
     chrono::Duration::from_std(duration)
-        .map_err(|e| AuthyError::Other(format!("Duration out of range: {}", e)))
+        .map_err(|e| AuthyError::Other(format!("Duration out of range: {e}")))
 }
 
 /// Generate a short unique session ID.

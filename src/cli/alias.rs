@@ -1,5 +1,5 @@
-use crate::config::project::ProjectConfig;
-use crate::error::{AuthyError, Result};
+use authy::config::project::ProjectConfig;
+use authy::error::{AuthyError, Result};
 
 pub fn run(
     scope: Option<&str>,
