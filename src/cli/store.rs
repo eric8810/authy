@@ -1,9 +1,9 @@
 use std::io::{self, Read};
 
-use crate::audit;
-use crate::auth;
-use crate::error::{AuthyError, Result};
-use crate::vault::{self, secret::SecretEntry};
+use authy::audit;
+use authy::auth;
+use authy::error::{AuthyError, Result};
+use authy::vault::{self, secret::SecretEntry};
 
 pub fn run(name: &str, force: bool) -> Result<()> {
     let (key, auth_ctx) = auth::resolve_auth(true)?;

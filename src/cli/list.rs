@@ -1,8 +1,8 @@
-use crate::audit;
-use crate::auth;
+use authy::audit;
+use authy::auth;
 use crate::cli::json_output::{ListResponse, SecretListItem};
-use crate::error::{AuthyError, Result};
-use crate::vault;
+use authy::error::{AuthyError, Result};
+use authy::vault;
 
 pub fn run(scope: Option<&str>, json: bool) -> Result<()> {
     let (key, auth_ctx) = auth::resolve_auth(false)?;
@@ -40,7 +40,7 @@ pub fn run(scope: Option<&str>, json: bool) -> Result<()> {
         println!(
             "{}",
             serde_json::to_string(&response)
-                .map_err(|e| crate::error::AuthyError::Serialization(e.to_string()))?
+                .map_err(|e| authy::error::AuthyError::Serialization(e.to_string()))?
         );
     } else {
         for name in &filtered {

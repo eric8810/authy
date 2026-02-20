@@ -1,15 +1,7 @@
-mod audit;
-mod auth;
 mod cli;
-mod config;
-mod error;
-mod policy;
-mod session;
-mod subprocess;
 mod tui;
-mod types;
-mod vault;
 
+use authy::error;
 use clap::Parser;
 use cli::{Cli, Commands};
 

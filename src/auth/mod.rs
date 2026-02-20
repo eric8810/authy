@@ -86,15 +86,23 @@ pub fn resolve_auth(require_write: bool) -> Result<(VaultKey, AuthContext)> {
         ));
     }
 
-    // Interactive passphrase prompt
+    interactive_passphrase_prompt()
+}
+
+#[cfg(feature = "cli")]
+fn interactive_passphrase_prompt() -> Result<(VaultKey, AuthContext)> {
     let passphrase = dialoguer::Password::new()
         .with_prompt("Enter vault passphrase")
         .interact()
-        .map_err(|e| AuthyError::AuthFailed(format!("Failed to read passphrase: {}", e)))?;
+        .map_err(|e| AuthyError::AuthFailed(format!("Failed to read passphrase: {e}")))?;
+    Ok((VaultKey::Passphrase(passphrase), AuthContext::master_passphrase()))
+}
 
-    let vault_key = VaultKey::Passphrase(passphrase);
-    let auth_ctx = AuthContext::master_passphrase();
-    Ok((vault_key, auth_ctx))
+#[cfg(not(feature = "cli"))]
+fn interactive_passphrase_prompt() -> Result<(VaultKey, AuthContext)> {
+    Err(AuthyError::AuthFailed(
+        "No credentials provided. Set AUTHY_KEYFILE or AUTHY_PASSPHRASE.".into(),
+    ))
 }
 
 /// Resolve auth specifically for init (no vault exists yet, just get the key).
@@ -134,18 +142,28 @@ pub fn resolve_auth_for_init(
         return Ok(VaultKey::Passphrase(pass));
     }
 
-    // Interactive
+    interactive_init_passphrase()
+}
+
+#[cfg(feature = "cli")]
+fn interactive_init_passphrase() -> Result<VaultKey> {
     let pass = dialoguer::Password::new()
         .with_prompt("Create vault passphrase")
         .with_confirmation("Confirm passphrase", "Passphrases don't match")
         .interact()
-        .map_err(|e| AuthyError::AuthFailed(format!("Failed to read passphrase: {}", e)))?;
-
+        .map_err(|e| AuthyError::AuthFailed(format!("Failed to read passphrase: {e}")))?;
     Ok(VaultKey::Passphrase(pass))
 }
 
+#[cfg(not(feature = "cli"))]
+fn interactive_init_passphrase() -> Result<VaultKey> {
+    Err(AuthyError::AuthFailed(
+        "No credentials provided. Pass a passphrase or set AUTHY_PASSPHRASE.".into(),
+    ))
+}
+
 /// Read an age keyfile from disk. Returns (identity_string, public_key_string).
-pub(crate) fn read_keyfile(path: &str) -> Result<(String, String)> {
+pub fn read_keyfile(path: &str) -> Result<(String, String)> {
     let content = fs::read_to_string(path)
         .map_err(|e| AuthyError::InvalidKeyfile(format!("Cannot read {}: {}", path, e)))?;
 

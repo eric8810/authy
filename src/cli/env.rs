@@ -1,10 +1,10 @@
-use crate::audit;
-use crate::auth;
+use authy::audit;
+use authy::auth;
 use crate::cli::common;
-use crate::config::project::ProjectConfig;
-use crate::error::{AuthyError, Result};
-use crate::subprocess::{transform_name, NamingOptions};
-use crate::vault;
+use authy::config::project::ProjectConfig;
+use authy::error::{AuthyError, Result};
+use authy::subprocess::{transform_name, NamingOptions};
+use authy::vault;
 
 pub fn run(
     scope_arg: Option<&str>,

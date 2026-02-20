@@ -2,9 +2,9 @@ use crossterm::event::{KeyCode, KeyEvent};
 use ratatui::prelude::*;
 use ratatui::widgets::{Block, Borders, Paragraph};
 
-use crate::auth::context::AuthContext;
-use crate::error::AuthyError;
-use crate::vault::{self, VaultKey};
+use authy::auth::context::AuthContext;
+use authy::error::AuthyError;
+use authy::vault::{self, VaultKey};
 
 use super::widgets;
 use super::{Screen, TuiApp};
@@ -34,7 +34,7 @@ pub fn handle_input(app: &mut TuiApp, key: KeyEvent) {
 }
 
 /// Try to authenticate using the app's current state.
-pub fn try_authenticate(app: &mut TuiApp) -> crate::error::Result<()> {
+pub fn try_authenticate(app: &mut TuiApp) -> authy::error::Result<()> {
     if let Some(ref keyfile_path) = app.keyfile {
         // Keyfile auth
         let content = std::fs::read_to_string(keyfile_path)

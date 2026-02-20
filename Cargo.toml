@@ -5,13 +5,21 @@ edition = "2021"
 description = "CLI secrets store & dispatch for agents"
 license = "MIT"
 
+[lib]
+name = "authy"
+path = "src/lib.rs"
+
 [[bin]]
 name = "authy"
 path = "src/main.rs"
 
+[features]
+default = ["cli"]
+cli = ["dep:clap", "dep:dialoguer", "dep:console", "dep:ratatui", "dep:crossterm", "dep:humantime"]
+
 [dependencies]
-# CLI
-clap = { version = "4", features = ["derive", "env"] }
+# CLI (only needed for the binary)
+clap = { version = "4", features = ["derive", "env"], optional = true }
 
 # Encryption
 age = { version = "0.10", features = ["armor"] }
@@ -33,18 +41,18 @@ secrecy = { version = "0.8", features = ["serde"] }
 
 # Time
 chrono = { version = "0.4", features = ["serde"] }
-humantime = "2"
+humantime = { version = "2", optional = true }
 
 # Pattern matching
 globset = "0.4"
 
-# Interactive
-dialoguer = "0.11"
-console = "0.15"
+# Interactive (only needed for the binary)
+dialoguer = { version = "0.11", optional = true }
+console = { version = "0.15", optional = true }
 
-# TUI
-ratatui = "0.29"
-crossterm = "0.28"
+# TUI (only needed for the binary)
+ratatui = { version = "0.29", optional = true }
+crossterm = { version = "0.28", optional = true }
 
 # Errors
 thiserror = "2"

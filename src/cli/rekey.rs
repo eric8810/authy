@@ -1,9 +1,9 @@
 use std::fs;
 
-use crate::audit;
-use crate::auth;
-use crate::error::{AuthyError, Result};
-use crate::vault;
+use authy::audit;
+use authy::auth;
+use authy::error::{AuthyError, Result};
+use authy::vault;
 
 pub fn run(
     generate_keyfile: Option<&str>,
