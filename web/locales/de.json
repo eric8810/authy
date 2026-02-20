@@ -21,6 +21,10 @@
   "features": {
     "title": "Gebaut für das Agent-Zeitalter",
     "description": "Claude Code liest .env-Dateien unbemerkt. OpenClaw speichert API-Schlüssel im Klartext. Authy gibt Ihnen die Kontrolle darüber, was Ihre Agents sehen können.",
+    "libraryApi": {
+      "title": "Bibliotheks-API",
+      "description": "Nutzen Sie Authy als Rust-Crate für programmatischen Zugriff auf den Tresor. AuthyClient bietet get, store, remove, rotate, list und Audit-Operationen. Mit --no-default-features als reine Bibliothek nutzbar."
+    },
     "encryptedVault": {
       "title": "Verschlüsselter Tresor",
       "description": "Speicherung in einer einzelnen mit age verschlüsselten Datei. MessagePack-Format für Geschwindigkeit und Sicherheit, keine Metadaten-Lecks."
@@ -74,6 +78,7 @@
       "noAccountNeeded": "Ohne Konto",
       "auditLogging": "Audit",
       "subprocessInjection": "Subprozess-Injektion",
+      "libraryApi": "Programmatische Bibliotheks-API",
       "builtForAgents": "Für Agents entwickelt",
       "runOnlyMode": "Nur-Ausführungsmodus",
       "jsonOutput": "Strukturierte JSON-Ausgabe"

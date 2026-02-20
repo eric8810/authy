@@ -22,6 +22,10 @@
   "features": {
     "title": "Agent 시대를 위한 설계",
     "description": "Claude Code는 .env 파일을 조용히 읽고, OpenClaw는 API 키를 평문으로 저장합니다. Authy는 Agent가 볼 수 있는 범위를 제어합니다.",
+    "libraryApi": {
+      "title": "라이브러리 API",
+      "description": "Authy를 Rust 크레이트로 사용하여 프로그래밍 방식으로 볼트에 접근합니다. AuthyClient는 get, store, remove, rotate, list 및 감사 작업을 제공합니다. --no-default-features로 최소 라이브러리 의존성으로 빌드 가능합니다."
+    },
     "encryptedVault": {
       "title": "암호화 볼트",
       "description": "age 암호화 기반 단일 파일 저장. MessagePack 포맷으로 빠르고 안전하며, 메타데이터 유출 위험 없음."
@@ -75,6 +79,7 @@
       "noAccountNeeded": "계정 불필요",
       "auditLogging": "감사 로그",
       "subprocessInjection": "서브프로세스 주입",
+      "libraryApi": "프로그래밍 라이브러리 API",
       "builtForAgents": "Agent 전용 설계",
       "runOnlyMode": "실행 전용 모드",
       "jsonOutput": "구조화된 JSON 출력"

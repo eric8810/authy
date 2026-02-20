@@ -22,6 +22,10 @@
   "features": {
     "title": "面向 Agent 時代的設計",
     "description": "Claude Code 會靜默讀取 .env 檔案，OpenClaw 以明文儲存 API 密鑰。Authy 讓您掌控 Agent 能看到的內容。",
+    "libraryApi": {
+      "title": "函式庫 API",
+      "description": "將 Authy 作為 Rust crate 用於程式化存取保險庫。AuthyClient 提供 get、store、remove、rotate、list 和稽核操作。使用 --no-default-features 建置最小函式庫依賴。"
+    },
     "encryptedVault": {
       "title": "加密儲存",
       "description": "採用 age 加密的單一檔案儲存，MessagePack 格式兼顧效能與安全，杜絕元資料外洩風險。"
@@ -75,6 +79,7 @@
       "noAccountNeeded": "無需註冊",
       "auditLogging": "稽核日誌",
       "subprocessInjection": "程序注入",
+      "libraryApi": "程式化函式庫 API",
       "builtForAgents": "面向 Agent 設計",
       "runOnlyMode": "僅執行模式",
       "jsonOutput": "結構化 JSON 輸出"

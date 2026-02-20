@@ -21,6 +21,10 @@
   "features": {
     "title": "Built for the Agent Age",
     "description": "Traditional secrets managers weren't designed for AI agents. Claude Code reads .env files silently. OpenClaw stores API keys in plaintext. HashiCorp Vault requires a server. Authy gives agents scoped access with run-only enforcement — they inject secrets into subprocesses but never see the values.",
+    "libraryApi": {
+      "title": "Library API",
+      "description": "Use Authy as a Rust crate for programmatic vault access. AuthyClient provides get, store, remove, rotate, list, and audit operations. Build with --no-default-features for a minimal library-only dependency."
+    },
     "encryptedVault": {
       "title": "Encrypted Vault",
       "description": "Single age-encrypted file using X25519 keys or scrypt passphrases. Secrets stored in MessagePack format for speed. All data encrypted at rest with modern cryptography. No metadata leakage."
@@ -76,6 +80,7 @@
       "subprocessInjection": "Subprocess Injection",
       "runOnlyMode": "Run-Only Mode",
       "jsonOutput": "Structured JSON Output",
+      "libraryApi": "Programmatic Library API",
       "builtForAgents": "Built for AI Agents"
     }
   },

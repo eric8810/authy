@@ -22,6 +22,10 @@
   "features": {
     "title": "Agent 時代のために",
     "description": "Claude Code は .env ファイルを無断で読み取り、OpenClaw は API キーを平文で保存します。Authy は Agent が見える範囲を制御します。",
+    "libraryApi": {
+      "title": "ライブラリAPI",
+      "description": "AuthyをRustクレートとしてプログラムからボールトにアクセス。AuthyClientはget、store、remove、rotate、list、監査操作を提供。--no-default-featuresで最小限のライブラリ依存でビルド可能。"
+    },
     "encryptedVault": {
       "title": "暗号化ボールト",
       "description": "age 暗号化による単一ファイル保存。MessagePack フォーマットで高速かつ安全。メタデータ漏洩の心配なし。"
@@ -75,6 +79,7 @@
       "noAccountNeeded": "アカウント不要",
       "auditLogging": "監査ログ",
       "subprocessInjection": "サブプロセス注入",
+      "libraryApi": "プログラムライブラリAPI",
       "builtForAgents": "Agent 向けに設計",
       "runOnlyMode": "実行専用モード",
       "jsonOutput": "構造化 JSON 出力"

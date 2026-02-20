@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Shield, Key, FileJson, TerminalSquare, Lock, Monitor, FileCode } from 'lucide-react';
+import { Shield, Key, FileJson, TerminalSquare, Lock, Monitor, FileCode, Code2 } from 'lucide-react';
 import { Feature } from '../types';
 import { FadeIn } from './FadeIn';
 
@@ -8,6 +8,11 @@ export const Features: React.FC = () => {
   const { t } = useTranslation();
 
   const features: Feature[] = [
+    {
+      title: t('features.libraryApi.title'),
+      description: t('features.libraryApi.description'),
+      icon: Code2
+    },
     {
       title: t('features.encryptedVault.title'),
       description: t('features.encryptedVault.description'),
