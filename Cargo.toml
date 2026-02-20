@@ -1,9 +1,15 @@
 [package]
 name = "authy"
-version = "0.4.0"
+version = "0.5.0"
 edition = "2021"
-description = "CLI secrets store & dispatch for agents"
+rust-version = "1.70"
+description = "CLI secrets store & dispatch for AI agents — encrypted vault, scoped policies, run-only tokens, and audit logging"
 license = "MIT"
+repository = "https://github.com/eric8810/authy"
+homepage = "https://eric8810.github.io/authy"
+readme = "README.md"
+keywords = ["secrets", "vault", "agents", "encryption", "cli"]
+categories = ["command-line-utilities", "cryptography"]
 
 [lib]
 name = "authy"
@@ -72,6 +78,10 @@ rand = "0.8"
 subtle = "2"
 
 [[test]]
+name = "api"
+path = "tests/api_test.rs"
+
+[[test]]
 name = "integration"
 path = "tests/integration/mod.rs"
 
@@ -83,3 +93,4 @@ lto = true
 tempfile = "3"
 assert_cmd = "2"
 predicates = "3"
+serial_test = "3.3.1"

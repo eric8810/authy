@@ -8,7 +8,7 @@
     "viewOnGitHub": "소스 코드 보기"
   },
   "hero": {
-    "released": "v0.4.0 — 파일 플레이스홀더 및 볼트 재암호화",
+    "released": "v0.5.0 — 프로그래밍 방식 접근을 위한 라이브러리 API",
     "title": "",
     "titleHighlight": "AI Agents",
     "titleSuffix": "를 위한 시크릿 관리",

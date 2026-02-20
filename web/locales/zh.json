@@ -8,7 +8,7 @@
     "viewOnGitHub": "查看源码"
   },
   "hero": {
-    "released": "v0.4.0 — 文件占位符与保险库重新加密",
+    "released": "v0.5.0 — 程序化访问的库 API",
     "title": "",
     "titleHighlight": "AI Agents",
     "titleSuffix": "密钥管理方案",

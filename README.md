@@ -26,6 +26,31 @@ authy resolve config.yaml.tpl --scope deploy --output config.yaml
 
 `authy run` covers env vars. `authy resolve` covers config files.
 
+## Library API
+
+Use Authy as a Rust crate for programmatic vault access:
+
+```rust
+use authy::api::AuthyClient;
+
+let client = AuthyClient::with_passphrase("my-vault-passphrase")?;
+client.init_vault()?;
+client.store("api-key", "sk-secret-value", false)?;
+let value = client.get("api-key")?; // Some("sk-secret-value")
+```
+
+```bash
+# Add to your project (library only, no CLI deps)
+cargo add authy --no-default-features
+```
+
+Auth from environment variables:
+
+```rust
+// Reads AUTHY_KEYFILE or AUTHY_PASSPHRASE
+let client = AuthyClient::from_env()?;
+```
+
 ## Install
 
 ```bash

@@ -8,7 +8,7 @@
     "viewOnGitHub": "Ver código fuente"
   },
   "hero": {
-    "released": "v0.4.0 — Marcadores de archivo y recifrado del cofre",
+    "released": "v0.5.0 — API de biblioteca para acceso programático",
     "title": "Gestión de secretos para",
     "titleHighlight": "AI Agents",
     "description": "Tus agents necesitan claves API, pero no las llaves del reino. Cifrado, políticas de ámbito, tokens de corta duración y auditoría completa. Un solo ejecutable, sin servidor, sin registro.",

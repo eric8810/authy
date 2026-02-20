@@ -84,25 +84,38 @@ Embed Authy into the places developers already are. Distribution, not features.
 
 **Success criteria:** A developer setting up Claude Code, OpenClaw, or a new agent project encounters Authy as the default secrets pattern.
 
-## v0.4 — File-Layer Secrets
+## v0.4 — File-Layer Secrets ✓
 
 `authy run` covers env vars. `authy resolve` covers config files. Together they handle both surfaces where secrets live.
 
-- [ ] **`authy resolve <file>`** — replace `<authy:key-name>` placeholders with real values from vault, output to `--output` path or stdout
-- [ ] **Placeholder format** — `<authy:key-name>` in any config file (yaml, json, toml, etc.), safe to commit and share
-- [ ] **Safe/sensitive command split** — formalize: safe commands (list, run, resolve) work with agent tokens; sensitive commands (get, store, export, import, rotate) require TTY or master key
-- [ ] **`authy rekey`** — change passphrase or switch between passphrase/keyfile auth
+- [x] **`authy resolve <file>`** — replace `<authy:key-name>` placeholders with real values from vault, output to `--output` path or stdout
+- [x] **Placeholder format** — `<authy:key-name>` in any config file (yaml, json, toml, etc.), safe to commit and share
+- [x] **Safe/sensitive command split** — formalize: safe commands (list, run, resolve) work with agent tokens; sensitive commands (get, store, export, import, rotate) require TTY or master key
+- [x] **`authy rekey`** — change passphrase or switch between passphrase/keyfile auth
 
 **Success criteria:** Secrets in config files use placeholders. `authy resolve` produces real files at deploy/launch time. Agents only see placeholder files.
 
-### Deferred to v0.5+
+## v0.5 — Library API & Publish Readiness ✓
+
+Expose core vault operations as a Rust library crate. Make Authy embeddable — not just callable.
+
+- [x] **`lib.rs` + `api.rs`** — `AuthyClient` high-level facade: `get`, `store`, `remove`, `rotate`, `list`, `init_vault`, `audit_entries`, `verify_audit_chain`
+- [x] **Feature-gated CLI** — CLI deps (`clap`, `dialoguer`, `ratatui`, etc.) behind `cli` feature; library builds with `--no-default-features`
+- [x] **`AuthyClient::from_env()`** — authenticate from `AUTHY_KEYFILE` or `AUTHY_PASSPHRASE` env vars without interactive prompts
+- [x] **Lib-level tests** — 19 tests exercising the `AuthyClient` API directly (init, store, get, remove, rotate, list, audit, wrong passphrase)
+- [x] **CI lib job** — GitHub Actions job that builds and tests with `--no-default-features` to prevent regressions
+- [x] **Cargo.toml publish metadata** — `repository`, `homepage`, `readme`, `keywords`, `categories`, `rust-version` for crates.io
+
+**Success criteria:** Rust programs can `cargo add authy` and use `AuthyClient` to manage secrets programmatically. CLI and library are independently buildable and tested.
+
+### Deferred to v0.6+
 
 - `authy up` / `authy down` (tool launcher — agent platforms already handle process management)
 - Agent identity (named agents with scoped access)
 - Per-agent audit attribution
 - Delegation tokens (agent-to-agent scope narrowing)
 
-## v0.5 — Platform Integration Layer
+## v0.6 — Platform Integration Layer
 
 Serve segment 3 (operators) through the platforms they already use. Serve platforms that need a service interface, not just CLI.
 
@@ -116,7 +129,7 @@ Serve segment 3 (operators) through the platforms they already use. Serve platfo
 
 **Success criteria:** Platforms can integrate Authy as their secrets backend. Operators use Authy through platforms without knowing it.
 
-## v0.6 — Breach Response & Security Hardening
+## v0.7 — Breach Response & Security Hardening
 
 When agents get compromised (not if — when), Authy is the incident response tool.
 
@@ -134,9 +147,9 @@ Authy is on every agent's PATH like `git` is on every developer's PATH.
 
 - [ ] Stable CLI interface — semver guarantee, output formats are API contracts
 - [ ] Daemon mode with auto-lock — keep vault unlocked in memory, lock after timeout
-- [ ] `lib.rs` extraction — make core modules public for Rust crate consumers
-- [ ] Publish to crates.io (lib + CLI split) via Trusted Publishing
-- [ ] Comprehensive unit test coverage
+- [x] `lib.rs` extraction — make core modules public for Rust crate consumers (shipped in v0.5)
+- [ ] Publish to crates.io via Trusted Publishing
+- [x] Comprehensive unit test coverage (API tests shipped in v0.5)
 - [ ] Vault format versioning + migration for future-proofing
 - [ ] cargo-dist for release automation (Homebrew tap, shell/PS installers, cargo-binstall)
 

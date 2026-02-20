@@ -8,7 +8,7 @@
     "viewOnGitHub": "Voir le code source"
   },
   "hero": {
-    "released": "v0.4.0 — Espaces réservés de fichiers & rechiffrement du coffre",
+    "released": "v0.5.0 — API bibliothèque pour accès programmatique",
     "title": "Gestion des secrets pour",
     "titleHighlight": "AI Agents",
     "description": "Vos agents ont besoin de clés API, pas des clés du royaume. Coffre chiffré, politiques de périmètre, tokens à durée limitée et audit complet. Un seul exécutable, pas de serveur, pas de compte.",

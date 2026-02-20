@@ -58,6 +58,7 @@ Admin (TUI or CLI)          Agent
 
 | Feature | Description |
 |---------|-------------|
+| **Library API** | Use as a Rust crate — `AuthyClient` for programmatic vault access; `cargo add authy --no-default-features` |
 | **Encrypted Vault** | `age`-encrypted single file; passphrase or X25519 keyfile auth |
 | **Scoped Policies** | Glob-based allow/deny rules; deny overrides allow; default deny |
 | **Run-Only Mode** | Restrict agents to subprocess injection only — `get`, `env`, `export` blocked |
@@ -162,6 +163,24 @@ authy run --scope claude-code --uppercase --replace-dash _ -- claude
 ---
 
 ## Use Cases
+
+### Library API (Rust Crate)
+
+```rust
+use authy::api::AuthyClient;
+
+// Authenticate and access the vault programmatically
+let client = AuthyClient::from_env()?; // reads AUTHY_KEYFILE or AUTHY_PASSPHRASE
+client.store("api-key", "sk-secret-value", false)?;
+let value = client.get("api-key")?;
+let names = client.list(None)?;
+client.rotate("api-key", "sk-new-value")?;
+```
+
+```bash
+# Add to your Rust project (no CLI deps)
+cargo add authy --no-default-features
+```
 
 ### Config File Templates
 

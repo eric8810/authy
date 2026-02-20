@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.0] - 2026-02-20
+
+### Added
+
+- **Library API (`AuthyClient`)** — Use Authy as a Rust crate. `AuthyClient` provides a high-level facade for programmatic vault access: `get`, `store`, `remove`, `rotate`, `list`, `init_vault`, `audit_entries`, `verify_audit_chain`. Authenticate with `with_passphrase()`, `with_keyfile()`, or `from_env()`.
+- **Feature-gated CLI** — CLI dependencies (`clap`, `dialoguer`, `ratatui`, `crossterm`, `humantime`) are behind the `cli` feature (on by default). Build with `--no-default-features` for a minimal library-only build.
+- **API test suite** — 19 tests exercising the `AuthyClient` API directly (init, store/get, remove, rotate, list, audit, wrong passphrase, env auth, custom actor).
+- **CI workflow** — GitHub Actions CI with two jobs: full test suite + clippy, and library-only build/test with `--no-default-features`.
+- **Cargo.toml publish metadata** — `repository`, `homepage`, `readme`, `keywords`, `categories`, `rust-version` for crates.io readiness.
+
+### Changed
+
+- `auth::read_keyfile` visibility changed to `pub` for library API access
+- All internal module visibility adjusted for `lib.rs` re-exports
+- CLI modules use `authy::` crate paths instead of `crate::`
+
 ## [0.4.0] - 2026-02-19
 
 ### Added
