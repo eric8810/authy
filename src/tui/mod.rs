@@ -322,6 +322,20 @@ impl TuiApp {
     }
 }
 
+/// Copy data to the system clipboard via OSC 52 escape sequence.
+/// Writes to `/dev/tty` to bypass ratatui's alternate screen buffer.
+fn copy_to_clipboard(data: &str) -> bool {
+    use base64::Engine;
+    let encoded = base64::engine::general_purpose::STANDARD.encode(data);
+    let seq = format!("\x1b]52;c;{}\x07", encoded);
+    if let Ok(mut tty) = std::fs::OpenOptions::new().write(true).open("/dev/tty") {
+        use std::io::Write;
+        tty.write_all(seq.as_bytes()).is_ok()
+    } else {
+        false
+    }
+}
+
 /// Main entry point — set up terminal, run event loop, restore terminal.
 pub fn run(keyfile: Option<String>) -> Result<()> {
     // Check vault exists
@@ -696,6 +710,15 @@ fn handle_popup_input(app: &mut TuiApp, key: event::KeyEvent) {
                     // Close popup (already taken)
                 }
                 _ => {
+                    if key.modifiers.contains(KeyModifiers::CONTROL) && key.code == KeyCode::Char('y') {
+                        copy_to_clipboard(&value);
+                        app.popup = Some(PopupKind::StatusMessage {
+                            message: "Copied to clipboard.".into(),
+                            is_error: false,
+                            auto_close_at: Instant::now() + Duration::from_secs(2),
+                        });
+                        return;
+                    }
                     if key.modifiers.contains(KeyModifiers::CONTROL) && key.code == KeyCode::Char('r') {
                         masked = !masked;
                     }
@@ -1137,8 +1160,16 @@ fn handle_popup_input(app: &mut TuiApp, key: event::KeyEvent) {
                 }
             }
         }
-        PopupKind::ShowToken { .. } => {
-            // Any key closes
+        PopupKind::ShowToken { token, .. } => {
+            if key.modifiers.contains(KeyModifiers::CONTROL) && key.code == KeyCode::Char('y') {
+                copy_to_clipboard(&token);
+                app.popup = Some(PopupKind::StatusMessage {
+                    message: "Copied to clipboard.".into(),
+                    is_error: false,
+                    auto_close_at: Instant::now() + Duration::from_secs(2),
+                });
+            }
+            // Any other key closes (popup already taken)
         }
         PopupKind::ConfirmRevokeSession { session_id } => {
             match key.code {
@@ -1284,7 +1315,7 @@ fn draw_popup(frame: &mut Frame, popup: &PopupKind) {
 
             let title = name.to_string();
             let footer = format!(
-                "[Esc] close  [Ctrl+R] {}  auto-close: {}s",
+                "[Esc] close  [Ctrl+R] {}  [Ctrl+Y] copy  auto-close: {}s",
                 if *masked { "reveal" } else { "mask" },
                 remaining.as_secs()
             );
@@ -1524,7 +1555,7 @@ fn draw_popup(frame: &mut Frame, popup: &PopupKind) {
                 .checked_duration_since(Instant::now())
                 .unwrap_or_default();
             let title = format!("Session: {}", session_id);
-            let footer = format!("[any key] close  auto-close: {}s  (copy this token now!)", remaining.as_secs());
+            let footer = format!("[Ctrl+Y] copy  [any key] close  auto-close: {}s", remaining.as_secs());
             let p = widgets::Popup {
                 title: &title,
                 content: token,
@@ -1606,6 +1637,7 @@ Audit:
   v        Verify chain
 
 Ctrl+R     Toggle mask
+Ctrl+Y     Copy to clipboard
 Esc/q      Close / quit
 ?          This help";
 
