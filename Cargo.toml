@@ -82,6 +82,10 @@ name = "api"
 path = "tests/api_test.rs"
 
 [[test]]
+name = "mcp"
+path = "tests/mcp_test.rs"
+
+[[test]]
 name = "integration"
 path = "tests/integration/mod.rs"
 

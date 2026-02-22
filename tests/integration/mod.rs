@@ -16,5 +16,6 @@ mod rekey_test;
 mod resolve_test;
 mod run_only_test;
 mod run_test;
+mod serve_test;
 mod session_test;
 mod vault_test;
