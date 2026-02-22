@@ -20,6 +20,7 @@ export const Comparison: React.FC = () => {
     { feature: t('comparison.features.runOnlyMode'), authy: true, pass: false, vault: false, onepassword: false },
     { feature: t('comparison.features.jsonOutput'), authy: true, pass: false, vault: true, onepassword: true },
     { feature: t('comparison.features.libraryApi'), authy: true, pass: false, vault: true, onepassword: true },
+    { feature: t('comparison.features.mcpServer'), authy: true, pass: false, vault: false, onepassword: false },
     { feature: t('comparison.features.builtForAgents'), authy: true, pass: false, vault: false, onepassword: false },
   ];
 

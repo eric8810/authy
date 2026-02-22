@@ -40,6 +40,16 @@ export AUTHY_KEYFILE=~/.authy/keys/master.key
 authy run --scope backend --uppercase --replace-dash '_' -- node server.js
 ```
 
+## MCP Server
+
+Run as an MCP server for AI agent platforms (Claude Desktop, Cursor, Windsurf):
+
+```bash
+authy serve --mcp
+```
+
+Exposes 5 tools over stdio JSON-RPC 2.0: `get_secret`, `list_secrets`, `store_secret`, `remove_secret`, `test_policy`.
+
 ## Migrate from .env
 
 ```bash

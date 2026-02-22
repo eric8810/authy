@@ -26,6 +26,30 @@ authy resolve config.yaml.tpl --scope deploy --output config.yaml
 
 `authy run` covers env vars. `authy resolve` covers config files.
 
+## MCP Server
+
+Run Authy as an MCP (Model Context Protocol) server for AI agent platforms like Claude Desktop, Cursor, and Windsurf:
+
+```bash
+authy serve --mcp
+```
+
+Add to your MCP client config (e.g. `claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "authy": {
+      "command": "authy",
+      "args": ["serve", "--mcp"],
+      "env": { "AUTHY_PASSPHRASE": "your-passphrase" }
+    }
+  }
+}
+```
+
+Exposes 5 tools over stdio JSON-RPC 2.0: `get_secret`, `list_secrets`, `store_secret`, `remove_secret`, `test_policy`.
+
 ## Library API
 
 Use Authy as a Rust crate for programmatic vault access:
@@ -193,6 +217,9 @@ Audit
   authy audit show                 Show audit log
   authy audit verify               Verify log integrity
   authy audit export               Export log as JSON
+
+Server
+  authy serve --mcp                Start MCP server (stdio JSON-RPC)
 
 Admin
   authy admin                      Launch admin TUI

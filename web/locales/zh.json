@@ -8,7 +8,7 @@
     "viewOnGitHub": "查看源码"
   },
   "hero": {
-    "released": "v0.5.0 — 程序化访问的库 API",
+    "released": "v0.6.0 — 面向 AI Agent 平台的 MCP 服务器",
     "title": "",
     "titleHighlight": "AI Agents",
     "titleSuffix": "密钥管理方案",
@@ -50,6 +50,10 @@
       "title": "审计追踪",
       "description": "基于 HMAC 链式校验的 JSONL 追踪日志，完整记录每次密钥访问的来源、时间与操作。"
     },
+    "mcpServer": {
+      "title": "MCP 服务器",
+      "description": "将 Authy 作为 Model Context Protocol 服务器运行，通过 stdio JSON-RPC 2.0 通信。Claude Desktop、Cursor、Windsurf 等 AI Agent 平台可原生调用 Authy — 无需 Shell。提供 5 个工具：get、list、store、remove、test policy。"
+    },
     "adminTUI": {
       "title": "管理界面 TUI",
       "description": "全屏终端管理界面，支持密钥、策略、会话和审计日志管理。通过掩码输入字段录入的密钥不会出现在 Shell 历史记录中。"
@@ -82,6 +86,7 @@
       "runOnlyMode": "仅运行模式",
       "jsonOutput": "结构化 JSON 输出",
       "libraryApi": "程序化库 API",
+      "mcpServer": "MCP 服务器协议",
       "builtForAgents": "面向 Agent 设计"
     }
   },

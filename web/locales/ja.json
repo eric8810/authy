@@ -8,7 +8,7 @@
     "viewOnGitHub": "ソースコードを見る"
   },
   "hero": {
-    "released": "v0.5.0 — プログラムアクセス用ライブラリAPI",
+    "released": "v0.6.0 — AIエージェントプラットフォーム向けMCPサーバー",
     "title": "",
     "titleHighlight": "AI Agents",
     "titleSuffix": "向けシークレット管理",
@@ -50,6 +50,10 @@
       "title": "監査ログ",
       "description": "HMAC チェーンによる改ざん検知機能付き JSONL ログ。誰が、いつ、どのシークレットにアクセスしたかを完全追跡。"
     },
+    "mcpServer": {
+      "title": "MCPサーバー",
+      "description": "Authyを stdio JSON-RPC 2.0 上の Model Context Protocol サーバーとして実行。Claude Desktop、Cursor、Windsurf などの AI エージェントプラットフォームから Authy をネイティブに呼び出せます — シェル不要。5つのツール: get、list、store、remove、test policy。"
+    },
     "adminTUI": {
       "title": "管理 TUI",
       "description": "シークレット、ポリシー、セッション、監査ログを管理するフルスクリーン端末インターフェース。マスク入力フィールドで入力されたシークレットはシェル履歴に一切残りません。"
@@ -80,6 +84,7 @@
       "auditLogging": "監査ログ",
       "subprocessInjection": "サブプロセス注入",
       "libraryApi": "プログラムライブラリAPI",
+      "mcpServer": "MCPサーバープロトコル",
       "builtForAgents": "Agent 向けに設計",
       "runOnlyMode": "実行専用モード",
       "jsonOutput": "構造化 JSON 出力"

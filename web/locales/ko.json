@@ -8,7 +8,7 @@
     "viewOnGitHub": "소스 코드 보기"
   },
   "hero": {
-    "released": "v0.5.0 — 프로그래밍 방식 접근을 위한 라이브러리 API",
+    "released": "v0.6.0 — AI 에이전트 플랫폼용 MCP 서버",
     "title": "",
     "titleHighlight": "AI Agents",
     "titleSuffix": "를 위한 시크릿 관리",
@@ -50,6 +50,10 @@
       "title": "감사 로그",
       "description": "HMAC 체인 기반 변조 감지 JSONL 로그. 누가, 언제, 어떤 시크릿에 접근했는지 완전 추적."
     },
+    "mcpServer": {
+      "title": "MCP 서버",
+      "description": "Authy를 stdio JSON-RPC 2.0 기반 Model Context Protocol 서버로 실행합니다. Claude Desktop, Cursor, Windsurf 등 AI 에이전트 플랫폼에서 Authy를 네이티브로 호출할 수 있습니다 — 셸 불필요. 5가지 도구: get, list, store, remove, test policy."
+    },
     "adminTUI": {
       "title": "관리 TUI",
       "description": "시크릿, 정책, 세션 및 감사 로그를 관리하는 전체 화면 터미널 인터페이스. 마스크 입력 필드를 통해 입력된 시크릿은 셸 기록에 남지 않습니다."
@@ -80,6 +84,7 @@
       "auditLogging": "감사 로그",
       "subprocessInjection": "서브프로세스 주입",
       "libraryApi": "프로그래밍 라이브러리 API",
+      "mcpServer": "MCP 서버 프로토콜",
       "builtForAgents": "Agent 전용 설계",
       "runOnlyMode": "실행 전용 모드",
       "jsonOutput": "구조화된 JSON 출력"

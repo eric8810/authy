@@ -47,6 +47,7 @@
     "Tamper-evident audit log",
     "Subprocess secret injection",
     "Admin TUI interface",
+    "MCP server protocol",
     "CI/CD integration",
     "Docker support"
   ],

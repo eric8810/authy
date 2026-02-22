@@ -8,7 +8,7 @@
     "viewOnGitHub": "Ver código-fonte"
   },
   "hero": {
-    "released": "v0.5.0 — API de biblioteca para acesso programático",
+    "released": "v0.6.0 — Servidor MCP para plataformas de agentes IA",
     "title": "Gerenciamento de segredos para",
     "titleHighlight": "AI Agents",
     "description": "Seus agents precisam de chaves API, não das chaves do reino. Cofre criptografado, políticas de escopo, tokens de curta duração e auditoria completa. Um único executável, sem servidor, sem cadastro.",
@@ -49,6 +49,10 @@
       "title": "Log de auditoria",
       "description": "Log JSONL imutável com encadeamento HMAC. Registro completo de quem acessou qual segredo e quando."
     },
+    "mcpServer": {
+      "title": "Servidor MCP",
+      "description": "Execute o Authy como servidor Model Context Protocol sobre stdio JSON-RPC 2.0. Plataformas de agentes IA como Claude Desktop, Cursor e Windsurf podem chamar o Authy nativamente — sem shell. 5 ferramentas: get, list, store, remove, test policy."
+    },
     "adminTUI": {
       "title": "TUI de Administração",
       "description": "Interface de terminal em tela cheia para gerenciar segredos, políticas, sessões e logs de auditoria. Os segredos inseridos em campos mascarados nunca tocam o histórico de shell."
@@ -79,6 +83,7 @@
       "auditLogging": "Auditoria",
       "subprocessInjection": "Injeção em subprocessos",
       "libraryApi": "API de biblioteca programática",
+      "mcpServer": "Protocolo servidor MCP",
       "builtForAgents": "Projetado para Agents",
       "runOnlyMode": "Modo somente execução",
       "jsonOutput": "Saída JSON estruturada"

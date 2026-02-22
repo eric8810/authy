@@ -8,7 +8,7 @@
     "viewOnGitHub": "View on GitHub"
   },
   "hero": {
-    "released": "v0.5.0 — Library API for Programmatic Access",
+    "released": "v0.6.0 — MCP Server for AI Agent Platforms",
     "title": "Secrets Management for",
     "titleHighlight": "AI Agents",
     "description": "Your agents need API keys — they don't need the keys to the kingdom. Authy is a CLI secrets manager with encrypted vault, scoped policies, run-only tokens, and full audit trail. Agents inject secrets into subprocesses but never see the values. Single binary, no server, no accounts.",
@@ -49,6 +49,10 @@
       "title": "Tamper-Evident Audit Logging",
       "description": "Append-only JSONL log with HMAC chain verification. Track every secret access with actor identity, timestamp, operation type, and access outcome. Detect any log tampering instantly."
     },
+    "mcpServer": {
+      "title": "MCP Server",
+      "description": "Run Authy as a Model Context Protocol server over stdio JSON-RPC 2.0. AI agent platforms like Claude Desktop, Cursor, and Windsurf can call Authy natively — no shell required. 5 tools: get, list, store, remove, test policy."
+    },
     "adminTUI": {
       "title": "Admin Terminal UI",
       "description": "Full-screen terminal interface for managing secrets, policies, sessions, and audit logs. Masked input fields ensure secrets never touch shell history. Intuitive keyboard-driven interface."
@@ -81,6 +85,7 @@
       "runOnlyMode": "Run-Only Mode",
       "jsonOutput": "Structured JSON Output",
       "libraryApi": "Programmatic Library API",
+      "mcpServer": "MCP Server Protocol",
       "builtForAgents": "Built for AI Agents"
     }
   },

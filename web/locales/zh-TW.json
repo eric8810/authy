@@ -8,7 +8,7 @@
     "viewOnGitHub": "檢視原始碼"
   },
   "hero": {
-    "released": "v0.5.0 — 程式化存取的函式庫 API",
+    "released": "v0.6.0 — 面向 AI Agent 平台的 MCP 伺服器",
     "title": "",
     "titleHighlight": "AI Agents",
     "titleSuffix": "密鑰管理方案",
@@ -50,6 +50,10 @@
       "title": "稽核追蹤",
       "description": "基於 HMAC 鏈式校驗的 JSONL 追蹤日誌，完整記錄每次密鑰存取的來源、時間與操作。"
     },
+    "mcpServer": {
+      "title": "MCP 伺服器",
+      "description": "將 Authy 作為 Model Context Protocol 伺服器執行，透過 stdio JSON-RPC 2.0 通訊。Claude Desktop、Cursor、Windsurf 等 AI Agent 平台可原生呼叫 Authy — 無需 Shell。提供 5 個工具：get、list、store、remove、test policy。"
+    },
     "adminTUI": {
       "title": "管理介面 TUI",
       "description": "全螢幕終端管理介面，支援密鑰、策略、工作階段和稽核日誌管理。透過遮罩輸入欄位錄入的密鑰不會出現在 Shell 歷史記錄中。"
@@ -80,6 +84,7 @@
       "auditLogging": "稽核日誌",
       "subprocessInjection": "程序注入",
       "libraryApi": "程式化函式庫 API",
+      "mcpServer": "MCP 伺服器協定",
       "builtForAgents": "面向 Agent 設計",
       "runOnlyMode": "僅執行模式",
       "jsonOutput": "結構化 JSON 輸出"

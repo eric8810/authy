@@ -115,7 +115,7 @@ Expose core vault operations as a Rust library crate. Make Authy embeddable — 
 - Per-agent audit attribution
 - Delegation tokens (agent-to-agent scope narrowing)
 
-## v0.6 — Platform Integration Layer
+## v0.6 — Platform Integration Layer ✓
 
 Serve segment 3 (operators) through the platforms they already use. Serve platforms that need a service interface, not just CLI.
 
