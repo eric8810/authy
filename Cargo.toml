@@ -1,6 +1,6 @@
 [package]
 name = "authy-cli"
-version = "0.5.0"
+version = "0.6.0"
 edition = "2021"
 rust-version = "1.70"
 description = "CLI secrets store & dispatch for AI agents — encrypted vault, scoped policies, run-only tokens, and audit logging"

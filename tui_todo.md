@@ -113,7 +113,7 @@ Status key: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` skipped
 
 ## Future (post-TUI)
 
-- [ ] Extract `lib.rs` — make core modules public for external crate usage
-- [ ] MCP server mode (`authy serve --mcp`)
-- [ ] Clipboard support for token copy (OSC 52)
-- [ ] External vault change detection (mtime polling, reload prompt)
+- [x] Extract `lib.rs` — make core modules public for external crate usage (shipped v0.5)
+- [x] MCP server mode (`authy serve --mcp`) (shipped v0.6)
+- [x] Clipboard support for token copy (OSC 52) (shipped v0.6)
+- [x] External vault change detection (mtime polling, reload prompt) (shipped v0.6)

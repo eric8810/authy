@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.0] - 2026-02-22
+
+### Added
+
+- **MCP server (`authy serve --mcp`)** — Model Context Protocol server over stdio JSON-RPC 2.0. AI agent platforms (Claude Desktop, Cursor, etc.) can call authy natively without shelling out.
+- **MCP tools** — 5 tools exposed: `get_secret`, `list_secrets`, `store_secret`, `remove_secret`, `test_policy`. Each delegates to `AuthyClient` methods.
+- **`AuthyClient::test_policy()`** — Test whether a policy allows access to a secret name. Returns `true`/`false`.
+- **`AuthyClient::create_policy()`** — Create a new policy programmatically with allow/deny patterns, description, and run-only flag.
+- **TUI clipboard copy (OSC 52)** — `Ctrl+Y` copies secret values and session tokens to the system clipboard via OSC 52 terminal escape sequence. Works in iTerm2, kitty, Alacritty, Windows Terminal, etc.
+- **TUI vault change detection** — Detects external vault modifications via mtime polling and prompts to reload. Prevents stale data and lost updates when editing vault from another terminal.
+- **MCP test suite** — 7 in-memory JSON-RPC tests + 2 CLI integration tests for the serve command.
+
+### Changed
+
+- `TuiApp::save_vault()` now takes `&mut self` to record vault mtime after each save
+
 ## [0.5.0] - 2026-02-20
 
 ### Added

@@ -119,8 +119,8 @@ Expose core vault operations as a Rust library crate. Make Authy embeddable — 
 
 Serve segment 3 (operators) through the platforms they already use. Serve platforms that need a service interface, not just CLI.
 
-- [ ] `authy serve --mcp` — MCP server mode (stdio + Streamable HTTP)
-- [ ] MCP tools: `get_secret`, `list_secrets`, `test_policy`
+- [x] `authy serve --mcp` — MCP server mode (stdio JSON-RPC 2.0)
+- [x] MCP tools: `get_secret`, `list_secrets`, `store_secret`, `remove_secret`, `test_policy`
 - [ ] Publish to official MCP Registry + Smithery
 - [ ] REST/HTTP endpoint mode for platforms that need an API
 - [ ] Multi-vault support (`--vault path`) — per-project isolation

@@ -21,8 +21,11 @@ cargo clippy -- -D warnings    # lint (must pass clean)
 - `src/cli/env.rs` — `authy env` command (output secrets as env vars)
 - `src/cli/import.rs` — `authy import` command (import from .env files)
 - `src/cli/export.rs` — `authy export` command (export as .env or JSON)
+- `src/cli/serve.rs` — `authy serve --mcp` command (MCP server entry point)
 - `src/lib.rs` — library crate root, re-exports core modules
 - `src/api.rs` — `AuthyClient` high-level programmatic API facade
+- `src/mcp/mod.rs` — MCP server: JSON-RPC 2.0 handler, `McpServer` struct
+- `src/mcp/tools.rs` — MCP tool definitions and dispatch (5 tools)
 - `src/vault/` — encrypted vault storage (age encryption, MessagePack serialization)
 - `src/auth/` — authentication dispatcher (passphrase / keyfile / session token)
 - `src/policy/` — glob-based access control policies
@@ -30,6 +33,7 @@ cargo clippy -- -D warnings    # lint (must pass clean)
 - `src/audit/` — append-only JSONL audit log with HMAC chain
 - `src/subprocess/` — child process spawning with env var injection
 - `tests/api_test.rs` — lib-level tests for `AuthyClient` API (serial, isolated HOME)
+- `tests/mcp_test.rs` — in-memory MCP server tests (JSON-RPC, serial, isolated HOME)
 - `tests/integration/` — CLI integration tests using assert_cmd + tempfile
 - `skills/authy/` — Agent Skills standard skill (works with Claude Code, Cursor, OpenClaw, etc.)
 
