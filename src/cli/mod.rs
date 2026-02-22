@@ -18,6 +18,7 @@ pub mod remove;
 pub mod resolve;
 pub mod rotate;
 pub mod run;
+pub mod serve;
 pub mod session;
 pub mod store;
 
@@ -242,6 +243,13 @@ pub enum Commands {
         /// Re-encrypt with an existing keyfile
         #[arg(long)]
         new_keyfile: Option<String>,
+    },
+
+    /// Start a server (MCP, etc.)
+    Serve {
+        /// Run as MCP server (JSON-RPC over stdio)
+        #[arg(long)]
+        mcp: bool,
     },
 
     /// Launch admin TUI (interactive vault management)

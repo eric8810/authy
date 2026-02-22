@@ -96,6 +96,8 @@ fn main() {
             new_keyfile.as_deref(),
         ),
 
+        Commands::Serve { mcp } => cli::serve::run(*mcp),
+
         Commands::Admin { keyfile } => cli::admin::run(keyfile.clone()),
     };
 
