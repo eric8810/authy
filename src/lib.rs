@@ -20,6 +20,7 @@ pub mod audit;
 pub mod auth;
 pub mod config;
 pub mod error;
+pub mod mcp;
 pub mod policy;
 pub mod session;
 pub mod subprocess;
