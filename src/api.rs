@@ -205,6 +205,61 @@ impl AuthyClient {
         audit::verify_chain(&vault::audit_path(), &self.audit_key)
     }
 
+    /// Test whether a policy allows access to a secret.
+    /// Returns `true` if allowed, `false` if denied.
+    pub fn test_policy(&self, scope: &str, secret_name: &str) -> Result<bool> {
+        let v = vault::load_vault(&self.key)?;
+
+        let policy = v
+            .policies
+            .get(scope)
+            .ok_or_else(|| AuthyError::PolicyNotFound(scope.to_string()))?;
+
+        let allowed = policy.can_read(secret_name)?;
+        let outcome = if allowed { "allowed" } else { "denied" };
+
+        self.audit(
+            "policy.test",
+            Some(secret_name),
+            outcome,
+            Some(&format!("scope={}", scope)),
+        );
+        Ok(allowed)
+    }
+
+    /// Create a new policy in the vault.
+    pub fn create_policy(
+        &self,
+        name: &str,
+        allow: Vec<String>,
+        deny: Vec<String>,
+        description: Option<&str>,
+        run_only: bool,
+    ) -> Result<()> {
+        use crate::policy::Policy;
+
+        let mut v = vault::load_vault(&self.key)?;
+
+        if v.policies.contains_key(name) {
+            return Err(AuthyError::PolicyAlreadyExists(name.to_string()));
+        }
+
+        let mut policy = Policy::new(name.to_string(), allow, deny);
+        policy.description = description.map(String::from);
+        policy.run_only = run_only;
+        v.policies.insert(name.to_string(), policy);
+        v.touch();
+        vault::save_vault(&v, &self.key)?;
+
+        self.audit(
+            "policy.create",
+            None,
+            "success",
+            Some(&format!("policy={}", name)),
+        );
+        Ok(())
+    }
+
     // ── internal helpers ─────────────────────────────────────────
 
     fn audit(&self, operation: &str, secret: Option<&str>, outcome: &str, detail: Option<&str>) {

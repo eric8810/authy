@@ -280,6 +280,92 @@ fn test_api_from_env_no_credentials_fails() {
     });
 }
 
+// ── test_policy ──────────────────────────────────────────────────────
+
+#[test]
+#[serial]
+fn test_api_test_policy_allowed() {
+    with_isolated_home(|_home| {
+        let client = authy::api::AuthyClient::with_passphrase("test-pass").unwrap();
+        client.init_vault().unwrap();
+        client.store("db-url", "postgres://...", false).unwrap();
+        client
+            .create_policy("web", vec!["*".into()], vec![], None, false)
+            .unwrap();
+
+        assert!(client.test_policy("web", "db-url").unwrap());
+    });
+}
+
+#[test]
+#[serial]
+fn test_api_test_policy_denied() {
+    with_isolated_home(|_home| {
+        let client = authy::api::AuthyClient::with_passphrase("test-pass").unwrap();
+        client.init_vault().unwrap();
+        client.store("db-url", "postgres://...", false).unwrap();
+        client
+            .create_policy("limited", vec!["other-*".into()], vec![], None, false)
+            .unwrap();
+
+        assert!(!client.test_policy("limited", "db-url").unwrap());
+    });
+}
+
+#[test]
+#[serial]
+fn test_api_test_policy_not_found() {
+    with_isolated_home(|_home| {
+        let client = authy::api::AuthyClient::with_passphrase("test-pass").unwrap();
+        client.init_vault().unwrap();
+
+        let err = client.test_policy("nonexistent", "secret").unwrap_err();
+        assert!(err.to_string().contains("not found"));
+    });
+}
+
+// ── create_policy ────────────────────────────────────────────────────
+
+#[test]
+#[serial]
+fn test_api_create_policy() {
+    with_isolated_home(|_home| {
+        let client = authy::api::AuthyClient::with_passphrase("test-pass").unwrap();
+        client.init_vault().unwrap();
+        client.store("api-key", "sk-123", false).unwrap();
+
+        client
+            .create_policy(
+                "backend",
+                vec!["api-*".into()],
+                vec!["api-admin-*".into()],
+                Some("Backend services"),
+                false,
+            )
+            .unwrap();
+
+        assert!(client.test_policy("backend", "api-key").unwrap());
+        assert!(!client.test_policy("backend", "api-admin-key").unwrap());
+    });
+}
+
+#[test]
+#[serial]
+fn test_api_create_policy_duplicate_fails() {
+    with_isolated_home(|_home| {
+        let client = authy::api::AuthyClient::with_passphrase("test-pass").unwrap();
+        client.init_vault().unwrap();
+
+        client
+            .create_policy("dup", vec!["*".into()], vec![], None, false)
+            .unwrap();
+        let err = client
+            .create_policy("dup", vec!["*".into()], vec![], None, false)
+            .unwrap_err();
+        assert!(err.to_string().contains("already exists"));
+    });
+}
+
 // ── wrong passphrase ─────────────────────────────────────────────────
 
 #[test]
