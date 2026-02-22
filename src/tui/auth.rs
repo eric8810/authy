@@ -16,6 +16,7 @@ pub fn handle_input(app: &mut TuiApp, key: KeyEvent) {
             app.auth_error = None;
             match app.try_auth() {
                 Ok(()) => {
+                    app.record_vault_mtime();
                     app.screen = Screen::Main;
                 }
                 Err(e) => {

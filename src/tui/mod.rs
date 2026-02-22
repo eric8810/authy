@@ -2,7 +2,7 @@ mod auth;
 mod widgets;
 
 use std::io;
-use std::time::{Duration, Instant};
+use std::time::{Duration, Instant, SystemTime};
 
 use crossterm::event::{self, Event, KeyCode, KeyModifiers};
 use crossterm::terminal::{self, EnterAlternateScreen, LeaveAlternateScreen};
@@ -149,6 +149,8 @@ pub enum PopupKind {
     },
     /// Help overlay.
     Help,
+    /// Vault changed externally — prompt to reload.
+    VaultChanged,
 }
 
 /// Top-level screen state.
@@ -193,6 +195,9 @@ pub struct TuiApp {
     pub audit_entries: Vec<audit::AuditEntry>,
     pub audit_filter: String,
     pub audit_scroll: usize,
+
+    // Vault change detection
+    pub last_vault_mtime: Option<SystemTime>,
 }
 
 impl TuiApp {
@@ -213,6 +218,7 @@ impl TuiApp {
             audit_entries: Vec::new(),
             audit_filter: String::new(),
             audit_scroll: 0,
+            last_vault_mtime: None,
         }
     }
 
@@ -236,11 +242,12 @@ impl TuiApp {
         self.cursor[self.section_idx()] = pos;
     }
 
-    /// Save the vault to disk.
-    pub fn save_vault(&self) -> Result<()> {
+    /// Save the vault to disk and record the new mtime.
+    pub fn save_vault(&mut self) -> Result<()> {
         if let (Some(v), Some(k)) = (&self.vault, &self.key) {
             vault::save_vault(v, k)?;
         }
+        self.record_vault_mtime();
         Ok(())
     }
 
@@ -320,6 +327,24 @@ impl TuiApp {
             authy::vault::crypto::derive_key(&material, b"session-hmac", 32)
         })
     }
+
+    /// Record the current vault file mtime for change detection.
+    pub fn record_vault_mtime(&mut self) {
+        self.last_vault_mtime = std::fs::metadata(vault::vault_path())
+            .and_then(|m| m.modified())
+            .ok();
+    }
+
+    /// Check whether the vault file was modified since we last recorded mtime.
+    pub fn vault_changed_externally(&self) -> bool {
+        let current = std::fs::metadata(vault::vault_path())
+            .and_then(|m| m.modified())
+            .ok();
+        match (self.last_vault_mtime, current) {
+            (Some(last), Some(now)) => now > last,
+            _ => false,
+        }
+    }
 }
 
 /// Copy data to the system clipboard via OSC 52 escape sequence.
@@ -348,7 +373,10 @@ pub fn run(keyfile: Option<String>) -> Result<()> {
     // If keyfile provided, try to auth immediately (skip auth screen)
     if keyfile.is_some() {
         match app.try_auth() {
-            Ok(()) => app.screen = Screen::Main,
+            Ok(()) => {
+                app.record_vault_mtime();
+                app.screen = Screen::Main;
+            }
             Err(e) => {
                 app.auth_error = Some(format!("{}", e));
             }
@@ -419,6 +447,12 @@ fn event_loop(
 
         if last_tick.elapsed() >= tick_rate {
             last_tick = Instant::now();
+
+            // Check for external vault changes (main screen, no popup)
+            if app.screen == Screen::Main && app.popup.is_none() && app.vault_changed_externally()
+            {
+                app.popup = Some(PopupKind::VaultChanged);
+            }
         }
 
         // Auto-close popup if timer expired
@@ -1260,6 +1294,37 @@ fn handle_popup_input(app: &mut TuiApp, key: event::KeyEvent) {
         PopupKind::Help => {
             // Any key closes help
         }
+        PopupKind::VaultChanged => {
+            match key.code {
+                KeyCode::Char('y') | KeyCode::Char('Y') => {
+                    // Reload vault from disk
+                    if let Some(ref key) = app.key {
+                        match vault::load_vault(key) {
+                            Ok(v) => {
+                                app.vault = Some(v);
+                                app.record_vault_mtime();
+                                app.popup = Some(PopupKind::StatusMessage {
+                                    message: "Vault reloaded.".into(),
+                                    is_error: false,
+                                    auto_close_at: Instant::now() + Duration::from_secs(2),
+                                });
+                            }
+                            Err(e) => {
+                                app.popup = Some(PopupKind::StatusMessage {
+                                    message: format!("Reload failed: {}", e),
+                                    is_error: true,
+                                    auto_close_at: Instant::now() + Duration::from_secs(3),
+                                });
+                            }
+                        }
+                    }
+                }
+                _ => {
+                    // Dismiss and update mtime to suppress repeated prompts
+                    app.record_vault_mtime();
+                }
+            }
+        }
         PopupKind::StatusMessage { .. } => {
             // Any key closes the status message
         }
@@ -1651,6 +1716,13 @@ Esc/q      Close / quit
             frame.render_widget(block, area);
             let p = Paragraph::new(help_text);
             frame.render_widget(p, inner);
+        }
+        PopupKind::VaultChanged => {
+            let dialog = widgets::ConfirmDialog {
+                title: "Vault changed",
+                message: "The vault was modified externally. Reload?",
+            };
+            dialog.render(frame);
         }
         PopupKind::StatusMessage {
             message,
