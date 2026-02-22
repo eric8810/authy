@@ -100,8 +100,8 @@ Status: `[ ]` todo · `[~]` in progress · `[x]` done
 
 ## Final verification
 
-- [ ] `cargo build` compiles clean
-- [ ] `cargo clippy -- -D warnings` passes clean
-- [ ] `cargo test` — all existing + new tests pass
-- [ ] Manual: `echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' | AUTHY_PASSPHRASE=test authy serve --mcp` returns server info JSON
+- [x] `cargo build` compiles clean
+- [x] `cargo clippy -- -D warnings` passes clean
+- [x] `cargo test` — all 183 tests pass (8 unit + 24 API + 143 integration + 7 MCP + 1 doctest)
+- [x] Manual: `echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' | AUTHY_PASSPHRASE=test authy serve --mcp` returns server info JSON
 - [ ] Manual: TUI `Ctrl+Y` on reveal/token popup copies to clipboard
