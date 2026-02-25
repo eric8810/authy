@@ -28,3 +28,9 @@ audit.log
 npm/authy-cli/bin/authy-*
 npm/authy-cli/node_modules/
 *.tgz
+
+# SDK build artifacts
+packages/typescript/node_modules/
+packages/typescript/dist/
+__pycache__/
+*.pyc

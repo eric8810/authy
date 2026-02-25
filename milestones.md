@@ -129,7 +129,21 @@ Serve segment 3 (operators) through the platforms they already use. Serve platfo
 
 **Success criteria:** Platforms can integrate Authy as their secrets backend. Operators use Authy through platforms without knowing it.
 
-## v0.7 — Breach Response & Security Hardening
+## v0.7 — Language Wrappers & Migration
+
+Meet developers in their language. Ship thin SDK wrappers for Python, TypeScript, and Go, plus importers for the major secret stores people are migrating from. Adoption before hardening.
+
+- [ ] `authy import --from 1password` — import from 1Password via `op` CLI
+- [ ] `authy import --from pass` — import from password-store (GPG)
+- [ ] `authy import --from sops` — import from SOPS-encrypted files
+- [ ] `authy import --from vault` — import from HashiCorp Vault KV
+- [ ] **Python SDK** (`authy-secrets` on PyPI) — subprocess wrapper, zero native deps, typed errors
+- [ ] **TypeScript SDK** (`authy-secrets` on npm) — async + sync APIs, dual CJS/ESM, full `.d.ts` types
+- [ ] **Go SDK** (`github.com/eric8810/authy-go`) — idiomatic option pattern, `context.Context`, sentinel errors
+
+**Success criteria:** `pip install authy-secrets`, `npm install authy-secrets`, and `go get` all work. Developers use authy natively in their language without shelling out manually. Teams migrate existing secrets in one command.
+
+## v0.8 — Breach Response & Security Hardening
 
 When agents get compromised (not if — when), Authy is the incident response tool.
 
@@ -137,7 +151,6 @@ When agents get compromised (not if — when), Authy is the incident response to
 - [ ] Secret rotation workflow — `authy rotate` with hooks for downstream notification
 - [ ] Webhook/hook notifications on sensitive secret access
 - [ ] Multiple age recipients — multi-identity decryption for team key management
-- [ ] Import from 1Password, pass, SOPS — broader migration paths
 
 **Success criteria:** When an agent is compromised, the operator knows exactly what was accessed, revokes in one command, and rotates affected secrets.
 

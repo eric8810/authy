@@ -48,11 +48,27 @@ fn main() {
 
         Commands::Import {
             file,
+            from,
+            op_vault,
+            tag,
+            path,
+            mount,
             keep_names,
             prefix,
             force,
             dry_run,
-        } => cli::import::run(file, *keep_names, prefix.as_deref(), *force, *dry_run),
+        } => cli::import::run(
+            file.as_deref(),
+            from.as_ref(),
+            op_vault.as_deref(),
+            tag.as_deref(),
+            path.as_deref(),
+            mount,
+            *keep_names,
+            prefix.as_deref(),
+            *force,
+            *dry_run,
+        ),
 
         Commands::Export {
             format,

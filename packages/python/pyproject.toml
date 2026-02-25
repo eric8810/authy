@@ -1,0 +1,33 @@
+[project]
+name = "authy-secrets"
+version = "0.7.0"
+description = "Python SDK for the authy secrets manager"
+requires-python = ">=3.9"
+license = "MIT"
+keywords = ["secrets", "vault", "agents", "ai"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+Homepage = "https://github.com/eric8810/authy"
+Documentation = "https://github.com/eric8810/authy/tree/main/packages/python"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+markers = [
+    "integration: marks tests that require the authy binary on PATH",
+]

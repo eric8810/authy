@@ -272,3 +272,198 @@ fn test_import_with_prefix() {
         .success()
         .stdout("bar");
 }
+
+// --- External import adapter tests ---
+
+#[test]
+fn test_import_from_dotenv_explicit() {
+    // --from dotenv should behave exactly like the default
+    let home = TempDir::new().unwrap();
+    init_vault(&home);
+
+    let env_file = home.path().join("test.env");
+    fs::write(&env_file, "FOO=bar\nBAZ=qux\n").unwrap();
+
+    authy_cmd(&home)
+        .args(["import", "--from", "dotenv", env_file.to_str().unwrap()])
+        .assert()
+        .success()
+        .stderr(predicate::str::contains("2 secret(s) imported"));
+
+    authy_cmd(&home)
+        .args(["get", "foo"])
+        .assert()
+        .success()
+        .stdout("bar");
+}
+
+#[test]
+fn test_import_from_1password_missing_cli() {
+    let home = TempDir::new().unwrap();
+    init_vault(&home);
+
+    authy_cmd(&home)
+        .args(["import", "--from", "1password"])
+        .env("PATH", "/nonexistent")
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("1Password CLI (`op`) not found"))
+        .stderr(predicate::str::contains("https://1password.com/downloads/command-line/"));
+}
+
+#[test]
+fn test_import_from_pass_missing_gpg() {
+    let home = TempDir::new().unwrap();
+    init_vault(&home);
+
+    // Create a fake password-store with a .gpg file
+    let store = home.path().join(".password-store");
+    fs::create_dir_all(&store).unwrap();
+    fs::write(store.join("test-secret.gpg"), b"fake-encrypted").unwrap();
+
+    authy_cmd(&home)
+        .args(["import", "--from", "pass"])
+        .env("PATH", "/nonexistent")
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("GPG not found"));
+}
+
+#[test]
+fn test_import_from_pass_missing_store_dir() {
+    let home = TempDir::new().unwrap();
+    init_vault(&home);
+
+    authy_cmd(&home)
+        .args(["import", "--from", "pass", "--path", "/nonexistent/store"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("Password store directory not found"));
+}
+
+#[test]
+fn test_import_from_sops_missing_cli() {
+    let home = TempDir::new().unwrap();
+    init_vault(&home);
+
+    let sops_file = home.path().join("secrets.enc.yaml");
+    fs::write(&sops_file, "dummy: value").unwrap();
+
+    authy_cmd(&home)
+        .args(["import", "--from", "sops", sops_file.to_str().unwrap()])
+        .env("PATH", "/nonexistent")
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("SOPS CLI not found"))
+        .stderr(predicate::str::contains("https://github.com/getsops/sops"));
+}
+
+#[test]
+fn test_import_from_sops_requires_file() {
+    let home = TempDir::new().unwrap();
+    init_vault(&home);
+
+    authy_cmd(&home)
+        .args(["import", "--from", "sops"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("SOPS import requires a file argument"));
+}
+
+#[test]
+fn test_import_from_vault_missing_cli() {
+    let home = TempDir::new().unwrap();
+    init_vault(&home);
+
+    authy_cmd(&home)
+        .args(["import", "--from", "vault", "--path", "secret/myapp"])
+        .env("PATH", "/nonexistent")
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("HashiCorp Vault CLI not found"))
+        .stderr(predicate::str::contains("https://www.vaultproject.io/downloads"));
+}
+
+#[test]
+fn test_import_from_vault_requires_path() {
+    let home = TempDir::new().unwrap();
+    init_vault(&home);
+
+    authy_cmd(&home)
+        .args(["import", "--from", "vault"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("HashiCorp Vault import requires --path"));
+}
+
+#[test]
+fn test_import_no_file_no_from_errors() {
+    let home = TempDir::new().unwrap();
+    init_vault(&home);
+
+    authy_cmd(&home)
+        .args(["import"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("Import requires a file argument"));
+}
+
+#[test]
+fn test_import_from_dotenv_with_all_flags() {
+    let home = TempDir::new().unwrap();
+    init_vault(&home);
+
+    let env_file = home.path().join("test.env");
+    fs::write(&env_file, "MY_KEY=my_value\n").unwrap();
+
+    // Test with --from dotenv, --prefix, --keep-names, --dry-run
+    authy_cmd(&home)
+        .args([
+            "import",
+            "--from", "dotenv",
+            env_file.to_str().unwrap(),
+            "--prefix", "staging-",
+            "--dry-run",
+        ])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("[dry-run]"))
+        .stdout(predicate::str::contains("staging-my-key"))
+        .stderr(predicate::str::contains("1 secret(s) imported"));
+}
+
+#[test]
+fn test_import_from_1password_with_vault_and_tag() {
+    // Verify that --op-vault and --tag args are parsed correctly
+    // (will fail because `op` is not installed, but we check the error message)
+    let home = TempDir::new().unwrap();
+    init_vault(&home);
+
+    authy_cmd(&home)
+        .args([
+            "import",
+            "--from", "1password",
+            "--op-vault", "Engineering",
+            "--tag", "api-keys",
+        ])
+        .env("PATH", "/nonexistent")
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("1Password CLI (`op`) not found"));
+}
+
+#[test]
+fn test_import_from_pass_empty_store() {
+    let home = TempDir::new().unwrap();
+    init_vault(&home);
+
+    // Create empty password-store directory (no .gpg files)
+    let store = home.path().join(".password-store");
+    fs::create_dir_all(&store).unwrap();
+
+    authy_cmd(&home)
+        .args(["import", "--from", "pass"])
+        .assert()
+        .success()
+        .stderr(predicate::str::contains("No secrets found in input"));
+}

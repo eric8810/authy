@@ -2,39 +2,38 @@ use std::io::{self, BufRead};
 
 use authy::audit;
 use authy::auth;
-use authy::error::Result;
+use authy::error::{AuthyError, Result};
 use authy::vault;
 use authy::vault::secret::SecretEntry;
 
+use super::import_sources::hcvault::HcVaultAdapter;
+use super::import_sources::onepassword::OnePasswordAdapter;
+use super::import_sources::pass::PassAdapter;
+use super::import_sources::sops::SopsAdapter;
+use super::import_sources::ImportAdapter;
+use super::ImportSource;
+
+#[allow(clippy::too_many_arguments)]
 pub fn run(
-    file: &str,
+    file: Option<&str>,
+    from: Option<&ImportSource>,
+    op_vault: Option<&str>,
+    tag: Option<&str>,
+    path: Option<&str>,
+    mount: &str,
     keep_names: bool,
     prefix: Option<&str>,
     force: bool,
     dry_run: bool,
 ) -> Result<()> {
-    let (key, auth_ctx) = auth::resolve_auth(!dry_run)?;
-
-    let content = if file == "-" {
-        let mut buf = String::new();
-        let stdin = io::stdin();
-        for line in stdin.lock().lines() {
-            let line = line?;
-            buf.push_str(&line);
-            buf.push('\n');
-        }
-        buf
-    } else {
-        std::fs::read_to_string(file)?
-    };
-
-    let parsed = parse_dotenv(&content)?;
+    let parsed = fetch_secrets(file, from, op_vault, tag, path, mount)?;
 
     if parsed.is_empty() {
         eprintln!("No secrets found in input.");
         return Ok(());
     }
 
+    let (key, auth_ctx) = auth::resolve_auth(!dry_run)?;
     let mut vault_data = vault::load_vault(&key)?;
 
     let mut imported = 0usize;
@@ -44,20 +43,7 @@ pub fn run(
     let audit_key = audit::derive_audit_key(&material);
 
     for (raw_name, value) in &parsed {
-        let name = if keep_names {
-            let mut n = raw_name.clone();
-            if let Some(p) = prefix {
-                n = format!("{}{}", p, n);
-            }
-            n
-        } else {
-            let transformed = to_lower_kebab(raw_name);
-            if let Some(p) = prefix {
-                format!("{}{}", p, transformed)
-            } else {
-                transformed
-            }
-        };
+        let name = transform_name(raw_name, keep_names, prefix);
 
         let exists = vault_data.secrets.contains_key(&name);
 
@@ -117,6 +103,109 @@ pub fn run(
     );
 
     Ok(())
+}
+
+/// Fetch secrets from the appropriate source.
+fn fetch_secrets(
+    file: Option<&str>,
+    from: Option<&ImportSource>,
+    op_vault: Option<&str>,
+    tag: Option<&str>,
+    path: Option<&str>,
+    mount: &str,
+) -> Result<Vec<(String, String)>> {
+    match from {
+        Some(ImportSource::OnePassword) => {
+            let adapter = OnePasswordAdapter {
+                vault: op_vault.map(String::from),
+                tag: tag.map(String::from),
+            };
+            adapter.fetch()
+        }
+        Some(ImportSource::Pass) => {
+            let adapter = PassAdapter {
+                store_path: path.map(String::from),
+            };
+            adapter.fetch()
+        }
+        Some(ImportSource::Sops) => {
+            let f = file.ok_or_else(|| {
+                AuthyError::Other(
+                    "SOPS import requires a file argument (e.g., authy import --from sops secrets.enc.yaml)"
+                        .into(),
+                )
+            })?;
+            let adapter = SopsAdapter {
+                file: f.to_string(),
+            };
+            adapter.fetch()
+        }
+        Some(ImportSource::Vault) => {
+            let p = path.ok_or_else(|| {
+                AuthyError::Other(
+                    "HashiCorp Vault import requires --path (e.g., authy import --from vault --path secret/myapp)"
+                        .into(),
+                )
+            })?;
+            let adapter = HcVaultAdapter {
+                path: p.to_string(),
+                mount: mount.to_string(),
+            };
+            adapter.fetch()
+        }
+        Some(ImportSource::Dotenv) | None => {
+            // Existing .env import behavior
+            let f = file.ok_or_else(|| {
+                AuthyError::Other(
+                    "Import requires a file argument (e.g., authy import .env)".into(),
+                )
+            })?;
+            read_dotenv(f)
+        }
+    }
+}
+
+/// Read and parse a dotenv file (or stdin with "-").
+fn read_dotenv(file: &str) -> Result<Vec<(String, String)>> {
+    let content = if file == "-" {
+        let mut buf = String::new();
+        let stdin = io::stdin();
+        for line in stdin.lock().lines() {
+            let line = line?;
+            buf.push_str(&line);
+            buf.push('\n');
+        }
+        buf
+    } else {
+        std::fs::read_to_string(file)?
+    };
+
+    parse_dotenv(&content)
+}
+
+/// Transform a raw secret name using the shared pipeline.
+fn transform_name(raw_name: &str, keep_names: bool, prefix: Option<&str>) -> String {
+    if keep_names {
+        let mut n = raw_name.to_string();
+        if let Some(p) = prefix {
+            n = format!("{}{}", p, n);
+        }
+        n
+    } else {
+        let transformed = to_lower_kebab(raw_name);
+        if let Some(p) = prefix {
+            format!("{}{}", p, transformed)
+        } else {
+            transformed
+        }
+    }
+}
+
+/// Transform names to lower-kebab-case.
+/// Replaces `_`, `/`, spaces, and `.` with `-`, then lowercases.
+fn to_lower_kebab(name: &str) -> String {
+    name.to_lowercase()
+        .replace(['_', '/', ' ', '.'], "-")
 }
 
 /// Parse a dotenv-format string into (key, value) pairs.
@@ -225,9 +314,4 @@ fn unescape_double_quoted(s: &str) -> String {
         }
     }
     result
-}
-
-/// Transform UPPER_SNAKE_CASE to lower-kebab-case.
-fn to_lower_kebab(name: &str) -> String {
-    name.to_lowercase().replace('_', "-")
 }

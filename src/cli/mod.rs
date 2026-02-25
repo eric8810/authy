@@ -8,6 +8,7 @@ pub mod export;
 pub mod get;
 pub mod hook;
 pub mod import;
+pub mod import_sources;
 pub mod init;
 pub mod json_output;
 pub mod list;
@@ -22,7 +23,7 @@ pub mod serve;
 pub mod session;
 pub mod store;
 
-use clap::{Parser, Subcommand};
+use clap::{Parser, Subcommand, ValueEnum};
 
 #[derive(Parser)]
 #[command(name = "authy", version, about = "CLI secrets store & dispatch for agents")]
@@ -137,10 +138,25 @@ pub enum Commands {
         no_export: bool,
     },
 
-    /// Import secrets from a .env file
+    /// Import secrets from a .env file or external source
     Import {
-        /// Path to .env file (use '-' for stdin)
-        file: String,
+        /// Source file (.env, SOPS encrypted file). Not required for 1password, pass, or vault.
+        file: Option<String>,
+        /// External source type
+        #[arg(long, value_enum)]
+        from: Option<ImportSource>,
+        /// 1Password vault name (--from 1password)
+        #[arg(long, alias = "op-vault")]
+        op_vault: Option<String>,
+        /// 1Password tag filter (--from 1password)
+        #[arg(long)]
+        tag: Option<String>,
+        /// Path (pass store dir, or Vault secret path)
+        #[arg(long)]
+        path: Option<String>,
+        /// HashiCorp Vault mount point (default: "secret")
+        #[arg(long, default_value = "secret")]
+        mount: String,
         /// Keep original names (don't transform to lower-kebab-case)
         #[arg(long)]
         keep_names: bool,
@@ -361,4 +377,19 @@ pub enum AuditCommands {
 pub enum ConfigCommands {
     /// Show current configuration
     Show,
+}
+
+#[derive(ValueEnum, Clone, Debug)]
+pub enum ImportSource {
+    /// .env file (explicit)
+    Dotenv,
+    /// 1Password via `op` CLI
+    #[value(name = "1password")]
+    OnePassword,
+    /// pass (password-store) via GPG
+    Pass,
+    /// SOPS encrypted files
+    Sops,
+    /// HashiCorp Vault KV
+    Vault,
 }
