@@ -100,9 +100,71 @@ jobs:
           generate_release_notes: true
           files: artifacts/**/*
 
+  # ── Node.js native binding (napi-rs) ────────────────────────────
+
+  node-build:
+    name: Node.js ${{ matrix.node-arch }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            runner: ubuntu-latest
+            node-arch: linux-x64-gnu
+          - target: aarch64-unknown-linux-gnu
+            runner: ubuntu-latest
+            node-arch: linux-arm64-gnu
+            use-napi-cross: true
+          - target: x86_64-apple-darwin
+            runner: macos-14
+            node-arch: darwin-x64
+          - target: aarch64-apple-darwin
+            runner: macos-14
+            node-arch: darwin-arm64
+          - target: x86_64-pc-windows-msvc
+            runner: windows-latest
+            node-arch: win32-x64-msvc
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        run: |
+          rustup update stable
+          rustup default stable
+          rustup target add ${{ matrix.target }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install napi-rs CLI
+        run: npm install -g @napi-rs/cli
+
+      - name: Install aarch64 cross-compilation toolchain
+        if: matrix.use-napi-cross
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+
+      - name: Build native module
+        working-directory: bindings/node
+        run: napi build --release --target ${{ matrix.target }} --platform
+        shell: bash
+        env:
+          CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: ${{ matrix.use-napi-cross && 'aarch64-linux-gnu-gcc' || '' }}
+
+      - name: Upload native artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-${{ matrix.node-arch }}
+          path: bindings/node/*.node
+          if-no-files-found: error
+
   npm-publish:
     name: Publish npm package
-    needs: [build, release]
+    needs: [node-build, release]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -112,49 +174,26 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org
 
-      - name: Download artifacts
+      - name: Download all native artifacts
         uses: actions/download-artifact@v4
         with:
-          path: artifacts
+          pattern: node-*
+          path: bindings/node
+          merge-multiple: true
+
+      - name: List native modules
+        run: ls -la bindings/node/*.node
 
       - name: Extract version from tag
         id: version
         run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
 
-      - name: Place binaries into npm package
-        run: |
-          # Linux x64
-          tar xzf artifacts/authy-x86_64-unknown-linux-gnu/authy-x86_64-unknown-linux-gnu.tar.gz -C /tmp
-          mv /tmp/authy npm/authy-cli/bin/authy-linux-x64
-
-          # Linux arm64
-          tar xzf artifacts/authy-aarch64-unknown-linux-gnu/authy-aarch64-unknown-linux-gnu.tar.gz -C /tmp
-          mv /tmp/authy npm/authy-cli/bin/authy-linux-arm64
-
-          # macOS x64
-          tar xzf artifacts/authy-x86_64-apple-darwin/authy-x86_64-apple-darwin.tar.gz -C /tmp
-          mv /tmp/authy npm/authy-cli/bin/authy-darwin-x64
-
-          # macOS arm64
-          tar xzf artifacts/authy-aarch64-apple-darwin/authy-aarch64-apple-darwin.tar.gz -C /tmp
-          mv /tmp/authy npm/authy-cli/bin/authy-darwin-arm64
-
-          # Windows x64
-          cd artifacts/authy-x86_64-pc-windows-msvc
-          7z x authy-x86_64-pc-windows-msvc.zip -o/tmp/win
-          cd ../..
-          mv /tmp/win/authy.exe npm/authy-cli/bin/authy-win32-x64.exe
-
-          # Make all binaries executable
-          chmod +x npm/authy-cli/bin/authy-*
-
       - name: Update package version
-        run: |
-          VERSION="${{ steps.version.outputs.version }}"
-          jq --arg v "$VERSION" '.version = $v' npm/authy-cli/package.json > npm/authy-cli/package.json.tmp
-          mv npm/authy-cli/package.json.tmp npm/authy-cli/package.json
+        working-directory: bindings/node
+        run: npm version "${{ steps.version.outputs.version }}" --no-git-tag-version
 
       - name: Publish
+        working-directory: bindings/node
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish ./npm/authy-cli --access public
+        run: npm publish --access public
