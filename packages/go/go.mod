@@ -1,4 +1,4 @@
-module github.com/eric8810/authy-go
+module github.com/eric8810/authy/packages/go
 
 go 1.21
 
