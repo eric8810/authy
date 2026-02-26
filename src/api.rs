@@ -3,6 +3,8 @@
 //! [`AuthyClient`] provides a simple facade over the vault, handling
 //! load → operate → save → audit in every method call.
 
+use std::collections::HashMap;
+
 use crate::audit;
 use crate::auth;
 use crate::error::{AuthyError, Result};
@@ -258,6 +260,54 @@ impl AuthyClient {
             Some(&format!("policy={}", name)),
         );
         Ok(())
+    }
+
+    /// Build a map of environment variable names to secret values for a given policy scope.
+    ///
+    /// Loads the vault, filters secrets through the named policy, and transforms
+    /// secret names into environment-variable-style keys:
+    /// - `uppercase`: convert names to UPPER_CASE
+    /// - `replace_dash`: character to substitute for `-` (typically `_`)
+    ///
+    /// This is the cross-FFI entry point used by native language bindings (PyO3, napi-rs)
+    /// to implement `run()`-equivalent functionality without reimplementing policy logic.
+    pub fn build_env_map(
+        &self,
+        scope: &str,
+        uppercase: bool,
+        replace_dash: Option<char>,
+    ) -> Result<HashMap<String, String>> {
+        let v = vault::load_vault(&self.key)?;
+
+        let policy = v
+            .policies
+            .get(scope)
+            .ok_or_else(|| AuthyError::PolicyNotFound(scope.to_string()))?;
+
+        let all_names: Vec<&str> = v.secrets.keys().map(String::as_str).collect();
+        let allowed = policy.filter_secrets(&all_names)?;
+
+        let mut env_map = HashMap::new();
+        for name in &allowed {
+            if let Some(entry) = v.secrets.get(*name) {
+                let mut key = name.to_string();
+                if let Some(replacement) = replace_dash {
+                    key = key.replace('-', &replacement.to_string());
+                }
+                if uppercase {
+                    key = key.to_uppercase();
+                }
+                env_map.insert(key, entry.value.clone());
+            }
+        }
+
+        self.audit(
+            "build_env_map",
+            None,
+            "success",
+            Some(&format!("scope={}, count={}", scope, env_map.len())),
+        );
+        Ok(env_map)
     }
 
     // ── internal helpers ─────────────────────────────────────────

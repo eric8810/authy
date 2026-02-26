@@ -8,7 +8,7 @@
     "viewOnGitHub": "Ver código fuente"
   },
   "hero": {
-    "released": "v0.7.0 — SDK para Python, TypeScript y Go",
+    "released": "v0.7.1 — Bindings nativos para Python y Node.js",
     "title": "Gestión de secretos para",
     "titleHighlight": "AI Agents",
     "description": "Tus agents necesitan claves API, pero no las llaves del reino. Cifrado, políticas de ámbito, tokens de corta duración y auditoría completa. Un solo ejecutable, sin servidor, sin registro.",
@@ -59,7 +59,7 @@
     },
     "languageSdks": {
       "title": "SDK por idioma",
-      "description": "Usa Authy de forma nativa en Python, TypeScript o Go. Wrappers CLI ligeros sin dependencias — pip install authy-secrets, npm install authy-secrets o go get. Errores tipados, paso seguro de secretos por stdin y cobertura completa de la API."
+      "description": "Usa Authy de forma nativa en Python, TypeScript o Go. Wrappers CLI ligeros sin dependencias — pip install authy-cli, npm install authy-cli o go get. Errores tipados, paso seguro de secretos por stdin y cobertura completa de la API."
     }
   },
   "quickStart": {

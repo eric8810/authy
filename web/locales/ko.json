@@ -8,7 +8,7 @@
     "viewOnGitHub": "소스 코드 보기"
   },
   "hero": {
-    "released": "v0.7.0 — Python, TypeScript, Go SDK",
+    "released": "v0.7.1 — Python 및 Node.js 네이티브 바인딩",
     "title": "",
     "titleHighlight": "AI Agents",
     "titleSuffix": "를 위한 시크릿 관리",
@@ -60,7 +60,7 @@
     },
     "languageSdks": {
       "title": "언어 SDK",
-      "description": "Python, TypeScript, Go에서 Authy를 네이티브로 사용하세요. 의존성 없는 경량 CLI 래퍼 — pip install authy-secrets, npm install authy-secrets 또는 go get으로 설치. 타입 지정 오류, stdin 안전 시크릿 전달, 완전한 API 지원을 제공합니다."
+      "description": "Python, TypeScript, Go에서 Authy를 네이티브로 사용하세요. 의존성 없는 경량 CLI 래퍼 — pip install authy-cli, npm install authy-cli 또는 go get으로 설치. 타입 지정 오류, stdin 안전 시크릿 전달, 완전한 API 지원을 제공합니다."
     }
   },
   "quickStart": {

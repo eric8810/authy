@@ -1,7 +1,8 @@
 {
   "name": "authy-secrets",
-  "version": "0.7.0",
-  "description": "TypeScript SDK for the authy secrets manager",
+  "version": "0.7.1",
+  "description": "[DEPRECATED — use authy-cli instead] TypeScript SDK for the authy secrets manager",
+  "deprecated": "This package has been replaced by authy-cli, which includes native Rust bindings. Install with: npm install authy-cli",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",

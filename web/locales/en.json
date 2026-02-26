@@ -8,7 +8,7 @@
     "viewOnGitHub": "View on GitHub"
   },
   "hero": {
-    "released": "v0.7.0 — Python, TypeScript & Go SDKs",
+    "released": "v0.7.1 — Native Python & Node.js Bindings",
     "title": "Secrets Management for",
     "titleHighlight": "AI Agents",
     "description": "Your agents need API keys — they don't need the keys to the kingdom. Authy is a CLI secrets manager with encrypted vault, scoped policies, run-only tokens, and full audit trail. Agents inject secrets into subprocesses but never see the values. Single binary, no server, no accounts.",
@@ -59,7 +59,7 @@
     },
     "languageSdks": {
       "title": "Language SDKs",
-      "description": "Use Authy natively in Python, TypeScript, or Go. Thin CLI wrappers with zero dependencies — pip install authy-secrets, npm install authy-secrets, or go get. Typed errors, stdin-safe secret passing, and full API coverage."
+      "description": "Native Rust bindings for Python (PyO3) and Node.js (napi-rs) — the vault engine compiles into the language package, no separate binary needed. Go subprocess wrapper also available. pip install authy-cli or npm install authy-cli. Typed errors, full API coverage."
     }
   },
   "quickStart": {
@@ -70,7 +70,7 @@
       "initialize": "Initialize",
       "storeSecrets": "Store Secrets",
       "agentAccess": "Agent Access",
-      "sdks": "Language SDKs"
+      "sdks": "Native SDKs"
     }
   },
   "comparison": {
@@ -92,7 +92,7 @@
       "libraryApi": "Programmatic Library API",
       "mcpServer": "MCP Server Protocol",
       "builtForAgents": "Built for AI Agents",
-      "languageSdks": "Language SDKs (Python, TS, Go)"
+      "languageSdks": "Native SDKs (Python, Node.js, Go)"
     }
   },
   "agentSkills": {

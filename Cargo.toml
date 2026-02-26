@@ -1,6 +1,9 @@
+[workspace]
+members = [".", "bindings/python", "bindings/node"]
+
 [package]
 name = "authy-cli"
-version = "0.7.0"
+version = "0.7.1"
 edition = "2021"
 rust-version = "1.70"
 description = "CLI secrets store & dispatch for AI agents — encrypted vault, scoped policies, run-only tokens, and audit logging"

@@ -1,0 +1,38 @@
+{
+  "name": "authy-cli",
+  "version": "0.7.1",
+  "description": "Native Node.js binding for the authy secrets manager (Rust-powered)",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eric8810/authy.git",
+    "directory": "bindings/node"
+  },
+  "keywords": ["secrets", "vault", "agents", "ai", "encryption", "napi-rs"],
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
+  "napi": {
+    "name": "authy-cli",
+    "triples": {
+      "defaults": true,
+      "additional": [
+        "aarch64-apple-darwin",
+        "aarch64-unknown-linux-gnu",
+        "aarch64-unknown-linux-musl"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "napi build --release",
+    "build:debug": "napi build",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@napi-rs/cli": "^2.18.0",
+    "vitest": "^1.0.0"
+  }
+}

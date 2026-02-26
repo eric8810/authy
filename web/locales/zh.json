@@ -8,7 +8,7 @@
     "viewOnGitHub": "查看源码"
   },
   "hero": {
-    "released": "v0.7.0 — Python、TypeScript 和 Go SDK",
+    "released": "v0.7.1 — Python 和 Node.js 原生绑定",
     "title": "",
     "titleHighlight": "AI Agents",
     "titleSuffix": "密钥管理方案",
@@ -60,7 +60,7 @@
     },
     "languageSdks": {
       "title": "语言 SDK",
-      "description": "在 Python、TypeScript 或 Go 中原生使用 Authy。轻量 CLI 封装，零依赖 — pip install authy-secrets、npm install authy-secrets 或 go get 即可安装。提供类型化错误、stdin 安全的密钥传递和完整的 API 支持。"
+      "description": "在 Python、TypeScript 或 Go 中原生使用 Authy。轻量 CLI 封装，零依赖 — pip install authy-cli、npm install authy-cli 或 go get 即可安装。提供类型化错误、stdin 安全的密钥传递和完整的 API 支持。"
     }
   },
   "quickStart": {

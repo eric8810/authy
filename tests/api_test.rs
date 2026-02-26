@@ -366,6 +366,66 @@ fn test_api_create_policy_duplicate_fails() {
     });
 }
 
+// ── build_env_map ───────────────────────────────────────────────
+
+#[test]
+#[serial]
+fn test_api_build_env_map() {
+    with_isolated_home(|_home| {
+        let client = authy::api::AuthyClient::with_passphrase("test-pass").unwrap();
+        client.init_vault().unwrap();
+
+        client.store("db-url", "postgres://localhost", false).unwrap();
+        client.store("api-key", "sk-secret-123", false).unwrap();
+        client.store("other-secret", "hidden", false).unwrap();
+
+        // Create a policy that allows db-* and api-*
+        client
+            .create_policy("backend", vec!["db-*".into(), "api-*".into()], vec![], None, false)
+            .unwrap();
+
+        // Build env map with uppercase + dash replacement
+        let env = client.build_env_map("backend", true, Some('_')).unwrap();
+
+        assert_eq!(env.len(), 2);
+        assert_eq!(env.get("DB_URL").unwrap(), "postgres://localhost");
+        assert_eq!(env.get("API_KEY").unwrap(), "sk-secret-123");
+        assert!(!env.contains_key("OTHER_SECRET"));
+    });
+}
+
+#[test]
+#[serial]
+fn test_api_build_env_map_no_transform() {
+    with_isolated_home(|_home| {
+        let client = authy::api::AuthyClient::with_passphrase("test-pass").unwrap();
+        client.init_vault().unwrap();
+
+        client.store("my-secret", "value", false).unwrap();
+        client
+            .create_policy("all", vec!["*".into()], vec![], None, false)
+            .unwrap();
+
+        // No uppercase, no dash replacement
+        let env = client.build_env_map("all", false, None).unwrap();
+
+        assert_eq!(env.len(), 1);
+        assert_eq!(env.get("my-secret").unwrap(), "value");
+    });
+}
+
+#[test]
+#[serial]
+fn test_api_build_env_map_policy_not_found() {
+    with_isolated_home(|_home| {
+        let client = authy::api::AuthyClient::with_passphrase("test-pass").unwrap();
+        client.init_vault().unwrap();
+
+        let err = client.build_env_map("nonexistent", true, Some('_')).unwrap_err();
+        assert!(err.to_string().contains("not found"));
+    });
+}
+
 // ── wrong passphrase ─────────────────────────────────────────────────
 
 #[test]

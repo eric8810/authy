@@ -59,7 +59,7 @@ Admin (TUI or CLI)          Agent
 | Feature | Description |
 |---------|-------------|
 | **Library API** | Use as a Rust crate — `AuthyClient` for programmatic vault access; `cargo add authy --no-default-features` |
-| **Language SDKs** | Use Authy natively in Python, TypeScript, or Go — thin CLI wrappers with zero deps and typed errors |
+| **Language SDKs** | Native Rust bindings for Python (PyO3) and Node.js (napi-rs) — vault engine compiled in, no binary needed. Go subprocess wrapper also available. |
 | **Encrypted Vault** | `age`-encrypted single file; passphrase or X25519 keyfile auth |
 | **Scoped Policies** | Glob-based allow/deny rules; deny overrides allow; default deny |
 | **Run-Only Mode** | Restrict agents to subprocess injection only — `get`, `env`, `export` blocked |
@@ -185,48 +185,50 @@ client.rotate("api-key", "sk-new-value")?;
 cargo add authy --no-default-features
 ```
 
-### Language SDKs (Python, TypeScript, Go)
+### Language SDKs (Python, Node.js, Go)
 
-Thin CLI wrappers with zero native dependencies. Each SDK shells out to `authy --json`.
+Native Rust bindings for Python and Node.js — the vault engine compiles into the language package, no separate `authy` binary needed. Go uses a subprocess wrapper.
 
-**Python**
+**Python** (native via PyO3)
 
 ```bash
-pip install authy-secrets
+pip install authy-cli
 ```
 
 ```python
-from authy_secrets import Authy
+from authy_cli import Authy
 
-client = Authy()
+client = Authy(passphrase="my-vault-passphrase")
 value = client.get("db-url")
 client.store("api-key", "sk-secret-value")
 names = client.list(scope="backend")
+env = client.build_env_map("backend", uppercase=True, replace_dash="_")
 ```
 
-**TypeScript**
+**Node.js** (native via napi-rs)
 
 ```bash
-npm install authy-secrets
+npm install authy-cli
 ```
 
 ```typescript
-import { Authy } from "authy-secrets";
+import { Authy } from "authy-cli";
 
-const client = new Authy();
-const value = await client.get("db-url");
-await client.store("api-key", "sk-secret-value");
-const names = await client.list({ scope: "backend" });
+const client = new Authy({ passphrase: "my-vault-passphrase" });
+const value = client.get("db-url");         // synchronous
+client.store("api-key", "sk-secret-value");
+const names = client.list({ scope: "backend" });
+const env = client.buildEnvMap("backend");
 ```
 
-**Go**
+**Go** (subprocess wrapper)
 
 ```bash
-go get github.com/eric8810/authy-go
+go get github.com/eric8810/authy/packages/go
 ```
 
 ```go
-client, _ := authy.New()
+client, _ := authy.New(authy.WithPassphrase("my-vault-passphrase"))
 value, _ := client.Get(ctx, "db-url")
 client.Store(ctx, "api-key", "sk-secret-value")
 names, _ := client.List(ctx, authy.WithScope("backend"))

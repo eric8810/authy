@@ -8,7 +8,7 @@
     "viewOnGitHub": "ソースコードを見る"
   },
   "hero": {
-    "released": "v0.7.0 — Python、TypeScript、Go SDK",
+    "released": "v0.7.1 — Python・Node.js ネイティブバインディング",
     "title": "",
     "titleHighlight": "AI Agents",
     "titleSuffix": "向けシークレット管理",
@@ -60,7 +60,7 @@
     },
     "languageSdks": {
       "title": "言語 SDK",
-      "description": "Python、TypeScript、Go から Authy をネイティブに利用できます。依存関係ゼロの軽量 CLI ラッパー — pip install authy-secrets、npm install authy-secrets、または go get でインストール。型付きエラー、stdin 安全なシークレット受け渡し、完全な API カバレッジを提供します。"
+      "description": "Python、TypeScript、Go から Authy をネイティブに利用できます。依存関係ゼロの軽量 CLI ラッパー — pip install authy-cli、npm install authy-cli、または go get でインストール。型付きエラー、stdin 安全なシークレット受け渡し、完全な API カバレッジを提供します。"
     }
   },
   "quickStart": {

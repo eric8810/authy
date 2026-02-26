@@ -1,0 +1,13 @@
+[package]
+name = "authy-python"
+version = "0.7.1"
+edition = "2021"
+publish = false
+
+[lib]
+name = "authy_cli"
+crate-type = ["cdylib"]
+
+[dependencies]
+authy = { package = "authy-cli", path = "../..", default-features = false }
+pyo3 = { version = "0.23", features = ["extension-module"] }

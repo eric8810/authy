@@ -34,3 +34,9 @@ packages/typescript/node_modules/
 packages/typescript/dist/
 __pycache__/
 *.pyc
+
+# Native binding build artifacts
+bindings/*/target/
+bindings/*/Cargo.lock
+bindings/node/node_modules/
+bindings/node/*.node

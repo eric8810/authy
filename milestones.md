@@ -143,6 +143,19 @@ Meet developers in their language. Ship thin SDK wrappers for Python, TypeScript
 
 **Success criteria:** `pip install authy-secrets`, `npm install authy-secrets`, and `go get` all work. Developers use authy natively in their language without shelling out manually. Teams migrate existing secrets in one command.
 
+## v0.7.1 — Native Bindings & Unified Naming
+
+Replace subprocess-wrapper SDKs with native Rust bindings. Ship PyO3 wheels for Python and napi-rs binaries for Node.js — users get the vault engine compiled into the language package, no separate authy binary needed. Unify all package names to `authy-cli`.
+
+- [ ] **Rust core** — add `build_env_map()` to `AuthyClient` for cross-FFI env var support
+- [ ] **Python native binding** (PyO3 + maturin) — `authy-cli` on PyPI, `from authy_cli import Authy`
+- [ ] **Node.js native binding** (napi-rs) — `authy-cli` on npm, `import { Authy } from "authy-cli"`
+- [ ] **Go SDK rename** — keep subprocess wrapper, update docs for `authy-cli` branding
+- [ ] **Deprecate** `authy-secrets` on PyPI and npm
+- [ ] **Cargo workspace** — root workspace with `bindings/python` and `bindings/node` members
+
+**Success criteria:** `pip install authy-cli` and `npm install authy-cli` both install native Rust bindings. No authy binary on PATH required. Typed errors, full API coverage.
+
 ## v0.8 — Breach Response & Security Hardening
 
 When agents get compromised (not if — when), Authy is the incident response tool.

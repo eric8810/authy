@@ -77,52 +77,54 @@ let client = AuthyClient::from_env()?;
 
 ## Language SDKs
 
-Thin CLI wrappers for Python, TypeScript, and Go. Zero native deps — each SDK shells out to the `authy` binary with `--json` mode.
+Native Rust bindings for Python and Node.js — the vault engine compiles into the language package, no separate `authy` binary needed. Go uses a subprocess wrapper.
 
-**Python**
+**Python** (native via PyO3)
 
 ```bash
-pip install authy-secrets
+pip install authy-cli
 ```
 
 ```python
-from authy_secrets import Authy
+from authy_cli import Authy
 
-client = Authy()
+client = Authy(passphrase="my-vault-passphrase")
 value = client.get("db-url")
 client.store("api-key", "sk-secret-value")
 names = client.list()
+env = client.build_env_map("backend", uppercase=True, replace_dash="_")
 ```
 
-**TypeScript**
+**Node.js** (native via napi-rs)
 
 ```bash
-npm install authy-secrets
+npm install authy-cli
 ```
 
 ```typescript
-import { Authy } from "authy-secrets";
+import { Authy } from "authy-cli";
 
-const client = new Authy();
-const value = await client.get("db-url");
-await client.store("api-key", "sk-secret-value");
-const names = await client.list();
+const client = new Authy({ passphrase: "my-vault-passphrase" });
+const value = client.get("db-url");         // synchronous
+client.store("api-key", "sk-secret-value");
+const names = client.list();
+const env = client.buildEnvMap("backend");
 ```
 
-**Go**
+**Go** (subprocess wrapper)
 
 ```bash
-go get github.com/eric8810/authy-go
+go get github.com/eric8810/authy/packages/go
 ```
 
 ```go
-client, _ := authy.New()
+client, _ := authy.New(authy.WithPassphrase("my-vault-passphrase"))
 value, _ := client.Get(ctx, "db-url")
 client.Store(ctx, "api-key", "sk-secret-value")
 names, _ := client.List(ctx)
 ```
 
-All three SDKs support passphrase, keyfile, and token auth via constructor options or environment variables.
+Python and Node.js bindings include the full Rust vault engine — no `authy` binary on PATH required. Go requires the binary.
 
 ## Install
 

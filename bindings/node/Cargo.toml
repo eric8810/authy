@@ -1,0 +1,16 @@
+[package]
+name = "authy-node"
+version = "0.7.1"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+authy = { package = "authy-cli", path = "../..", default-features = false }
+napi = { version = "2", features = ["napi9"] }
+napi-derive = "2"
+
+[build-dependencies]
+napi-build = "2"
