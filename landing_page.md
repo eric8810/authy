@@ -59,6 +59,7 @@ Admin (TUI or CLI)          Agent
 | Feature | Description |
 |---------|-------------|
 | **Library API** | Use as a Rust crate — `AuthyClient` for programmatic vault access; `cargo add authy --no-default-features` |
+| **Language SDKs** | Use Authy natively in Python, TypeScript, or Go — thin CLI wrappers with zero deps and typed errors |
 | **Encrypted Vault** | `age`-encrypted single file; passphrase or X25519 keyfile auth |
 | **Scoped Policies** | Glob-based allow/deny rules; deny overrides allow; default deny |
 | **Run-Only Mode** | Restrict agents to subprocess injection only — `get`, `env`, `export` blocked |
@@ -70,6 +71,8 @@ Admin (TUI or CLI)          Agent
 | **Audit Log** | Append-only JSONL with HMAC chain; actor, timestamp, outcome on every access |
 | **Admin TUI** | Full-screen terminal UI for secrets, policies, sessions, and audit — nothing touches shell history |
 | **Headless Mode** | CI/CD friendly; non-interactive with fail-fast; keyfile + token auth |
+| **Import from Anywhere** | Migrate from .env, 1Password, pass, SOPS, or HashiCorp Vault in one command |
+| **MCP Server** | `authy serve --mcp` exposes vault tools over stdio JSON-RPC 2.0 for AI agent platforms |
 
 ---
 
@@ -181,6 +184,74 @@ client.rotate("api-key", "sk-new-value")?;
 # Add to your Rust project (no CLI deps)
 cargo add authy --no-default-features
 ```
+
+### Language SDKs (Python, TypeScript, Go)
+
+Thin CLI wrappers with zero native dependencies. Each SDK shells out to `authy --json`.
+
+**Python**
+
+```bash
+pip install authy-secrets
+```
+
+```python
+from authy_secrets import Authy
+
+client = Authy()
+value = client.get("db-url")
+client.store("api-key", "sk-secret-value")
+names = client.list(scope="backend")
+```
+
+**TypeScript**
+
+```bash
+npm install authy-secrets
+```
+
+```typescript
+import { Authy } from "authy-secrets";
+
+const client = new Authy();
+const value = await client.get("db-url");
+await client.store("api-key", "sk-secret-value");
+const names = await client.list({ scope: "backend" });
+```
+
+**Go**
+
+```bash
+go get github.com/eric8810/authy-go
+```
+
+```go
+client, _ := authy.New()
+value, _ := client.Get(ctx, "db-url")
+client.Store(ctx, "api-key", "sk-secret-value")
+names, _ := client.List(ctx, authy.WithScope("backend"))
+```
+
+### Migrate Your Secrets
+
+```bash
+# From .env files
+authy import .env
+
+# From 1Password
+authy import --from 1password --vault Engineering
+
+# From pass (password-store)
+authy import --from pass
+
+# From SOPS encrypted files
+authy import --from sops secrets.enc.yaml
+
+# From HashiCorp Vault
+authy import --from vault --path secret/myapp
+```
+
+All sources support `--dry-run`, `--force`, `--prefix`, and `--keep-names`.
 
 ### Config File Templates
 
@@ -325,7 +396,9 @@ docker run \
 | `authy resolve <file>` | Resolve `<authy:key>` placeholders in config files |
 | `authy rekey` | Re-encrypt vault with new credentials |
 | `authy env [--scope <s>]` | Output secrets as env vars (blocked in run-only mode) |
-| `authy import <file>` | Import secrets from .env file |
+| `authy import <file>` | Import from .env file |
+| `authy import --from <source>` | Import from 1Password, pass, SOPS, or Vault |
+| `authy serve --mcp` | Start MCP server (stdio JSON-RPC 2.0) |
 | `authy export --format <f>` | Export secrets (blocked in run-only mode) |
 | `authy policy create <name> [--run-only]` | Create an access policy |
 | `authy policy test --scope <s> <name>` | Test if a policy allows access |
@@ -353,6 +426,8 @@ docker run \
 | Subprocess injection | Y | N | N | Y |
 | JSON output | Y | N | Y | Y |
 | Tamper-evident audit | Y | N | Y | Y |
+| Language SDKs | Y | N | Y | Y |
+| MCP server | Y | N | N | N |
 | Built for agents | Y | N | N | N |
 
 ---
