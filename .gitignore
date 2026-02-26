@@ -40,3 +40,4 @@ bindings/*/target/
 bindings/*/Cargo.lock
 bindings/node/node_modules/
 bindings/node/*.node
+bindings/node/bin/authy-*
