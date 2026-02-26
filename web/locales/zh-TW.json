@@ -8,7 +8,7 @@
     "viewOnGitHub": "檢視原始碼"
   },
   "hero": {
-    "released": "v0.6.0 — 面向 AI Agent 平台的 MCP 伺服器",
+    "released": "v0.7.0 — Python、TypeScript 和 Go SDK",
     "title": "",
     "titleHighlight": "AI Agents",
     "titleSuffix": "密鑰管理方案",
@@ -57,6 +57,10 @@
     "adminTUI": {
       "title": "管理介面 TUI",
       "description": "全螢幕終端管理介面，支援密鑰、策略、工作階段和稽核日誌管理。透過遮罩輸入欄位錄入的密鑰不會出現在 Shell 歷史記錄中。"
+    },
+    "languageSdks": {
+      "title": "語言 SDK",
+      "description": "在 Python、TypeScript 或 Go 中原生使用 Authy。輕量 CLI 封裝，零依賴 — pip install authy-secrets、npm install authy-secrets 或 go get 即可安裝。提供型別化錯誤、stdin 安全的密鑰傳遞和完整的 API 支援。"
     }
   },
   "quickStart": {
@@ -66,7 +70,8 @@
       "install": "安裝",
       "initialize": "初始化",
       "storeSecrets": "儲存密鑰",
-      "agentAccess": "Agent 接入"
+      "agentAccess": "Agent 接入",
+      "sdks": "語言 SDK"
     }
   },
   "comparison": {
@@ -87,7 +92,8 @@
       "mcpServer": "MCP 伺服器協定",
       "builtForAgents": "面向 Agent 設計",
       "runOnlyMode": "僅執行模式",
-      "jsonOutput": "結構化 JSON 輸出"
+      "jsonOutput": "結構化 JSON 輸出",
+      "languageSdks": "語言 SDK（Python、TS、Go）"
     }
   },
   "agentSkills": {

@@ -40,6 +40,18 @@ const codeBlocks: Record<string, TerminalLine[]> = {
     { type: 'comment', content: 'Now just type claude — secrets injected automatically' },
     { type: 'command', content: 'claude' },
     { type: 'output', content: '[injected] ANTHROPIC_API_KEY, GITHUB_TOKEN (2 secrets)' },
+  ],
+  sdks: [
+    { type: 'comment', content: 'Python — install from PyPI' },
+    { type: 'command', content: 'pip install authy-secrets' },
+    { type: 'output', content: 'Successfully installed authy-secrets-0.7.0' },
+    { type: 'command', content: 'python -c "from authy_secrets import Authy; a = Authy(); print(a.get(\'api-key\'))"' },
+    { type: 'comment', content: 'TypeScript — install from npm' },
+    { type: 'command', content: 'npm install authy-secrets' },
+    { type: 'command', content: 'npx ts-node -e "import { Authy } from \'authy-secrets\'; const a = new Authy(); console.log(await a.get(\'api-key\'))"' },
+    { type: 'comment', content: 'Go — install module' },
+    { type: 'command', content: 'go get github.com/eric8810/authy-go' },
+    { type: 'command', content: 'go run main.go  # authy.New().Get("api-key")' },
   ]
 };
 
@@ -52,6 +64,7 @@ export const QuickStart: React.FC = () => {
     { id: 'init', label: t('quickStart.tabs.initialize') },
     { id: 'store', label: t('quickStart.tabs.storeSecrets') },
     { id: 'agent', label: t('quickStart.tabs.agentAccess') },
+    { id: 'sdks', label: t('quickStart.tabs.sdks') },
   ];
 
   return (

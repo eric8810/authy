@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Shield, Key, FileJson, TerminalSquare, Lock, Monitor, FileCode, Code2, Server } from 'lucide-react';
+import { Shield, Key, FileJson, TerminalSquare, Lock, Monitor, FileCode, Code2, Server, Package } from 'lucide-react';
 import { Feature } from '../types';
 import { FadeIn } from './FadeIn';
 
@@ -12,6 +12,11 @@ export const Features: React.FC = () => {
       title: t('features.libraryApi.title'),
       description: t('features.libraryApi.description'),
       icon: Code2
+    },
+    {
+      title: t('features.languageSdks.title'),
+      description: t('features.languageSdks.description'),
+      icon: Package
     },
     {
       title: t('features.encryptedVault.title'),

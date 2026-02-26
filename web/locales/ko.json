@@ -8,7 +8,7 @@
     "viewOnGitHub": "소스 코드 보기"
   },
   "hero": {
-    "released": "v0.6.0 — AI 에이전트 플랫폼용 MCP 서버",
+    "released": "v0.7.0 — Python, TypeScript, Go SDK",
     "title": "",
     "titleHighlight": "AI Agents",
     "titleSuffix": "를 위한 시크릿 관리",
@@ -57,6 +57,10 @@
     "adminTUI": {
       "title": "관리 TUI",
       "description": "시크릿, 정책, 세션 및 감사 로그를 관리하는 전체 화면 터미널 인터페이스. 마스크 입력 필드를 통해 입력된 시크릿은 셸 기록에 남지 않습니다."
+    },
+    "languageSdks": {
+      "title": "언어 SDK",
+      "description": "Python, TypeScript, Go에서 Authy를 네이티브로 사용하세요. 의존성 없는 경량 CLI 래퍼 — pip install authy-secrets, npm install authy-secrets 또는 go get으로 설치. 타입 지정 오류, stdin 안전 시크릿 전달, 완전한 API 지원을 제공합니다."
     }
   },
   "quickStart": {
@@ -66,7 +70,8 @@
       "install": "설치",
       "initialize": "초기화",
       "storeSecrets": "시크릿 저장",
-      "agentAccess": "Agent 연동"
+      "agentAccess": "Agent 연동",
+      "sdks": "언어 SDK"
     }
   },
   "comparison": {
@@ -87,7 +92,8 @@
       "mcpServer": "MCP 서버 프로토콜",
       "builtForAgents": "Agent 전용 설계",
       "runOnlyMode": "실행 전용 모드",
-      "jsonOutput": "구조화된 JSON 출력"
+      "jsonOutput": "구조화된 JSON 출력",
+      "languageSdks": "언어 SDK (Python, TS, Go)"
     }
   },
   "agentSkills": {

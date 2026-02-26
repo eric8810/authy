@@ -8,7 +8,7 @@
     "viewOnGitHub": "Ver código fuente"
   },
   "hero": {
-    "released": "v0.6.0 — Servidor MCP para plataformas de agentes IA",
+    "released": "v0.7.0 — SDK para Python, TypeScript y Go",
     "title": "Gestión de secretos para",
     "titleHighlight": "AI Agents",
     "description": "Tus agents necesitan claves API, pero no las llaves del reino. Cifrado, políticas de ámbito, tokens de corta duración y auditoría completa. Un solo ejecutable, sin servidor, sin registro.",
@@ -56,6 +56,10 @@
     "adminTUI": {
       "title": "TUI de Administración",
       "description": "Interfaz de terminal a pantalla completa para gestionar secretos, políticas, sesiones y registros de auditoría. Los secretos introducidos en campos enmascarados nunca tocan el historial de shell."
+    },
+    "languageSdks": {
+      "title": "SDK por idioma",
+      "description": "Usa Authy de forma nativa en Python, TypeScript o Go. Wrappers CLI ligeros sin dependencias — pip install authy-secrets, npm install authy-secrets o go get. Errores tipados, paso seguro de secretos por stdin y cobertura completa de la API."
     }
   },
   "quickStart": {
@@ -65,7 +69,8 @@
       "install": "Instalar",
       "initialize": "Inicializar",
       "storeSecrets": "Guardar secretos",
-      "agentAccess": "Conectar Agent"
+      "agentAccess": "Conectar Agent",
+      "sdks": "SDK por idioma"
     }
   },
   "comparison": {
@@ -86,7 +91,8 @@
       "mcpServer": "Protocolo servidor MCP",
       "builtForAgents": "Diseñado para Agents",
       "runOnlyMode": "Modo solo ejecución",
-      "jsonOutput": "Salida JSON estructurada"
+      "jsonOutput": "Salida JSON estructurada",
+      "languageSdks": "SDK por idioma (Python, TS, Go)"
     }
   },
   "agentSkills": {

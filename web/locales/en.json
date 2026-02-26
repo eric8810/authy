@@ -8,7 +8,7 @@
     "viewOnGitHub": "View on GitHub"
   },
   "hero": {
-    "released": "v0.6.0 — MCP Server for AI Agent Platforms",
+    "released": "v0.7.0 — Python, TypeScript & Go SDKs",
     "title": "Secrets Management for",
     "titleHighlight": "AI Agents",
     "description": "Your agents need API keys — they don't need the keys to the kingdom. Authy is a CLI secrets manager with encrypted vault, scoped policies, run-only tokens, and full audit trail. Agents inject secrets into subprocesses but never see the values. Single binary, no server, no accounts.",
@@ -56,6 +56,10 @@
     "adminTUI": {
       "title": "Admin Terminal UI",
       "description": "Full-screen terminal interface for managing secrets, policies, sessions, and audit logs. Masked input fields ensure secrets never touch shell history. Intuitive keyboard-driven interface."
+    },
+    "languageSdks": {
+      "title": "Language SDKs",
+      "description": "Use Authy natively in Python, TypeScript, or Go. Thin CLI wrappers with zero dependencies — pip install authy-secrets, npm install authy-secrets, or go get. Typed errors, stdin-safe secret passing, and full API coverage."
     }
   },
   "quickStart": {
@@ -65,7 +69,8 @@
       "install": "Install",
       "initialize": "Initialize",
       "storeSecrets": "Store Secrets",
-      "agentAccess": "Agent Access"
+      "agentAccess": "Agent Access",
+      "sdks": "Language SDKs"
     }
   },
   "comparison": {
@@ -86,7 +91,8 @@
       "jsonOutput": "Structured JSON Output",
       "libraryApi": "Programmatic Library API",
       "mcpServer": "MCP Server Protocol",
-      "builtForAgents": "Built for AI Agents"
+      "builtForAgents": "Built for AI Agents",
+      "languageSdks": "Language SDKs (Python, TS, Go)"
     }
   },
   "agentSkills": {

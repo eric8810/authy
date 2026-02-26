@@ -75,6 +75,55 @@ Auth from environment variables:
 let client = AuthyClient::from_env()?;
 ```
 
+## Language SDKs
+
+Thin CLI wrappers for Python, TypeScript, and Go. Zero native deps — each SDK shells out to the `authy` binary with `--json` mode.
+
+**Python**
+
+```bash
+pip install authy-secrets
+```
+
+```python
+from authy_secrets import Authy
+
+client = Authy()
+value = client.get("db-url")
+client.store("api-key", "sk-secret-value")
+names = client.list()
+```
+
+**TypeScript**
+
+```bash
+npm install authy-secrets
+```
+
+```typescript
+import { Authy } from "authy-secrets";
+
+const client = new Authy();
+const value = await client.get("db-url");
+await client.store("api-key", "sk-secret-value");
+const names = await client.list();
+```
+
+**Go**
+
+```bash
+go get github.com/eric8810/authy-go
+```
+
+```go
+client, _ := authy.New()
+value, _ := client.Get(ctx, "db-url")
+client.Store(ctx, "api-key", "sk-secret-value")
+names, _ := client.List(ctx)
+```
+
+All three SDKs support passphrase, keyfile, and token auth via constructor options or environment variables.
+
 ## Install
 
 ```bash
@@ -136,11 +185,24 @@ authy run -- ./deploy.sh          # scope inferred from .authy.toml
 eval "$(authy hook bash)"         # auto-activate on cd (like direnv)
 ```
 
-## Migrate from .env
+## Migrate Your Secrets
 
 ```bash
-authy import .env                 # imports all keys, transforms names
-authy import .env --dry-run       # preview first
+# From .env files
+authy import .env                                         # imports all keys
+authy import .env --dry-run                               # preview first
+
+# From 1Password
+authy import --from 1password --vault Engineering
+
+# From pass (password-store)
+authy import --from pass
+
+# From Mozilla SOPS
+authy import --from sops secrets.enc.yaml
+
+# From HashiCorp Vault
+authy import --from vault --path secret/myapp
 ```
 
 ## Admin TUI
@@ -203,6 +265,7 @@ Agent Commands
   authy resolve <file>             Resolve <authy:key> placeholders in files
   authy env [--scope <s>]          Output secrets as env vars
   authy import <file>              Import from .env file
+  authy import --from <source>     Import from 1password, pass, sops, vault
   authy export --format <fmt>      Export as .env or JSON
 
 Vault Management

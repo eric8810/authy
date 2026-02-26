@@ -50,10 +50,24 @@ authy serve --mcp
 
 Exposes 5 tools over stdio JSON-RPC 2.0: `get_secret`, `list_secrets`, `store_secret`, `remove_secret`, `test_policy`.
 
-## Migrate from .env
+## Language SDKs
+
+Thin CLI wrappers with zero native deps:
 
 ```bash
-authy import .env
+pip install authy-secrets          # Python
+npm install authy-secrets          # TypeScript
+go get github.com/eric8810/authy-go  # Go
+```
+
+## Migrate Your Secrets
+
+```bash
+authy import .env                                  # .env files
+authy import --from 1password --vault Engineering  # 1Password
+authy import --from pass                           # pass (password-store)
+authy import --from sops secrets.enc.yaml          # Mozilla SOPS
+authy import --from vault --path secret/myapp      # HashiCorp Vault
 ```
 
 ## Supported Platforms
